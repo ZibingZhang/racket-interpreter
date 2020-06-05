@@ -1,0 +1,101 @@
+from src.token import Token, TokenType
+
+
+class LexerError(Exception):
+
+    pass
+
+
+class Lexer:
+
+    RESERVED_KEYWORDS = {
+        'DEFINE': Token(TokenType.DEFINE, 'DEFINE')
+    }
+
+    def __init__(self, text: str) -> None:
+        self.text = text
+        self.pos = 0
+        self.current_char = self.text[self.pos]
+
+    def error(self) -> None:
+        raise LexerError('Invalid character.')
+
+    def advance(self) -> None:
+        """Advance the 'pos' pointer and set the 'current_char' field."""
+        self.pos += 1
+        if self.pos > len(self.text) - 1:
+            self.current_char = None
+        else:
+            self.current_char = self.text[self.pos]
+
+    def number(self) -> Token:
+        """Return a number token from a number consumed from the input."""
+        number = ''
+        while self.current_char and self.current_char.isdigit():
+            number += self.current_char
+            self.advance()
+        return Token(TokenType.NUMBER, float(number))
+
+    def identifier(self) -> Token:
+        """Handles identifiers and reserved keywords."""
+        result = ''
+        while self.current_char and self.current_char.isalnum():
+            result += self.current_char
+            self.advance()
+
+        token = self.RESERVED_KEYWORDS.get(result, Token(TokenType.ID, result))
+        return token
+
+    def skip_whitespace(self) -> None:
+        """Consume whitespace until next non-whitespace character."""
+        while self.current_char and self.current_char.isspace():
+            self.advance()
+
+    def get_next_token(self) -> Token:
+        """ Responsible for breaking apart text into tokens."""
+        while self.current_char:
+            if self.current_char.isspace():
+                self.skip_whitespace()
+                continue
+
+            if self.current_char.isalpha():
+                return self.identifier()
+
+            if self.current_char.isdigit():
+                return self.number()
+
+            if self.current_char == '+':
+                self.advance()
+                return Token(TokenType.PLUS, self.current_char)
+
+            if self.current_char == '-':
+                self.advance()
+                return Token(TokenType.MINUS, self.current_char)
+
+            if self.current_char == '*':
+                self.advance()
+                return Token(TokenType.MUL, self.current_char)
+
+            if self.current_char == '/':
+                self.advance()
+                return Token(TokenType.DIV, self.current_char)
+
+            if self.current_char == '(':
+                self.advance()
+                return Token(TokenType.LPAREN, self.current_char)
+
+            if self.current_char == ')':
+                self.advance()
+                return Token(TokenType.RPAREN, self.current_char)
+
+            self.error()
+
+        return Token(TokenType.EOF, None)
+
+    # probably not needed for Racket
+    # def peek(self):
+    #     peek_pos = self.pos + 1
+    #     if peek_pos > len(self.text) - 1:
+    #         return None
+    #     else:
+    #         return self.text[peek_pos]

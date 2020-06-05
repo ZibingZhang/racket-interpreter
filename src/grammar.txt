@@ -1,0 +1,22 @@
+term: NUMBER | expr | variable
+
+p-expr: LPAREN PLUS term* RPAREN
+      | LPAREN MUL term* RPAREN
+      | LPAREN MINUS term+ RPAREN
+      | LPAREN DIV term+ RPAREN
+
+expr: NUMBER
+    | p-expr
+
+variable: ID
+
+assignment_statement: LPAREN DEFINE variable expr RPAREN
+
+compound_statement: statement
+                  | statement compound_statement
+
+statement: compound_statement
+         | assignment_statement
+         | expr
+
+program : statement
