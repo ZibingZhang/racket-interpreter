@@ -1,23 +1,12 @@
 from __future__ import annotations
-import abc
 from functools import reduce
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, List, Optional
+from src.ast import ASTVisitor
 from src.token import TokenType
 
 if TYPE_CHECKING:
     from src.ast import AST, Define, Func, NoOp, Num, Program, Var
     from src.parser import Parser
-
-
-class ASTVisitor(abc.ABC):
-
-    def visit(self, node: AST):
-        method_name = 'visit_' + type(node).__name__
-        visit_func = getattr(self, method_name, self.error)
-        return visit_func(node)
-
-    def error(self, node):
-        raise Exception(f'No visit_{type(node).__name__} method.')
 
 
 class InterpreterError(Exception):
@@ -27,10 +16,10 @@ class InterpreterError(Exception):
 
 class Interpreter(ASTVisitor):
 
-    GLOBAL_SCOPE = dict()
+    GLOBAL_MEMORY = dict()
 
-    def __init__(self, parser: Parser) -> None:
-        self.parser = parser
+    def __init__(self, tree: Optional[AST] = None) -> None:
+        self.tree = tree
 
     def visit_Func(self, node: Func) -> float:
         op = node.op
@@ -73,13 +62,16 @@ class Interpreter(ASTVisitor):
         return node.value
 
     def visit_Define(self, node: Define) -> None:
-        # TODO: error if already defined
         var_name = node.identifier
-        self.GLOBAL_SCOPE[var_name] = self.visit(node.expr)
+        current_val = self.GLOBAL_MEMORY.get(var_name)
+        if current_val is not None:
+            raise InterpreterError(f'{var_name}: this name was defined previously and cannot be re-defined.')
+        else:
+            self.GLOBAL_MEMORY[var_name] = self.visit(node.expr)
 
     def visit_Var(self, node: Var) -> float:
         var_name = node.value
-        val = self.GLOBAL_SCOPE.get(var_name)
+        val = self.GLOBAL_MEMORY.get(var_name)
         if val is None:
             raise NameError(repr(var_name))
         else:
@@ -96,6 +88,6 @@ class Interpreter(ASTVisitor):
                 result.append(value)
         return result
 
-    def interpret(self):
-        ast = self.parser.parse()
-        return self.visit(ast)
+    def interpret(self) -> Any:
+        tree = self.tree
+        return self.visit(tree)

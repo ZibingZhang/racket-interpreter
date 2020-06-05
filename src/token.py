@@ -30,7 +30,7 @@ class Token:
         return self._value
 
     def __str__(self) -> str:
-        return f'<Token {self._type} {self._value}>'
+        return f'<Token token:{self._type} value:{self._value}>'
 
     def __repr__(self) -> str:
         return self.__str__()

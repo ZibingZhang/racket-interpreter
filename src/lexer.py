@@ -30,10 +30,16 @@ class Lexer:
 
     def number(self) -> Token:
         """Return a number token from a number consumed from the input."""
-        number = ''
+        if self.current_char == '-':
+            number = '-'
+            self.advance()
+        else:
+            number = ''
+
         while self.current_char and self.current_char.isdigit():
             number += self.current_char
             self.advance()
+
         return Token(TokenType.NUMBER, float(number))
 
     def identifier(self) -> Token:
@@ -51,6 +57,13 @@ class Lexer:
         while self.current_char and self.current_char.isspace():
             self.advance()
 
+    def peek(self):
+        pos = self.pos + 1
+        if pos > len(self.text) - 1:
+            return None
+        else:
+            return self.text[pos]
+
     def get_next_token(self) -> Token:
         """ Responsible for breaking apart text into tokens."""
         while self.current_char:
@@ -61,7 +74,7 @@ class Lexer:
             if self.current_char.isalpha():
                 return self.identifier()
 
-            if self.current_char.isdigit():
+            if self.current_char.isdigit() or (self.current_char == '-' and self.peek().isdigit()):
                 return self.number()
 
             if self.current_char == '+':
