@@ -1,6 +1,6 @@
 from __future__ import annotations
 import abc
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from src.token import Token
@@ -20,7 +20,7 @@ class Func(AST):
         self.nodes = [] if nodes is None else nodes
 
     def __str__(self):
-        return f'<Func nodes:{str(self.nodes)}>'
+        return f'<Func op:{self.op} nodes:{self.nodes}>'
 
     def __repr__(self):
         return self.__str__()
@@ -43,7 +43,7 @@ class Num(AST):
         return self.__str__()
 
 
-class Compound(AST):
+class Program(AST):
     """A list of statements."""
 
     def __init__(self, children: List[AST]):
@@ -53,10 +53,9 @@ class Compound(AST):
 class Define(AST):
     """Define statement."""
 
-    def __init__(self, op: Token, identifier: str, value: Any):
-        self.token = self.op = op
+    def __init__(self, identifier: str, expr: AST):
         self.identifier = identifier
-        self.value = value
+        self.expr = expr
 
 
 class Var(AST):

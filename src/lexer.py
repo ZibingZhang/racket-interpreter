@@ -9,7 +9,7 @@ class LexerError(Exception):
 class Lexer:
 
     RESERVED_KEYWORDS = {
-        'DEFINE': Token(TokenType.DEFINE, 'DEFINE')
+        'define': Token(TokenType.DEFINE, None)
     }
 
     def __init__(self, text: str) -> None:
@@ -92,10 +92,13 @@ class Lexer:
 
         return Token(TokenType.EOF, None)
 
-    # probably not needed for Racket
-    # def peek(self):
-    #     peek_pos = self.pos + 1
-    #     if peek_pos > len(self.text) - 1:
-    #         return None
-    #     else:
-    #         return self.text[peek_pos]
+    def peek_next_token(self):
+        current_pos = self.pos
+        current_char = self.current_char
+
+        next_token = self.get_next_token()
+
+        self.pos = current_pos
+        self.current_char = current_char
+
+        return next_token

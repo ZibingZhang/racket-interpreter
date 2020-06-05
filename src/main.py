@@ -18,9 +18,12 @@ def main():
             parser = Parser(lexer)
             interpreter = Interpreter(parser)
             result = interpreter.interpret()
-            print(result)
-        except (ParserError, LexerError) as e:
+            for output in result:
+                print(output)
+        except (LexerError, ParserError, InterpreterError) as e:
             print(e)
+        except NameError as e:
+            print(f'Variable {e} is not defined.')
 
 
 if __name__ == '__main__':

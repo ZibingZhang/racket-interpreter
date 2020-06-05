@@ -1,11 +1,11 @@
 from __future__ import annotations
 import abc
 from functools import reduce
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from src.token import TokenType
 
 if TYPE_CHECKING:
-    from src.ast import AST, Func, Num
+    from src.ast import AST, Define, Func, NoOp, Num, Program, Var
     from src.parser import Parser
 
 
@@ -27,10 +27,12 @@ class InterpreterError(Exception):
 
 class Interpreter(ASTVisitor):
 
-    def __init__(self, parser: Parser):
+    GLOBAL_SCOPE = dict()
+
+    def __init__(self, parser: Parser) -> None:
         self.parser = parser
 
-    def visit_Func(self, node: Func):
+    def visit_Func(self, node: Func) -> float:
         op = node.op
         if op.type == TokenType.PLUS:
             if len(node.nodes) == 0:
@@ -67,8 +69,32 @@ class Interpreter(ASTVisitor):
         else:
             raise InterpreterError(f'Method visit_Func does not handle operator of type {op.type}.')
 
-    def visit_Num(self, node: Num):
+    def visit_Num(self, node: Num) -> float:
         return node.value
+
+    def visit_Define(self, node: Define) -> None:
+        # TODO: error if already defined
+        var_name = node.identifier
+        self.GLOBAL_SCOPE[var_name] = self.visit(node.expr)
+
+    def visit_Var(self, node: Var) -> float:
+        var_name = node.value
+        val = self.GLOBAL_SCOPE.get(var_name)
+        if val is None:
+            raise NameError(repr(var_name))
+        else:
+            return val
+
+    def visit_NoOp(self, node: NoOp) -> None:
+        pass
+
+    def visit_Program(self, node: Program) -> List[str]:
+        result = []
+        for child_node in node.children:
+            value = self.visit(child_node)
+            if value is not None:
+                result.append(value)
+        return result
 
     def interpret(self):
         ast = self.parser.parse()

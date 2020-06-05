@@ -4,7 +4,7 @@ from src import ast
 from src.token import Token, TokenType
 
 if TYPE_CHECKING:
-    from src.ast import AST
+    from src.ast import AST, Program
     from src.lexer import Lexer
 
 
@@ -37,7 +37,9 @@ class Parser:
             self.error()
 
     def term(self) -> AST:
-        """term: NUMBER | expr | variable"""
+        """term: NUMBER
+               | expr
+               | variable"""
         token = self.current_token
 
         if token.type == TokenType.NUMBER:
@@ -64,14 +66,8 @@ class Parser:
 
         op = self.current_token
         node = ast.Func(op)
-        if op.type == TokenType.PLUS:
-            self.eat(TokenType.PLUS)
-        elif op.type == TokenType.MINUS:
-            self.eat(TokenType.MINUS)
-        elif op.type == TokenType.MUL:
-            self.eat(TokenType.MUL)
-        elif op.type == TokenType.DIV:
-            self.eat(TokenType.DIV)
+        if op.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV]:
+            self.eat(op.type)
         else:
             self.error()
 
@@ -79,12 +75,10 @@ class Parser:
         if self.current_token.type == TokenType.RPAREN:
             # closing right bracket
             self.eat(TokenType.RPAREN)
-            if op.type == TokenType.PLUS:
-                return node
-            elif op.type == TokenType.MUL:
+            if op.type in [TokenType.PLUS, TokenType.MUL]:
                 return node
 
-        while self.current_token.type in [TokenType.NUMBER, TokenType.LPAREN]:
+        while self.current_token.type != TokenType.RPAREN:
             if op.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV]:
                 node.append(self.term())
             else:
@@ -99,16 +93,84 @@ class Parser:
         """
         expr: NUMBER
             | p-expr
+            | variable
         """
         if self.current_token.type == TokenType.NUMBER:
             token = Token(TokenType.NUMBER, self.current_token.value)
+            self.eat(TokenType.NUMBER)
             return ast.Num(token)
             # return self.current_token.value
         elif self.current_token.type == TokenType.LPAREN:
             node = self.p_expr()
             return node
+        elif self.current_token.type == TokenType.ID:
+            token = Token(TokenType.ID, self.current_token.value)
+            self.eat(TokenType.ID)
+            return ast.Var(token)
         else:
             self.error()
 
-    def parse(self):
-        return self.expr()
+    def empty(self) -> AST:
+        """empty: """
+        return ast.NoOp()
+
+    def variable(self):
+        """variable: ID"""
+        node = ast.Var(self.current_token)
+        self.eat(TokenType.ID)
+        return node
+
+    def assignment_statement(self) -> AST:
+        """assignment_statement: LPAREN DEFINE variable expr RPAREN"""
+        # opening left bracket
+        self.eat(TokenType.LPAREN)
+        self.eat(TokenType.DEFINE)
+
+        identifier = self.current_token.value
+        self.eat(TokenType.ID)
+
+        expr = self.expr()
+        self.eat(TokenType.RPAREN)
+
+        return ast.Define(identifier, expr)
+
+    def statement(self) -> AST:
+        """
+        statement: assignment_statement
+                 | expr
+                 | empty
+        """
+        token = self.current_token
+        if token.type in [TokenType.NUMBER, TokenType.ID]:
+            node = self.expr()
+            return node
+
+        next_token = self.lexer.peek_next_token()
+        if next_token.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV]:
+            node = self.expr()
+        elif next_token.type == TokenType.DEFINE:
+            node = self.assignment_statement()
+        else:
+            node = self.empty()
+
+        return node
+
+    def program(self) -> Program:
+        """
+        program : statement
+                | statement compound_statement
+        """
+        statements = []
+
+        while self.current_token.type != TokenType.EOF:
+            statement = self.statement()
+            statements.append(statement)
+
+        return ast.Program(statements)
+
+    def parse(self) -> Program:
+        node = self.program()
+        if self.current_token.type != TokenType.EOF:
+            self.error()
+
+        return node
