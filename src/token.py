@@ -13,6 +13,8 @@ class TokenType(enum.Enum):
     DIV = 'DIV'
     ID = 'ID'          # start with an alphabetical char followed by any number of alphanumeric chars
     DEFINE = 'DEFINE'
+    BOOLEAN = "BOOLEAN"
+    STRING = "STRING"
 
 
 class Token:

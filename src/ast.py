@@ -41,7 +41,7 @@ class Func(AST):
 
 
 class Num(AST):
-    """A single number."""
+    """A number."""
 
     def __init__(self, number: Token) -> None:
         self.token = number
@@ -54,6 +54,22 @@ class Num(AST):
         return self.__str__()
 
 
+class Bool(AST):
+    """A boolean."""
+
+    def __init__(self, boolean: Token) -> None:
+        self.token = boolean
+        self.value = boolean.value
+
+
+class Str(AST):
+    """A string."""
+
+    def __init__(self, string: Token) -> None:
+        self.token = string
+        self.value = string.value
+
+
 class Program(AST):
     """A list of statements."""
 
@@ -61,12 +77,22 @@ class Program(AST):
         self.children = children
 
 
-class Define(AST):
-    """Define statement."""
+class ConstAssign(AST):
+    """Defining a constant."""
 
     def __init__(self, identifier: str, expr: AST) -> None:
         self.identifier = identifier
         self.expr = expr
+
+
+class FuncAssign(AST):
+    """Defining a function."""
+
+    def __init__(self, identifier: str, params: List[str], expr: AST) -> None:
+        self.identifier = identifier
+        self.params = params
+        self.expr = expr
+
 
 
 class Var(AST):
@@ -81,3 +107,10 @@ class NoOp(AST):
     """Any empty statement."""
 
     pass
+
+
+class FuncDecl(AST):
+    """Function declaration."""
+
+    def __init__(self, identifier: str, expr):
+        pass

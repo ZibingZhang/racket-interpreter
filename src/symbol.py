@@ -5,7 +5,7 @@ from src.ast import ASTVisitor
 from src.interpreter import Interpreter
 
 if TYPE_CHECKING:
-    from src.ast import Define, Func, NoOp, Num, Program, Var
+    from src.ast import ConstAssign, Func, NoOp, Num, Program, Var
 
 
 class Symbol:
@@ -25,23 +25,23 @@ class SymbolTable:
 
     def __init__(self) -> None:
         self._symbols = OrderedDict()
-        self._init_builtins()
-
-    def _init_builtins(self) -> None:
-        self.define(BuiltinTypeSymbol('NUMBER'))
-        self.define(BuiltinTypeSymbol('BOOLEAN'))
-        self.define(BuiltinTypeSymbol('STRING'))
-        self.define(BuiltinTypeSymbol('CHARACTER'))
 
     def __str__(self) -> str:
-        symbols = [value for value in self._symbols.values()]
-        return f'<SymbolTable symbols:{symbols}>'
+        sym_table_header = 'Symbol Table Contents'
+        lines = [sym_table_header]
+        lines.extend(
+            f'{key:>10}: {value}'
+            for key, value in self._symbols.items()
+        )
+        lines.append('\n')
+        s = '\n'.join(lines)
+        return s
 
     def __repr__(self) -> str:
         return self.__str__()
 
     def define(self, symbol: Symbol) -> None:
-        print(f'Define: {symbol}.')
+        print(f'Define: {symbol}')
         self._symbols[symbol.name] = symbol
 
     def lookup(self, name: str) -> Optional[Symbol]:
@@ -50,42 +50,7 @@ class SymbolTable:
         return symbol
 
 
-class SymbolTableBuilder(ASTVisitor):
-    def __init__(self):
-        self.sym_table = SymbolTable()
-
-    def visit_Func(self, node: Func) -> None:
-        for arg in node.nodes:
-            self.visit(arg)
-
-    def visit_Num(self, node: Num) -> None:
-        pass
-
-    def visit_Define(self, node: Define) -> None:
-        var_name = node.identifier
-        var_symb = self.sym_table.lookup(var_name)
-        if var_symb is not None:
-            raise NameError(f'{var_name}: this name was defined previously and cannot be re-defined.')
-        else:
-            number_type = BuiltinTypeSymbol('NUMBER')
-            self.sym_table.define(VarSymbol(var_name, number_type))
-        Interpreter().visit(node.expr)
-
-    def visit_Var(self, node: Var) -> None:
-        var_name = node.value
-        var_symb = self.sym_table.lookup(var_name)
-        if var_symb is None:
-            raise NameError(f'{var_name}: this variable is not defined.')
-
-    def visit_NoOp(self, node: NoOp) -> None:
-        pass
-
-    def visit_Program(self, node: Program) -> None:
-        for child_node in node.children:
-            self.visit(child_node)
-
-
-class BuiltinTypeSymbol(Symbol):
+class IdentifierTypeSymbol(Symbol):
 
     def __init__(self, name: str):
         super().__init__(name)
@@ -97,9 +62,9 @@ class BuiltinTypeSymbol(Symbol):
         return self.__str__()
 
 
-class VarSymbol(Symbol):
+class IdentifierSymbol(Symbol):
 
-    def __init__(self, name: str, sym_type: BuiltinTypeSymbol):
+    def __init__(self, name: str, sym_type: Symbol):
         super().__init__(name, sym_type)
 
     def __str__(self):

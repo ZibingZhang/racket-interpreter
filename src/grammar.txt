@@ -1,4 +1,14 @@
-term: NUMBER
+data: NUMBER
+    | BOOLEAN
+    | STRING
+
+operator: ID
+        | PLUS
+        | MUL
+        | MINUS
+        | DIV
+
+term: data
     | expr
     | variable
 
@@ -7,7 +17,7 @@ p-expr: LPAREN PLUS term* RPAREN
       | LPAREN MINUS term+ RPAREN
       | LPAREN DIV term+ RPAREN
 
-expr: NUMBER
+expr: data
     | p-expr
     | variable
 
@@ -15,7 +25,12 @@ empty:
 
 variable: ID
 
-assignment_statement: LPAREN DEFINE variable expr RPAREN
+constant_assignment: LPAREN DEFINE variable expr RPAREN
+
+function_assignment: LPAREN DEFINE LPAREN variable* RPAREN expr RPAREN
+
+assignment_statement: constant_assignment
+                    | function_assignment
 
 statement: assignment_statement
          | expr

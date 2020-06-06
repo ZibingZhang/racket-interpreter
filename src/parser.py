@@ -36,23 +36,42 @@ class Parser:
         else:
             self.error()
 
-    def term(self) -> AST:
-        """term: NUMBER
-               | expr
-               | variable"""
+    def data(self) -> AST:
+        """
+        data: NUMBER
+            | BOOLEAN
+            | STRING
+        """
         token = self.current_token
 
         if token.type == TokenType.NUMBER:
             self.eat(TokenType.NUMBER)
             return ast.Num(token)
-        elif token.type == TokenType.ID:
+        elif token.type == TokenType.BOOLEAN:
+            self.eat(TokenType.BOOLEAN)
+            return ast.Bool(token)
+        elif token.type == TokenType.STRING:
+            self.eat(TokenType.STRING)
+            return ast.Str(token)
+        else:
+            self.error()
+
+    def term(self) -> AST:
+        """
+        term: data
+            | expr
+            | variable
+        """
+        token = self.current_token
+
+        if token.type == TokenType.ID:
             self.eat(TokenType.ID)
             return ast.Var(token)
         elif token.type == TokenType.LPAREN:
             node = self.expr()
             return node
         else:
-            self.error()
+            return self.data()
 
     def p_expr(self) -> AST:
         """
@@ -63,26 +82,24 @@ class Parser:
         """
         # opening left bracket
         self.eat(TokenType.LPAREN)
-
         op = self.current_token
         node = ast.Func(op)
         if op.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV]:
             self.eat(op.type)
+        elif op.type == TokenType.ID:
+            self.eat(TokenType.ID)
         else:
             self.error()
 
-        # no arguments
-        if self.current_token.type == TokenType.RPAREN:
-            # closing right bracket
-            self.eat(TokenType.RPAREN)
-            if op.type in [TokenType.PLUS, TokenType.MUL]:
-                return node
+        # # no arguments
+        # if self.current_token.type == TokenType.RPAREN:
+        #     # closing right bracket
+        #     self.eat(TokenType.RPAREN)
+        #     if op.type in [TokenType.PLUS, TokenType.MUL]:
+        #         return node
 
         while self.current_token.type != TokenType.RPAREN:
-            if op.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV]:
-                node.append(self.term())
-            else:
-                self.error()
+            node.append(self.term())
 
         # closing right bracket
         self.eat(TokenType.RPAREN)
@@ -91,16 +108,11 @@ class Parser:
 
     def expr(self) -> AST:
         """
-        expr: NUMBER
+        expr: data
             | p-expr
             | variable
         """
-        if self.current_token.type == TokenType.NUMBER:
-            token = Token(TokenType.NUMBER, self.current_token.value)
-            self.eat(TokenType.NUMBER)
-            return ast.Num(token)
-            # return self.current_token.value
-        elif self.current_token.type == TokenType.LPAREN:
+        if self.current_token.type == TokenType.LPAREN:
             node = self.p_expr()
             return node
         elif self.current_token.type == TokenType.ID:
@@ -108,7 +120,7 @@ class Parser:
             self.eat(TokenType.ID)
             return ast.Var(token)
         else:
-            self.error()
+            return self.data()
 
     def empty(self) -> AST:
         """empty: """
@@ -120,19 +132,59 @@ class Parser:
         self.eat(TokenType.ID)
         return node
 
-    def assignment_statement(self) -> AST:
-        """assignment_statement: LPAREN DEFINE variable expr RPAREN"""
+    def constant_assignment(self) -> AST:
+        """constant_assignment: LPAREN DEFINE variable expr RPAREN"""
         # opening left bracket
         self.eat(TokenType.LPAREN)
+
         self.eat(TokenType.DEFINE)
 
         identifier = self.current_token.value
         self.eat(TokenType.ID)
 
         expr = self.expr()
+
+        # closing right bracket
         self.eat(TokenType.RPAREN)
 
-        return ast.Define(identifier, expr)
+        return ast.ConstAssign(identifier, expr)
+
+    def function_assignment(self) -> AST:
+        """function_assignment: LPAREN DEFINE LPAREN variable* RPAREN expr RPAREN"""
+        # opening left bracket
+        self.eat(TokenType.LPAREN)
+        self.eat(TokenType.DEFINE)
+
+        self.eat(TokenType.LPAREN)
+
+        identifier = self.current_token.value
+        self.eat(TokenType.ID)
+
+        first_param = self.current_token.value
+        self.eat(TokenType.ID)
+        params = [first_param]
+        while self.current_token.type == TokenType.ID:
+            params.append(self.current_token.value)
+            self.eat(TokenType.ID)
+
+        self.eat(TokenType.RPAREN)
+
+        expr = self.expr()
+
+        # closing right bracket
+        self.eat(TokenType.RPAREN)
+
+        return ast.FuncAssign(identifier, params, expr)
+
+    def assignment_statement(self) -> AST:
+        """
+        assignment_statement: constant_assignment
+                            | function_assignment
+        """
+        if self.lexer.peek_next_token(2).type == TokenType.LPAREN:
+            return self.function_assignment()
+        else:
+            return self.constant_assignment()
 
     def statement(self) -> AST:
         """
@@ -141,12 +193,12 @@ class Parser:
                  | empty
         """
         token = self.current_token
-        if token.type in [TokenType.NUMBER, TokenType.ID]:
+        if token.type in [TokenType.NUMBER, TokenType.BOOLEAN, TokenType.STRING, TokenType.ID]:
             node = self.expr()
             return node
 
         next_token = self.lexer.peek_next_token()
-        if next_token.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV]:
+        if next_token.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV, TokenType.ID]:
             node = self.expr()
         elif next_token.type == TokenType.DEFINE:
             node = self.assignment_statement()
