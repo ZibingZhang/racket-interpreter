@@ -1,12 +1,15 @@
 from __future__ import annotations
 from collections import OrderedDict
-from typing import List, Optional
+from typing import Any, List, Optional
+from src.constants import C
 
 
 class Symbol:
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, type: Any = None) -> None:
         self.name = name
+        self.type = type
+        self.scope_level = 0
 
     def __hash__(self):
         return hash(self.name)
@@ -48,12 +51,19 @@ class ScopedSymbolTable:
     def __repr__(self) -> str:
         return self.__str__()
 
+    def log_scope(self, msg: str):
+        if C.SHOULD_LOG_SCOPE:
+            print(msg)
+
     def define(self, symbol: Symbol) -> None:
-        print(f'Define: {symbol}')
+        self.log_scope(f'Define: {symbol}')
+
+        symbol.scope_level = self.scope_level
+
         self._symbols[symbol.name] = symbol
 
     def lookup(self, name: str, current_scope_only: bool = False) -> Optional[Symbol]:
-        print(f'Lookup: {name} (Scope Name: {self.scope_name})')
+        self.log_scope(f'Lookup: {name} (Scope Name: {self.scope_name})')
         symbol = self._symbols.get(name)
 
         if symbol is not None:
@@ -68,29 +78,39 @@ class ScopedSymbolTable:
         return symbol
 
 
-class ConstSymbol(Symbol):
+class BuiltinTypeSymbol(Symbol):
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str):
         super().__init__(name)
 
+    def __hash__(self):
+        return hash(self.name)
+
+    def __eq__(self, other):
+        return self.name == other.name
+
+
+class ProcSymbol(Symbol):
+    def __init__(self, name: str, formal_params: List[str] = None) -> None:
+        super().__init__(name, 'PROCEDURE')
+        self.formal_params = formal_params if formal_params is not None else []
+        # a reference to procedure's body (AST)
+        self.expr = None
+
     def __str__(self) -> str:
-        return f'<ConstSymbol name:{self.name}>'
+        return f'<ProcSymbol name:{self.name}  formal_params:{self.formal_params}>'
 
     def __repr__(self) -> str:
         return self.__str__()
 
 
-class FuncSymbol(Symbol):
+class ConstSymbol(Symbol):
 
-    def __init__(self, name: str, params: Optional[List[ConstSymbol]] = None) -> None:
-        super().__init__(name)
-        self.params = params if params is not None else []
-
-    # def __init__(self, name: str):
-    #     super().__init__(name)
+    def __init__(self, name: str) -> None:
+        super().__init__(name, 'CONSTANT')
 
     def __str__(self) -> str:
-        return f'<ProcedureSymbol name={self.name}>'
+        return f'<ConstSymbol name:{self.name}>'
 
     def __repr__(self) -> str:
         return self.__str__()

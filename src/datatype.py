@@ -1,3 +1,4 @@
+from __future__ import annotations
 import abc
 from typing import Union
 
@@ -17,8 +18,8 @@ class Number(DataType):
     def __repr__(self):
         return self.__str__()
 
-    def __add__(self, other) -> Union[float, int]:
-        return self.value + other.value
+    def __add__(self, other) -> Number:
+        return Number(self.value + other.value)
 
 
 class Boolean(DataType):

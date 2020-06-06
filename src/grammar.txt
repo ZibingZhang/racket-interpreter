@@ -1,27 +1,24 @@
+proc: ID
+    | PLUS
+    | MUL
+    | MINUS
+    | DIV
+
 data: NUMBER
     | BOOLEAN
     | STRING
-
-operator: ID
-        | PLUS
-        | MUL
-        | MINUS
-        | DIV
+    | proc
 
 term: data
     | expr
     | constant
+    | proc
 
-p-expr: LPAREN PLUS term* RPAREN
-      | LPAREN MUL term* RPAREN
-      | LPAREN MINUS term+ RPAREN
-      | LPAREN DIV term+ RPAREN
+p-expr: LPAREN proc term* RPAREN
 
 expr: data
     | p-expr
     | constant
-
-empty:
 
 constant: ID
 
@@ -34,7 +31,6 @@ assignment_statement: constant_assignment
 
 statement: assignment_statement
          | expr
-         | empty
 
 program : statement
         | statement compound_statement

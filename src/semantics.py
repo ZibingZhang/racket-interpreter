@@ -1,16 +1,14 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from src.ast import ASTVisitor
-from src.symbol import ScopedSymbolTable, ConstSymbol, FuncSymbol
+from src.constants import C
+from src.errors import SemanticError, ErrorCode
+from src.symbol import ScopedSymbolTable, ConstSymbol, ProcSymbol
 from src.token import TokenType
 
 if TYPE_CHECKING:
-    from src.ast import Func, FuncAssign, Num, ConstAssign, Const, NoOp, Program
+    from src.ast import ProcCall, ProcAssign, Num, ConstAssign, Const, NoOp, Program
     from src.token import Token
-
-
-class SemanticAnalyzerException(Exception):
-    pass
 
 
 class SemanticAnalyzer(ASTVisitor):
@@ -18,53 +16,86 @@ class SemanticAnalyzer(ASTVisitor):
     def __init__(self):
         self.current_scope = None
 
-    def arg_count_error(self, op: Token, received: int, lower: int = None, upper: int = None):
+    def error(self, error_code: ErrorCode, token: Token, message: str):
+        raise SemanticError(
+            error_code=error_code,
+            token=token,
+            message=f'{error_code.value}: {message}; {token}.',
+        )
+
+    def arg_count_error(self, proc: Token, received: int, lower: int = None, upper: int = None):
         if lower is None and upper is None:
-            msg = f'Error: operator \'{op.value}\' has incorrect number of arguments.'
-            raise SemanticAnalyzerException(msg)
+            msg = ''
+            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
         elif lower is not None and upper is None:
-            msg = f'Error: operator \'{op.value}\' expected at least {lower} arguments, received {received}.'
-            raise SemanticAnalyzerException(msg)
+            msg = f'expected at least {lower} arguments, received {received}'
+            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
         elif lower is None and upper is not None:
-            msg = f'Error: operator \'{op.value}\' expected at most {upper} arguments, received {received}.'
-            raise SemanticAnalyzerException(msg)
+            msg = f' expected at most {upper} arguments, received {received}'
+            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
         elif lower is not None and upper is not None and lower != upper:
-            msg = f'Error: operator \'{op.value}\' expected at between {lower} and {upper} arguments, received {received}.'
-            raise SemanticAnalyzerException(msg)
+            msg = f'expected at between {lower} and {upper} arguments, received {received}'
+            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
         elif lower is not None and upper is not None and lower == upper:
-            msg = f'Error: operator \'{op.value}\' expected {lower} arguments, received {received}.'
-            raise SemanticAnalyzerException(msg)
-        else:
-            raise SemanticAnalyzerException()
+            msg = f'expected {lower} arguments, received {received}'
+            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
 
-    def unsupported_op_error(self, op):
-        msg = f'Error: {op.value} is not a supported operation.'
-        raise SemanticAnalyzerException(msg)
+    def undefined_proc_error(self, proc):
+        # TODO: FIX THIS
+        msg = f'Error: {proc.value} is not defined.'
+        raise SemanticError(message=msg)
 
+    def log_scope(self, msg: str) -> None:
+        if C.SHOULD_LOG_SCOPE:
+            print(msg)
 
-    def visit_Func(self, node: Func) -> None:
-        op = node.op
-        args_len = len(node.nodes)
-        if op.type == TokenType.PLUS:
+    def visit_ProcCall(self, node: ProcCall) -> None:
+        proc_token = node.token
+        actual_param_len = len(node.actual_params)
+        if proc_token.type is TokenType.PLUS:
             pass
-        elif op.type == TokenType.MINUS:
-            if args_len == 0:
-                self.arg_count_error(op=op, received=args_len, lower=1)
-        elif op.type == TokenType.MUL:
+        elif proc_token.type is TokenType.MINUS:
+            if actual_param_len == 0:
+                self.arg_count_error(proc=proc_token, received=actual_param_len, lower=1)
+        elif proc_token.type is TokenType.MUL:
             pass
-        elif op.type == TokenType.DIV:
-            if args_len == 0:
-                self.arg_count_error(op=op, received=args_len, lower=1)
-        elif op.type == TokenType.ID:
-            if op.value == 'add1':
-                if args_len != 1:
-                    self.arg_count_error(op=op, received=args_len, lower=1, upper=1)
+        elif proc_token.type is TokenType.DIV:
+            if actual_param_len == 0:
+                self.arg_count_error(proc=proc_token, received=actual_param_len, lower=1)
+        elif proc_token.type is TokenType.ID:
+            if proc_token.value == 'add1':
+                if actual_param_len != 1:
+                    self.arg_count_error(proc=proc_token, received=actual_param_len, lower=1, upper=1)
             else:
-                self.unsupported_op_error(op)
-        else:
-            self.unsupported_op_error(op)
+                defined_proc = self.current_scope.lookup(proc_token.value)
+                formal_param_len = len(defined_proc.formal_params)
+                if defined_proc is None:
+                    self.undefined_proc_error(proc_token)
+                elif defined_proc.type != 'PROCEDURE':
+                    self.error(
+                        error_code=ErrorCode.NOT_A_PROCEDURE,
+                        token=proc_token,
+                        message=f"'{proc_token.value}' is not a procedure"
+                    )
+                elif actual_param_len != formal_param_len:
+                    self.arg_count_error(
+                        proc=proc_token,
+                        received=actual_param_len,
+                        lower=formal_param_len,
+                        upper=formal_param_len
+                    )
 
-        for arg in node.nodes:
+                for param in node.actual_params:
+                    self.visit(param)
+
+                proc_symbol = self.current_scope.lookup(node.proc_name)
+                # accessed by the interpreter when executing procedure call
+                node.proc_symbol = proc_symbol
+        else:
+            # TODO: make more specific
+            raise Exception()
+
+        for arg in node.actual_params:
             self.visit(arg)
 
     def visit_Num(self, node: Num) -> None:
@@ -81,52 +112,62 @@ class SemanticAnalyzer(ASTVisitor):
         var_symb = ConstSymbol(var_name)
 
         if self.current_scope.lookup(var_name, current_scope_only=True) is not None:
-            raise NameError(f'Error: \'{var_name}\' was defined previously and cannot be re-defined.')
+            self.error(
+                error_code=ErrorCode.DUPLICATE_ID,
+                token=node.token,
+                message=f"'{node.token.value}'"
+            )
 
         self.current_scope.define(var_symb)
 
-    def visit_FuncAssign(self, node: FuncAssign) -> None:
-        func_name = node.identifier
-        func_symbol = FuncSymbol(func_name)
-        self.current_scope.define(func_symbol)
+    def visit_ProcAssign(self, node: ProcAssign) -> None:
+        proc_name = node.identifier
+        proc_symbol = ProcSymbol(proc_name)
+        self.current_scope.define(proc_symbol)
 
-        print('')
-        print(f'ENTER SCOPE: {func_name}')
-        # scope for parameters and
-        func_scope = ScopedSymbolTable(
-            scope_name=func_name,
+        self.log_scope('')
+        self.log_scope(f'ENTER SCOPE: {proc_name}')
+        # scope for parameters
+        proc_scope = ScopedSymbolTable(
+            scope_name=proc_name,
             scope_level=self.current_scope.scope_level + 1,
             enclosing_scope=self.current_scope
         )
-        self.current_scope = func_scope
+        self.current_scope = proc_scope
 
         # insert parameters into the procedure scope
         for param in node.params:
             param_name = param.const_node.value
             var_symbol = ConstSymbol(param_name)
             self.current_scope.define(var_symbol)
-            func_symbol.params.append(var_symbol)
+            proc_symbol.formal_params.append(var_symbol)
 
         self.visit(node.expr)
 
-        print('')
-        print(func_scope)
+        self.log_scope('')
+        self.log_scope(str(proc_scope))
 
         self.current_scope = self.current_scope.enclosing_scope
-        print(f'LEAVE SCOPE: {func_name}')
-        print('')
+        self.log_scope(f'LEAVE SCOPE: {proc_name}')
+        self.log_scope('')
+
+        # accessed by the interpreter when executing procedure call
+        proc_symbol.block_ast = node.expr
 
     def visit_Const(self, node: Const) -> None:
         var_name = node.value
         var_symbol = self.current_scope.lookup(var_name)
         if var_symbol is None:
-            raise NameError(f'Error: Symbol(constant) not found \'{var_name}\'.')
-
+            self.error(
+                error_code=ErrorCode.ID_NOT_FOUND,
+                token=node.token,
+                message=f"'{node.token.value}'"
+            )
     def visit_NoOp(self, node: NoOp) -> None:
         pass
 
     def visit_Program(self, node: Program) -> None:
-        print('ENTER SCOPE: global')
+        self.log_scope('ENTER SCOPE: global')
         global_scope = ScopedSymbolTable(
             scope_name='global',
             scope_level=1,
@@ -137,8 +178,8 @@ class SemanticAnalyzer(ASTVisitor):
         for child_node in node.children:
             self.visit(child_node)
 
-        print('')
-        print(global_scope)
+        self.log_scope('')
+        self.log_scope(str(global_scope))
 
         self.current_scope = self.current_scope.enclosing_scope
-        print('LEAVE SCOPE: global')
+        self.log_scope('LEAVE SCOPE: global')
