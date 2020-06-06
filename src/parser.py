@@ -60,13 +60,13 @@ class Parser:
         """
         term: data
             | expr
-            | variable
+            | const
         """
         token = self.current_token
 
         if token.type == TokenType.ID:
             self.eat(TokenType.ID)
-            return ast.Var(token)
+            return ast.Const(token)
         elif token.type == TokenType.LPAREN:
             node = self.expr()
             return node
@@ -110,7 +110,7 @@ class Parser:
         """
         expr: data
             | p-expr
-            | variable
+            | const
         """
         if self.current_token.type == TokenType.LPAREN:
             node = self.p_expr()
@@ -118,7 +118,7 @@ class Parser:
         elif self.current_token.type == TokenType.ID:
             token = Token(TokenType.ID, self.current_token.value)
             self.eat(TokenType.ID)
-            return ast.Var(token)
+            return ast.Const(token)
         else:
             return self.data()
 
@@ -126,14 +126,14 @@ class Parser:
         """empty: """
         return ast.NoOp()
 
-    def variable(self):
-        """variable: ID"""
-        node = ast.Var(self.current_token)
+    def const(self):
+        """const: ID"""
+        node = ast.Const(self.current_token)
         self.eat(TokenType.ID)
         return node
 
     def constant_assignment(self) -> AST:
-        """constant_assignment: LPAREN DEFINE variable expr RPAREN"""
+        """constant_assignment: LPAREN DEFINE const expr RPAREN"""
         # opening left bracket
         self.eat(TokenType.LPAREN)
 
@@ -150,7 +150,7 @@ class Parser:
         return ast.ConstAssign(identifier, expr)
 
     def function_assignment(self) -> AST:
-        """function_assignment: LPAREN DEFINE LPAREN variable* RPAREN expr RPAREN"""
+        """function_assignment: LPAREN DEFINE LPAREN const* RPAREN expr RPAREN"""
         # opening left bracket
         self.eat(TokenType.LPAREN)
         self.eat(TokenType.DEFINE)
@@ -160,11 +160,12 @@ class Parser:
         identifier = self.current_token.value
         self.eat(TokenType.ID)
 
-        first_param = self.current_token.value
+        param = ast.Param(self.current_token)
+        params = [param]
         self.eat(TokenType.ID)
-        params = [first_param]
         while self.current_token.type == TokenType.ID:
-            params.append(self.current_token.value)
+            param = ast.Param(self.current_token)
+            params.append(param)
             self.eat(TokenType.ID)
 
         self.eat(TokenType.RPAREN)

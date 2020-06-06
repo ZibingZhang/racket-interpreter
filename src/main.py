@@ -1,7 +1,7 @@
 from src.interpreter import Interpreter, InterpreterError
 from src.lexer import Lexer, LexerError
 from src.parser import Parser, ParserError
-from src.semantics import SemanticAnalyzer
+from src.semantics import SemanticAnalyzer, SemanticAnalyzerException
 
 
 def main():
@@ -12,9 +12,11 @@ def main():
             ; (define x 3)
             (define y "three")
             (define z #f)
-            x y z
+            (add1 x) y z
             
-            (define (f a) a)
+            ; (define (f x b) x)
+            ; (define (g a c) a)
+            ; (f 1)
             """
 
         lexer = Lexer(text)
@@ -24,12 +26,9 @@ def main():
         semantic_analyzer = SemanticAnalyzer()
         try:
             semantic_analyzer.visit(tree)
-        except NameError as e:
+        except (NameError, SemanticAnalyzerException) as e:
             print(e)
             return
-
-        print('')
-        print(semantic_analyzer.sym_table)
 
         interpreter = Interpreter(tree)
         result = interpreter.interpret()

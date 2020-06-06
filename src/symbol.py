@@ -1,39 +1,47 @@
 from __future__ import annotations
 from collections import OrderedDict
-from typing import TYPE_CHECKING, Any, Optional
-from src.ast import ASTVisitor
-from src.interpreter import Interpreter
-
-if TYPE_CHECKING:
-    from src.ast import ConstAssign, Func, NoOp, Num, Program, Var
+from typing import List, Optional
 
 
 class Symbol:
 
-    def __init__(self, name: str, sym_type: Any = None) -> None:
+    def __init__(self, name: str) -> None:
         self.name = name
-        self.type = sym_type
 
     def __hash__(self):
-        return hash(self.name) + hash(self.type)
+        return hash(self.name)
 
     def __eq__(self, other):
-        return issubclass(type(other), Symbol) and self.name == other.name and self.type == other.type
+        return issubclass(type(other), Symbol) and self.name == other.name
 
 
-class SymbolTable:
+class ScopedSymbolTable:
 
-    def __init__(self) -> None:
+    def __init__(self, scope_name: str, scope_level: int,
+                 enclosing_scope: ScopedSymbolTable = None) -> None:
         self._symbols = OrderedDict()
+        self.scope_name = scope_name
+        self.scope_level = scope_level
+        self.enclosing_scope = enclosing_scope
 
     def __str__(self) -> str:
-        sym_table_header = 'Symbol Table Contents'
-        lines = [sym_table_header]
+        h1 = 'SCOPE (SCOPED SYMBOL TABLE)'
+        lines = [h1]
+
+        for header_name, header_value in (
+                ('Scope name', self.scope_name),
+                ('Scope level', self.scope_level),
+                ('Enclosing scope', self.enclosing_scope.scope_name if self.enclosing_scope else None)
+        ):
+            lines.append('%-15s: %s' % (header_name, header_value))
+
+        h2 = 'Scope (Scoped Symbol Table) Contents:'
+        lines.append(h2)
         lines.extend(
             f'{key:>10}: {value}'
             for key, value in self._symbols.items()
         )
-        lines.append('\n')
+
         s = '\n'.join(lines)
         return s
 
@@ -44,31 +52,46 @@ class SymbolTable:
         print(f'Define: {symbol}')
         self._symbols[symbol.name] = symbol
 
-    def lookup(self, name: str) -> Optional[Symbol]:
-        print(f'Lookup: {name}')
+    def lookup(self, name: str, current_scope_only: bool = False) -> Optional[Symbol]:
+        print(f'Lookup: {name} (Scope Name: {self.scope_name})')
         symbol = self._symbols.get(name)
+
+        if symbol is not None:
+            return symbol
+
+        if current_scope_only:
+            return None
+
+        if self.enclosing_scope is not None:
+            return self.enclosing_scope.lookup(name)
+
         return symbol
 
 
-class IdentifierTypeSymbol(Symbol):
+class ConstSymbol(Symbol):
 
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         super().__init__(name)
 
-    def __str__(self):
-        return f'<BuiltinTypeSymbol name:{self.name}>'
+    def __str__(self) -> str:
+        return f'<ConstSymbol name:{self.name}>'
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
 
-class IdentifierSymbol(Symbol):
+class FuncSymbol(Symbol):
 
-    def __init__(self, name: str, sym_type: Symbol):
-        super().__init__(name, sym_type)
+    def __init__(self, name: str, params: Optional[List[ConstSymbol]] = None) -> None:
+        super().__init__(name)
+        self.params = params if params is not None else []
 
-    def __str__(self):
-        return f'<VarSymbol name:{self.name} type:{self.type}>'
+    # def __init__(self, name: str):
+    #     super().__init__(name)
 
-    def __repr__(self):
+    def __str__(self) -> str:
+        return f'<ProcedureSymbol name={self.name}>'
+
+    def __repr__(self) -> str:
         return self.__str__()
+

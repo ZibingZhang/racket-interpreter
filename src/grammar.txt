@@ -10,7 +10,7 @@ operator: ID
 
 term: data
     | expr
-    | variable
+    | constant
 
 p-expr: LPAREN PLUS term* RPAREN
       | LPAREN MUL term* RPAREN
@@ -19,15 +19,15 @@ p-expr: LPAREN PLUS term* RPAREN
 
 expr: data
     | p-expr
-    | variable
+    | constant
 
 empty:
 
-variable: ID
+constant: ID
 
-constant_assignment: LPAREN DEFINE variable expr RPAREN
+constant_assignment: LPAREN DEFINE constant expr RPAREN
 
-function_assignment: LPAREN DEFINE LPAREN variable* RPAREN expr RPAREN
+function_assignment: LPAREN DEFINE LPAREN constant* RPAREN expr RPAREN
 
 assignment_statement: constant_assignment
                     | function_assignment

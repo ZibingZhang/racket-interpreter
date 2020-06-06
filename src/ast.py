@@ -88,15 +88,14 @@ class ConstAssign(AST):
 class FuncAssign(AST):
     """Defining a function."""
 
-    def __init__(self, identifier: str, params: List[str], expr: AST) -> None:
+    def __init__(self, identifier: str, params: List[Param], expr: AST) -> None:
         self.identifier = identifier
         self.params = params
         self.expr = expr
 
 
-
-class Var(AST):
-    """A variable."""
+class Const(AST):
+    """A const."""
 
     def __init__(self, token: Token) -> None:
         self.token = token
@@ -114,3 +113,9 @@ class FuncDecl(AST):
 
     def __init__(self, identifier: str, expr):
         pass
+
+
+class Param(AST):
+    """A parameter."""
+    def __init__(self, const_node: Token):
+        self.const_node = const_node

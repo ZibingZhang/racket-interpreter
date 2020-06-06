@@ -6,7 +6,7 @@ from src.datatype import Boolean, Number, String
 from src.token import TokenType
 
 if TYPE_CHECKING:
-    from src.ast import AST, ConstAssign, Func, FuncAssign, NoOp, Num, Program, Var
+    from src.ast import AST, ConstAssign, Func, FuncAssign, NoOp, Num, Program, Const
     from src.datatype import DataType
 
 
@@ -58,12 +58,12 @@ class Interpreter(ASTVisitor):
                 return Number(result)
         elif op.type == TokenType.ID:
             if op.value == 'add1':
-                return self.visit(node.nodes[0]) + 1
+                return self.visit(node.nodes[0]) + Number(1)
             else:
                 # TODO: look up in memory, then error if not there
-                raise InterpreterError(f'Method {op.value} not defined.')
+                raise InterpreterError(f'Error: function \'{op.value}\' not defined.')
         else:
-            raise InterpreterError(f'Method visit_Func does not handle operator of type {op.type}.')
+            raise InterpreterError(f'Error: method visit_Func does not handle operator of type {op.type}.')
 
     def visit_Num(self, node: Num) -> Number:
         return Number(node.value)
@@ -81,7 +81,7 @@ class Interpreter(ASTVisitor):
     def visit_FuncAssign(self, node: FuncAssign) -> None:
         pass
 
-    def visit_Var(self, node: Var) -> DataType:
+    def visit_Const(self, node: Const) -> DataType:
         var_name = node.value
         val = self.GLOBAL_MEMORY.get(var_name)
         return val
