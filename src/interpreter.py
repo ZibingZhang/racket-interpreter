@@ -118,8 +118,9 @@ class Interpreter(ASTVisitor):
     def visit_Const(self, node: Const) -> DataType:
         var_name = node.value
 
-        ar = self.call_stack.peek()
-        var_value = ar.get(var_name)
+        # ar = self.call_stack.peek()
+        # var_value = ar.get(var_name)
+        var_value = self.call_stack.get(var_name)
 
         return var_value
 

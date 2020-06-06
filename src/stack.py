@@ -44,6 +44,14 @@ class CallStack:
     def __init__(self):
         self._records = []
 
+    def __str__(self):
+        s = '\n'.join(repr(ar) for ar in reversed(self._records))
+        s = f'CALL STACK\n{s}'
+        return s
+
+    def __repr__(self):
+        return self.__str__()
+
     def push(self, ar: ActivationRecord):
         self._records.append(ar)
 
@@ -53,10 +61,8 @@ class CallStack:
     def peek(self) -> ActivationRecord:
         return self._records[-1]
 
-    def __str__(self):
-        s = '\n'.join(repr(ar) for ar in reversed(self._records))
-        s = f'CALL STACK\n{s}'
-        return s
-
-    def __repr__(self):
-        return self.__str__()
+    def get(self, key):
+        for ar in reversed(self._records):
+            value = ar.get(key)
+            if value is not None:
+                return value
