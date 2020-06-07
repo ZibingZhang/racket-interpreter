@@ -35,6 +35,27 @@ class Lexer:
             self.current_char = self.text[self.pos]
             self.column += 1
 
+    def peek(self) -> str:
+        pos = self.pos + 1
+        if pos > len(self.text) - 1:
+            return None
+        else:
+            return self.text[pos]
+
+    def boolean(self) -> Token:
+        boolean = self.current_char
+        self.advance()
+        while self.current_char is not None and self.current_char.isalpha():
+            boolean += self.current_char
+            self.advance()
+
+        if boolean in ['#T', '#t', '#true']:
+            return Token(TokenType.BOOLEAN, True, self.line_no, self.column)
+        elif boolean in ['#F', '#f', '#false']:
+            return Token(TokenType.BOOLEAN, False, self.line_no, self.column)
+        else:
+            self.error()
+
     def number(self) -> Token:
         # TODO: Add in more number types
         # TODO: Recognize more than just positive and negative ints
@@ -50,20 +71,6 @@ class Lexer:
             self.advance()
 
         return Token(TokenType.NUMBER, float(number), self.line_no, self.column)
-
-    def boolean(self) -> Token:
-        boolean = self.current_char
-        self.advance()
-        while self.current_char is not None and self.current_char.isalpha():
-            boolean += self.current_char
-            self.advance()
-
-        if boolean in ['#T', '#t', '#true']:
-            return Token(TokenType.BOOLEAN, True, self.line_no, self.column)
-        elif boolean in ['#F', '#f', '#false']:
-            return Token(TokenType.BOOLEAN, False, self.line_no, self.column)
-        else:
-            self.error()
 
     def string(self) -> Token:
         self.advance()
@@ -97,13 +104,6 @@ class Lexer:
         while self.current_char is not None and self.current_char != '\n':
             self.advance()
         self.advance()
-
-    def peek(self):
-        pos = self.pos + 1
-        if pos > len(self.text) - 1:
-            return None
-        else:
-            return self.text[pos]
 
     def get_next_token(self) -> Token:
         """ Responsible for breaking apart text into tokens."""

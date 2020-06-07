@@ -1,5 +1,8 @@
+from __future__ import annotations
 from typing import Any
 from enum import Enum
+from src.constants import C
+from src.errors import IllegalStateError
 
 
 class TokenType(Enum):
@@ -52,6 +55,15 @@ class Token:
     def __repr__(self) -> str:
         return self.__str__()
 
+    @staticmethod
+    def is_builtin_proc(token: Token) -> bool:
+        if token.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV]:
+            return True
+        elif token.type is TokenType.ID:
+            return token.value in C.BUILT_IN_PROCS
+        else:
+            raise IllegalStateError('Should not be checking if other token types are builtin procedures.')
+
 
 def _build_reserved_keywords():
     """Build a dictionary of reserved keywords.
@@ -75,4 +87,5 @@ def _build_reserved_keywords():
     return reserved_keywords
 
 
+# TODO: move to constants file
 RESERVED_KEYWORDS = _build_reserved_keywords()

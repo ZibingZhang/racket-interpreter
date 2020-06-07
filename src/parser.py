@@ -117,11 +117,7 @@ class Parser:
         else:
             return self.data()
 
-    # def empty(self) -> AST:
-    #     """empty: """
-    #     return ast.NoOp()
-
-    def const(self):
+    def const(self) -> AST:
         """const: ID"""
         node = ast.Const(self.current_token)
         self.eat(TokenType.ID)

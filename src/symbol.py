@@ -11,11 +11,11 @@ class Symbol:
         self.type = type
         self.scope_level = 0
 
-    def __hash__(self):
-        return hash(self.name)
+    def __hash__(self) -> int:
+        return hash(self.name) + hash(self.type)
 
-    def __eq__(self, other):
-        return issubclass(type(other), Symbol) and self.name == other.name
+    def __eq__(self, other) -> bool:
+        return issubclass(type(other), Symbol) and self.name == other.name and self.type == other.type
 
 
 class ScopedSymbolTable:
@@ -51,7 +51,7 @@ class ScopedSymbolTable:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def log_scope(self, msg: str):
+    def log_scope(self, msg: str) -> None:
         if C.SHOULD_LOG_SCOPE:
             print(msg)
 
@@ -80,14 +80,14 @@ class ScopedSymbolTable:
 
 class BuiltinTypeSymbol(Symbol):
 
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         super().__init__(name)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.name)
 
-    def __eq__(self, other):
-        return self.name == other.name
+    def __eq__(self, other) -> bool:
+        return issubclass(type(other), BuiltinTypeSymbol) and self.name == other.name
 
 
 class ProcSymbol(Symbol):

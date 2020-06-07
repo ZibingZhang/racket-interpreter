@@ -8,15 +8,16 @@ class ErrorCode(Enum):
     DUPLICATE_ID = 'Duplicate identifier found'
     ARGUMENT_COUNT = 'Wrong number of arguments'
     NOT_A_PROCEDURE = 'Not a procedure'
+    PROCEDURE_NOT_FOUND = 'Procedure not found'
 
 
 class Error(Exception):
 
-    def __init__(self, error_code=None, token=None, message=None):
+    def __init__(self, error_code=None, token=None, message=None) -> None:
         self.error_code = error_code
         self.token = token
         # add exception class name before the message
-        self.message = f'{self.__class__.__name__}: {message}'
+        self.message = f'[{self.__class__.__name__}] {message}'
 
 
 class LexerError(Error):
@@ -35,5 +36,9 @@ class SemanticError(Error):
 
 
 class InterpreterError(Error):
+
+    pass
+
+class IllegalStateError(RuntimeError):
 
     pass

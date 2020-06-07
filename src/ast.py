@@ -23,24 +23,18 @@ class ASTVisitor(abc.ABC):
         raise Exception(f'No visit_{type(node).__name__} method.')
 
 
-class ProcCall(AST):
-    """A procedure and a list of arguments."""
+class Bool(AST):
+    """A boolean."""
 
-    def __init__(self, proc: Token, actual_params: Optional[List[AST]] = None) -> None:
-        self.token = proc
-        self.proc_name = proc.value
-        self.actual_params = actual_params
-        # a reference to procedure declaration symbol
-        self.proc_symbol = None
+    def __init__(self, boolean: Token) -> None:
+        self.token = boolean
+        self.value = boolean.value
 
     def __str__(self) -> str:
-        return f'<ProcCall proc_name:{self.proc_name}  actual_params:{self.actual_params}>'
+        return f'<Bool value:{self.value}>'
 
     def __repr__(self) -> str:
         return self.__str__()
-
-    def append(self, arg: AST) -> None:
-        self.actual_params.append(arg)
 
 
 class Num(AST):
@@ -51,18 +45,10 @@ class Num(AST):
         self.value = number.value
 
     def __str__(self) -> str:
-        return f'<Num num:{self.value}>'
+        return f'<Num value:{self.value}>'
 
     def __repr__(self) -> str:
         return self.__str__()
-
-
-class Bool(AST):
-    """A boolean."""
-
-    def __init__(self, boolean: Token) -> None:
-        self.token = boolean
-        self.value = boolean.value
 
 
 class Str(AST):
@@ -72,12 +58,25 @@ class Str(AST):
         self.token = string
         self.value = string.value
 
+    def __str__(self) -> str:
+        return f'<Str value:{self.value}>'
 
-class Program(AST):
-    """A list of statements."""
+    def __repr__(self) -> str:
+        return self.__str__()
 
-    def __init__(self, children: List[AST]) -> None:
-        self.children = children
+
+class Const(AST):
+    """A constant value."""
+
+    def __init__(self, token: Token) -> None:
+        self.token = token
+        self.value = token.value
+
+    def __str__(self) -> str:
+        return f'<Const value:{self.value}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class ConstAssign(AST):
@@ -87,6 +86,25 @@ class ConstAssign(AST):
         self.token = identifier
         self.identifier = identifier.value
         self.expr = expr
+
+    def __str__(self) -> str:
+        return f'<ConstAssign id:{self.identifier}  expr:{self.expr}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Param(AST):
+    """A parameter."""
+    def __init__(self, param: Token) -> None:
+        self.token = param
+        self.name = param.value
+
+    def __str__(self) -> str:
+        return f'<Param name:{self.name}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class ProcAssign(AST):
@@ -98,22 +116,42 @@ class ProcAssign(AST):
         self.params = params
         self.expr = expr
 
+    def __str__(self) -> str:
+        return f'<ProcAssign id:{self.identifier}  params:{self.params}  expr:{self.expr}>'
 
-class Const(AST):
-    """A constant value."""
-
-    def __init__(self, token: Token) -> None:
-        self.token = token
-        self.value = token.value
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
-class NoOp(AST):
-    """Any empty statement."""
+class ProcCall(AST):
+    """A procedure and a list of arguments."""
 
-    pass
+    def __init__(self, proc: Token, actual_params: Optional[List[AST]] = None) -> None:
+        self.token = proc
+        self.proc_name = proc.value
+        self.actual_params = actual_params
+        # a reference to procedure declaration symbol
+        self.proc_symbol = None
+
+    def __str__(self) -> str:
+        return f'<ProcCall proc_name:{self.proc_name}  actual_params:{self.actual_params}  proc_symbol:{self.proc_symbol}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def append(self, arg: AST) -> None:
+        self.actual_params.append(arg)
 
 
-class Param(AST):
-    """A parameter."""
-    def __init__(self, const_node: Token):
-        self.const_node = const_node
+class Program(AST):
+    """A list of statements."""
+
+    def __init__(self, statements: List[AST]) -> None:
+        self.statements = statements
+
+    def __str__(self) -> str:
+        return f'<Program statements:{self.statements}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+

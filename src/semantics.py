@@ -2,12 +2,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from src.ast import ASTVisitor
 from src.constants import C
-from src.errors import SemanticError, ErrorCode
-from src.symbol import ScopedSymbolTable, ConstSymbol, ProcSymbol
+from src.errors import ErrorCode, SemanticError
+from src.symbol import ConstSymbol, ProcSymbol, ScopedSymbolTable
 from src.token import TokenType
 
 if TYPE_CHECKING:
-    from src.ast import ProcCall, ProcAssign, Num, ConstAssign, Const, NoOp, Program
+    from src.ast import Const, ConstAssign, Num, ProcAssign, ProcCall, Program
     from src.token import Token
 
 
@@ -40,46 +40,56 @@ class SemanticAnalyzer(ASTVisitor):
             msg = f'expected {lower} arguments, received {received}'
             self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
 
-    def undefined_proc_error(self, proc):
+    def undefined_proc_error(self, proc: Token):
         # TODO: FIX THIS
         msg = f'Error: {proc.value} is not defined.'
-        raise SemanticError(message=msg)
+        raise SemanticError(
+            error_code=ErrorCode.PROCEDURE_NOT_FOUND,
+            token=proc,
+            message=msg
+        )
 
     def log_scope(self, msg: str) -> None:
         if C.SHOULD_LOG_SCOPE:
             print(msg)
 
     def visit_ProcCall(self, node: ProcCall) -> None:
-        proc_token = node.token
+        proc = node.token
         actual_param_len = len(node.actual_params)
-        if proc_token.type is TokenType.PLUS:
+
+        if proc.type is TokenType.PLUS:
             pass
-        elif proc_token.type is TokenType.MINUS:
+        elif proc.type is TokenType.MINUS:
             if actual_param_len == 0:
-                self.arg_count_error(proc=proc_token, received=actual_param_len, lower=1)
-        elif proc_token.type is TokenType.MUL:
+                self.arg_count_error(proc=proc, received=actual_param_len, lower=1)
+        elif proc.type is TokenType.MUL:
             pass
-        elif proc_token.type is TokenType.DIV:
+        elif proc.type is TokenType.DIV:
             if actual_param_len == 0:
-                self.arg_count_error(proc=proc_token, received=actual_param_len, lower=1)
-        elif proc_token.type is TokenType.ID:
-            if proc_token.value == 'add1':
+                self.arg_count_error(proc=proc, received=actual_param_len, lower=1)
+        elif proc.type is TokenType.ID:
+            if proc.value == 'add1':
                 if actual_param_len != 1:
-                    self.arg_count_error(proc=proc_token, received=actual_param_len, lower=1, upper=1)
+                    self.arg_count_error(proc=proc, received=actual_param_len, lower=1, upper=1)
             else:
-                defined_proc = self.current_scope.lookup(proc_token.value)
-                formal_param_len = len(defined_proc.formal_params)
+                defined_proc = self.current_scope.lookup(proc.value)
                 if defined_proc is None:
-                    self.undefined_proc_error(proc_token)
-                elif defined_proc.type != 'PROCEDURE':
+                    self.error(
+                        error_code=ErrorCode.PROCEDURE_NOT_FOUND,
+                        token=proc,
+                        message=f"'{proc.value}'"
+                    )
+
+                formal_param_len = len(defined_proc.formal_params)
+                if defined_proc.type != 'PROCEDURE':
                     self.error(
                         error_code=ErrorCode.NOT_A_PROCEDURE,
-                        token=proc_token,
-                        message=f"'{proc_token.value}' is not a procedure"
+                        token=proc,
+                        message=f"'{proc.value}' is not a procedure"
                     )
                 elif actual_param_len != formal_param_len:
                     self.arg_count_error(
-                        proc=proc_token,
+                        proc=proc,
                         received=actual_param_len,
                         lower=formal_param_len,
                         upper=formal_param_len
@@ -136,8 +146,8 @@ class SemanticAnalyzer(ASTVisitor):
         self.current_scope = proc_scope
 
         # insert parameters into the procedure scope
-        for param in node.params:
-            param_name = param.const_node.value
+        for param_node in node.params:
+            param_name = param_node.name
             var_symbol = ConstSymbol(param_name)
             self.current_scope.define(var_symbol)
             proc_symbol.formal_params.append(var_symbol)
@@ -163,8 +173,6 @@ class SemanticAnalyzer(ASTVisitor):
                 token=node.token,
                 message=f"'{node.token.value}'"
             )
-    def visit_NoOp(self, node: NoOp) -> None:
-        pass
 
     def visit_Program(self, node: Program) -> None:
         self.log_scope('ENTER SCOPE: global')
@@ -175,7 +183,7 @@ class SemanticAnalyzer(ASTVisitor):
         )
         self.current_scope = global_scope
 
-        for child_node in node.children:
+        for child_node in node.statements:
             self.visit(child_node)
 
         self.log_scope('')

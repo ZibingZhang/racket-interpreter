@@ -1,4 +1,10 @@
+from __future__ import annotations
 from enum import Enum
+from typing import TYPE_CHECKING, Optional
+from src.errors import IllegalStateError
+
+if TYPE_CHECKING:
+    from src.datatype import DataType
 
 
 class ARType(Enum):
@@ -7,22 +13,19 @@ class ARType(Enum):
 
 
 class ActivationRecord:
-    def __init__(self, name: str, type: ARType, nesting_level: int):
+    def __init__(self, name: str, type: ARType, nesting_level: int) -> None:
         self.name = name
         self.type = type
         self.nesting_level = nesting_level
         self.members = {}
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: DataType) -> None:
         self.members[key] = value
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> DataType:
         return self.members[key]
 
-    def get(self, key):
-        return self.members.get(key)
-
-    def __str__(self):
+    def __str__(self) -> str:
         lines = [
             '{level}: {type} {name}'.format(
                 level=self.nesting_level,
@@ -36,15 +39,18 @@ class ActivationRecord:
         s = '\n'.join(lines)
         return s
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
+
+    def get(self, key) -> Optional[DataType]:
+        return self.members.get(key)
 
 
 class CallStack:
-    def __init__(self):
+    def __init__(self) -> None:
         self._records = []
 
-    def __str__(self):
+    def __str__(self) -> str:
         s = '\n'.join(repr(ar) for ar in reversed(self._records))
         s = f'CALL STACK\n{s}'
         return s
@@ -52,7 +58,14 @@ class CallStack:
     def __repr__(self):
         return self.__str__()
 
-    def push(self, ar: ActivationRecord):
+    def get(self, key) -> DataType:
+        for ar in reversed(self._records):
+            value = ar.get(key)
+            if value is not None:
+                return value
+        raise IllegalStateError('Accessing undefined variables should have raised an error during semantic analysis.')
+
+    def push(self, ar: ActivationRecord) -> None:
         self._records.append(ar)
 
     def pop(self) -> ActivationRecord:
@@ -60,9 +73,3 @@ class CallStack:
 
     def peek(self) -> ActivationRecord:
         return self._records[-1]
-
-    def get(self, key):
-        for ar in reversed(self._records):
-            value = ar.get(key)
-            if value is not None:
-                return value
