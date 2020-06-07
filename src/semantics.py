@@ -31,7 +31,7 @@ class SemanticAnalyzer(ASTVisitor):
             msg = f'expected at least {lower} arguments, received {received}'
             self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
         elif lower is None and upper is not None:
-            msg = f' expected at most {upper} arguments, received {received}'
+            msg = f'expected at most {upper} arguments, received {received}'
             self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
         elif lower is not None and upper is not None and lower != upper:
             msg = f'expected at between {lower} and {upper} arguments, received {received}'
@@ -40,20 +40,12 @@ class SemanticAnalyzer(ASTVisitor):
             msg = f'expected {lower} arguments, received {received}'
             self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
 
-    def undefined_proc_error(self, proc: Token):
-        # TODO: FIX THIS
-        msg = f'Error: {proc.value} is not defined.'
-        raise SemanticError(
-            error_code=ErrorCode.PROCEDURE_NOT_FOUND,
-            token=proc,
-            message=msg
-        )
-
     def log_scope(self, msg: str) -> None:
         if C.SHOULD_LOG_SCOPE:
             print(msg)
 
     def visit_ProcCall(self, node: ProcCall) -> None:
+        # TODO: split this method up
         proc = node.token
         actual_param_len = len(node.actual_params)
 
@@ -71,6 +63,11 @@ class SemanticAnalyzer(ASTVisitor):
             if proc.value == 'add1':
                 if actual_param_len != 1:
                     self.arg_count_error(proc=proc, received=actual_param_len, lower=1, upper=1)
+            if proc.value == 'and':
+                if actual_param_len < 0:
+                    self.arg_count_error(proc=proc, received=actual_param_len, lower=0)
+            elif proc.value in C.BUILT_IN_PROCS:
+                raise NotImplementedError(f"Semantic analyzer cannot handle builtin procedure '{proc.value}'")
             else:
                 defined_proc = self.current_scope.lookup(proc.value)
                 if defined_proc is None:
@@ -100,7 +97,7 @@ class SemanticAnalyzer(ASTVisitor):
 
                 proc_symbol = self.current_scope.lookup(node.proc_name)
                 # accessed by the interpreter when executing procedure call
-                node.proc_symbol = proc_symbol
+                node.proc_symbols.append(proc_symbol)
         else:
             # TODO: make more specific
             raise Exception()
@@ -162,12 +159,13 @@ class SemanticAnalyzer(ASTVisitor):
         self.log_scope('')
 
         # accessed by the interpreter when executing procedure call
-        proc_symbol.block_ast = node.expr
+        proc_symbol.expr = node.expr
 
     def visit_Const(self, node: Const) -> None:
         var_name = node.value
         var_symbol = self.current_scope.lookup(var_name)
         if var_symbol is None:
+            print(self.current_scope)
             self.error(
                 error_code=ErrorCode.ID_NOT_FOUND,
                 token=node.token,

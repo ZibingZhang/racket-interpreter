@@ -1,10 +1,9 @@
 from __future__ import annotations
-from functools import reduce
 from typing import TYPE_CHECKING, Any, List
 from src.ast import ASTVisitor
 from src.constants import C
 from src.datatype import Boolean, Number, Procedure, String
-from src.errors import IllegalStateError
+from src.errors import ErrorCode, IllegalStateError, InterpreterError
 from src.stack import ActivationRecord, ARType, CallStack
 from src.token import Token, TokenType
 
@@ -22,6 +21,17 @@ class Interpreter(ASTVisitor):
     def log_stack(self, msg) -> None:
         if C.SHOULD_LOG_STACK:
             print(msg)
+
+    def builtin_proc_type_error(self, proc_token: Token, expected_type: str,
+                                param_value: DataType, idx: int) -> None:
+        error_code_msg = ErrorCode.ARGUMENT_TYPE.value
+        msg = f"{error_code_msg}: procedure expected argument of type {expected_type}, " \
+            f"received {param_value}; idx={idx}; {proc_token}."
+        raise InterpreterError(
+            error_code=ErrorCode.ARGUMENT_TYPE,
+            token=proc_token,
+            message=msg
+        )
 
     def interpret(self) -> Any:
         tree = self.tree
@@ -69,40 +79,149 @@ class Interpreter(ASTVisitor):
 
     def _visit_builtin_ProcCall(self, node: ProcCall) -> DataType:
         proc_token = node.token
+        actual_params = node.actual_params
 
-        # TODO: get rid of reduce and type check parameters
         if proc_token.type is TokenType.PLUS:
-            if len(node.actual_params) == 0:
-                return Number(0)
+            if len(actual_params) == 0:
+                result = Number(0)
             else:
-                initial = Number(0)
-                iterable = node.actual_params
-                result = reduce(lambda acc, x: acc + self.visit(x), iterable, initial)
+                result = Number(0)
+                for idx, param in enumerate(actual_params):
+                    param_value = self.visit(param)
+
+                    if not issubclass(type(param_value), Number):
+                        self.builtin_proc_type_error(
+                            proc_token=proc_token,
+                            expected_type='Number',
+                            param_value=param_value,
+                            idx=idx
+                        )
+
+                    result += param_value
         elif proc_token.type is TokenType.MINUS:
-            if len(node.actual_params) == 1:
-                result = Number(-self.visit(node.actual_params[0]))
+            if len(actual_params) == 1:
+                param = actual_params[0]
+                param_value = self.visit(param)
+
+                if not issubclass(type(param_value), Number):
+                    self.builtin_proc_type_error(
+                        proc_token=proc_token,
+                        expected_type='Number',
+                        param_value=param_value,
+                        idx=0
+                    )
+
+                result = Number(-param_value)
             else:
-                initial = self.visit(node.actual_params[0])
-                iterable = node.actual_params[1:]
-                result = reduce(lambda acc, x: acc - self.visit(x), iterable, initial)
+                param_value = self.visit(actual_params[0])
+
+                if not issubclass(type(param_value), Number):
+                    self.builtin_proc_type_error(
+                        proc_token=proc_token,
+                        expected_type='Number',
+                        param_value=param_value,
+                        idx=0
+                    )
+
+                result = param_value
+                params = actual_params[1:]
+                for idx, param in enumerate(params):
+                    param_value = self.visit(param)
+
+                    if not issubclass(type(param_value), Number):
+                        self.builtin_proc_type_error(
+                            proc_token=proc_token,
+                            expected_type='Number',
+                            param_value=param_value,
+                            idx=idx
+                        )
+
+                    result -= param_value
         elif proc_token.type is TokenType.MUL:
-            if len(node.actual_params) == 0:
+            if len(actual_params) == 0:
                 result = Number(1)
             else:
-                initial = Number(1)
-                iterable = node.actual_params
-                result = reduce(lambda acc, x: acc * self.visit(x), iterable, initial)
+                result = Number(1)
+                for idx, param in enumerate(actual_params):
+                    param_value = self.visit(param)
+
+                    if not issubclass(type(param_value), Number):
+                        self.builtin_proc_type_error(
+                            proc_token=proc_token,
+                            expected_type='Number',
+                            param_value=param_value,
+                            idx=idx
+                        )
+
+                    result *= param_value
         elif proc_token.type is TokenType.DIV:
-            if len(node.actual_params) == 1:
-                result = Number(1 / self.visit(node.actual_params[0]))
+            if len(actual_params) == 1:
+                param = actual_params[0]
+                param_value = self.visit(param)
+
+                if not issubclass(type(param_value), Number):
+                    self.builtin_proc_type_error(
+                        proc_token=proc_token,
+                        expected_type='Number',
+                        param_value=param_value,
+                        idx=0
+                    )
+
+                result = Number(-param_value)
             else:
-                initial = self.visit(node.actual_params[0])
-                iterable = node.actual_params[1:]
-                result = reduce(lambda acc, x: acc / self.visit(x), iterable, initial)
+                param_value = self.visit(actual_params[0])
+
+                if not issubclass(type(param_value), Number):
+                    self.builtin_proc_type_error(
+                        proc_token=proc_token,
+                        expected_type='Number',
+                        param_value=param_value,
+                        idx=0
+                    )
+
+                result = param_value
+                params = actual_params[1:]
+                for idx, param in enumerate(params):
+                    param_value = self.visit(param)
+
+                    if not issubclass(type(param_value), Number):
+                        self.builtin_proc_type_error(
+                            proc_token=proc_token,
+                            expected_type='Number',
+                            param_value=param_value,
+                            idx=idx
+                        )
+
+                    result /= param_value
         elif proc_token.type is TokenType.ID:
             proc_name = proc_token.value
             if proc_name == 'add1':
-                result = self.visit(node.actual_params[0]) + Number(1)
+                param_value = self.visit(actual_params[0])
+
+                if not issubclass(type(param_value), Number):
+                    self.builtin_proc_type_error(
+                        proc_token=proc_token,
+                        expected_type='Number',
+                        param_value=param_value,
+                        idx=0
+                    )
+
+                result = param_value + Number(1)
+            elif proc_name == 'and':
+                result = Boolean(True)
+
+                for idx, param in enumerate(actual_params):
+                    param_value = self.visit(param)
+
+                    if not issubclass(type(param_value), Boolean):
+                        self.builtin_proc_type_error(
+                            proc_token=proc_token,
+                            expected_type='Boolean',
+                            param_value=param_value,
+                            idx=idx
+                        )
+
+                    result = result and param_value
             elif proc_name in C.BUILT_IN_PROCS:
                 raise NotImplementedError(f"Interpreter cannot handle builtin procedure '{proc_name}'")
             else:
@@ -114,7 +233,7 @@ class Interpreter(ASTVisitor):
 
     def _visit_user_defined_ProcCall(self, node: ProcCall) -> DataType:
         proc_name = node.proc_name
-        proc_symbol = node.proc_symbol
+        proc_symbol = node.proc_symbols.pop()
 
         ar = ActivationRecord(
             name=proc_name,
@@ -134,7 +253,7 @@ class Interpreter(ASTVisitor):
         self.log_stack(f'ENTER: PROCEDURE {proc_name}')
         self.log_stack(str(self.call_stack))
 
-        result = self.visit(proc_symbol.block_ast)
+        result = self.visit(proc_symbol.expr)
 
         self.log_stack(f'LEAVE: PROCEDURE {proc_name}')
         self.log_stack(str(self.call_stack))
@@ -156,6 +275,8 @@ class Interpreter(ASTVisitor):
         )
         self.call_stack.push(ar)
 
+        self._define_builtin_procs()
+
         result = []
         for child_node in node.statements:
             value = self.visit(child_node)
@@ -168,3 +289,8 @@ class Interpreter(ASTVisitor):
         self.call_stack.pop()
 
         return result
+
+    def _define_builtin_procs(self):
+        ar = self.call_stack.peek()
+        for proc in C.BUILT_IN_PROCS:
+            ar[proc] = Procedure(proc)

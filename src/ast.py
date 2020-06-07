@@ -131,7 +131,7 @@ class ProcCall(AST):
         self.proc_name = proc.value
         self.actual_params = actual_params
         # a reference to procedure declaration symbol
-        self.proc_symbol = None
+        self.proc_symbols = []
 
     def __str__(self) -> str:
         return f'<ProcCall proc_name:{self.proc_name}  actual_params:{self.actual_params}  proc_symbol:{self.proc_symbol}>'

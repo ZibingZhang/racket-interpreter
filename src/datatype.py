@@ -20,6 +20,9 @@ class Boolean(DataType):
     def __repr__(self) -> str:
         return self.__str__()
 
+    def __bool__(self) -> bool:
+        return self.value
+
 
 class Number(DataType):
 

@@ -1,42 +1,24 @@
 from src import constants
-from src.constants import C
-from src.interpreter import Interpreter, InterpreterError
-from src.lexer import Lexer, LexerError
-from src.parser import Parser, ParserError
-from src.semantics import SemanticAnalyzer, SemanticError
+from src.errors import InterpreterError, LexerError, ParserError, SemanticError
+from src.interpreter import Interpreter
+from src.lexer import Lexer
+from src.parser import Parser
+from src.semantics import SemanticAnalyzer
 
 
 def main():
-    constants.init(should_log_scope=False, should_log_stack=True)
+    constants.init(should_log_scope=False, should_log_stack=False)
 
     try:
         text = \
             """
-            (define x -3)
-            ; (define x 3)
-            (define y "three")
-            ; (define z #f) )
-            ; (add1 x) y z ; t
-            
-            (define (f x) y)
-            ; (define f x)
-            
-            ; (define (r x) (r x))
-            
-            ; (f 1 2)
-            ; (f  4 4 4 4 4)
-            
-            (f 1)
-            
-            ; (define (f x b) x)
-            ; (define (g a c) a)
-            ; (f 1)
+            ; (define (t a) (a 1))
+            (and #t #t #f)
             """
 
         lexer = Lexer(text)
         parser = Parser(lexer)
         tree = parser.parse()
-        # print(tree.children)
 
         semantic_analyzer = SemanticAnalyzer()
         try:

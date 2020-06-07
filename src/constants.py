@@ -5,7 +5,7 @@ class Constants:
     SHOULD_LOG_STACK = True
 
     # should not be modified at runtime
-    BUILT_IN_PROCS = ['add1']
+    BUILT_IN_PROCS = ['add1', 'and']
 
 
 C = Constants()

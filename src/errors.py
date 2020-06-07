@@ -9,6 +9,7 @@ class ErrorCode(Enum):
     ARGUMENT_COUNT = 'Wrong number of arguments'
     NOT_A_PROCEDURE = 'Not a procedure'
     PROCEDURE_NOT_FOUND = 'Procedure not found'
+    ARGUMENT_TYPE = 'Incorrect argument type'
 
 
 class Error(Exception):

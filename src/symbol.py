@@ -23,9 +23,14 @@ class ScopedSymbolTable:
     def __init__(self, scope_name: str, scope_level: int,
                  enclosing_scope: ScopedSymbolTable = None) -> None:
         self._symbols = OrderedDict()
+        self._init_builtin_procs()
         self.scope_name = scope_name
         self.scope_level = scope_level
         self.enclosing_scope = enclosing_scope
+
+    def _init_builtin_procs(self) -> None:
+        for proc in C.BUILT_IN_PROCS:
+            self._symbols[proc] = ProcSymbol(proc)
 
     def __str__(self) -> str:
         h1 = 'SCOPE (SCOPED SYMBOL TABLE)'
