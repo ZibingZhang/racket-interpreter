@@ -103,7 +103,7 @@ class ProcSymbol(Symbol):
         self.expr = None
 
     def __str__(self) -> str:
-        return f'<ProcSymbol name:{self.name}  formal_params:{self.formal_params}>'
+        return f'<ProcSymbol name:{self.name}  formal_params:{self.formal_params}  expr:{self.expr}>'
 
     def __repr__(self) -> str:
         return self.__str__()

@@ -63,7 +63,7 @@ class SemanticAnalyzer(ASTVisitor):
             if proc.value == 'add1':
                 if actual_param_len != 1:
                     self.arg_count_error(proc=proc, received=actual_param_len, lower=1, upper=1)
-            if proc.value == 'and':
+            elif proc.value == 'and':
                 if actual_param_len < 0:
                     self.arg_count_error(proc=proc, received=actual_param_len, lower=0)
             elif proc.value in C.BUILT_IN_PROCS:
@@ -77,14 +77,15 @@ class SemanticAnalyzer(ASTVisitor):
                         message=f"'{proc.value}'"
                     )
 
-                formal_param_len = len(defined_proc.formal_params)
                 if defined_proc.type != 'PROCEDURE':
                     self.error(
                         error_code=ErrorCode.NOT_A_PROCEDURE,
                         token=proc,
                         message=f"'{proc.value}' is not a procedure"
                     )
-                elif actual_param_len != formal_param_len:
+
+                formal_param_len = len(defined_proc.formal_params)
+                if actual_param_len != formal_param_len:
                     self.arg_count_error(
                         proc=proc,
                         received=actual_param_len,
@@ -97,7 +98,7 @@ class SemanticAnalyzer(ASTVisitor):
 
                 proc_symbol = self.current_scope.lookup(node.proc_name)
                 # accessed by the interpreter when executing procedure call
-                node.proc_symbols.append(proc_symbol)
+                node.proc_symbol = proc_symbol
         else:
             # TODO: make more specific
             raise Exception()
@@ -165,7 +166,6 @@ class SemanticAnalyzer(ASTVisitor):
         var_name = node.value
         var_symbol = self.current_scope.lookup(var_name)
         if var_symbol is None:
-            print(self.current_scope)
             self.error(
                 error_code=ErrorCode.ID_NOT_FOUND,
                 token=node.token,

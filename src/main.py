@@ -12,8 +12,11 @@ def main():
     try:
         text = \
             """
-            ; (define (t a) (a 1))
             (and #t #t #f)
+            ; (define (x a) (a 1))
+            ; (define (y b) (add1 y))
+            ; (x y)
+            1
             """
 
         lexer = Lexer(text)

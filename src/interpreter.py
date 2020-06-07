@@ -233,7 +233,7 @@ class Interpreter(ASTVisitor):
 
     def _visit_user_defined_ProcCall(self, node: ProcCall) -> DataType:
         proc_name = node.proc_name
-        proc_symbol = node.proc_symbols.pop()
+        proc_symbol = node.proc_symbol
 
         ar = ActivationRecord(
             name=proc_name,
@@ -246,7 +246,6 @@ class Interpreter(ASTVisitor):
 
         for param_symbol, argument_node in zip(formal_params, actual_params):
             ar[param_symbol.name] = self.visit(argument_node)
-
         self.call_stack.push(ar)
 
         self.log_stack('')
