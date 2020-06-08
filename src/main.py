@@ -12,23 +12,38 @@ def main():
     try:
         text = \
             """
-            (and #t #t #f)
-            ; (define (x a) (a 1))
-            ; (define (y b) (add1 y))
-            ; (x y)
-            1
+            ; (define (f a z) a)
+            (define (s t z) (- t 6))
+            (define (t u s) (u s 1))
+            (t s 6)
+            ; (t + 6)
+            ; (t s 10)
+            ; (t add1 6)
+            ; (t f 10)
+            ; (t f 10)
+            
+            ""
+            
+            (define (mul2 n) (* 2 n))
+            
+            (define (factorial n)
+                (if (= n 0)
+                    1
+                    (* n (factorial (- n 1)))))
+            (factorial 10)
+            
+            (define (r f) (f 5))
+            
+            (r factorial)
+            (r add1)
+            (r mul2)
+            
+            ; (define (zz zzz) zzzz)
             """
 
         lexer = Lexer(text)
         parser = Parser(lexer)
         tree = parser.parse()
-
-        semantic_analyzer = SemanticAnalyzer()
-        try:
-            semantic_analyzer.visit(tree)
-        except SemanticError as e:
-            print(e.message)
-            return
 
         interpreter = Interpreter(tree)
         result = interpreter.interpret()
@@ -38,7 +53,7 @@ def main():
         for output in result:
             print(f'     {output}')
 
-    except (LexerError, ParserError, InterpreterError) as e:
+    except (LexerError, ParserError, InterpreterError, SemanticError) as e:
         print(e.message)
         return
 

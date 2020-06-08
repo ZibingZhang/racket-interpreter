@@ -30,6 +30,7 @@ class ScopedSymbolTable:
 
     def _init_builtin_procs(self) -> None:
         for proc in C.BUILT_IN_PROCS:
+            # TODO: better representation for accepted inputs
             self._symbols[proc] = ProcSymbol(proc)
 
     def __str__(self) -> str:
@@ -83,20 +84,23 @@ class ScopedSymbolTable:
         return symbol
 
 
-class BuiltinTypeSymbol(Symbol):
+class ConstSymbol(Symbol):
+    """A constant."""
 
     def __init__(self, name: str) -> None:
-        super().__init__(name)
+        super().__init__(name, 'CONSTANT')
 
-    def __hash__(self) -> int:
-        return hash(self.name)
+    def __str__(self) -> str:
+        return f'<ConstSymbol name:{self.name}>'
 
-    def __eq__(self, other) -> bool:
-        return issubclass(type(other), BuiltinTypeSymbol) and self.name == other.name
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class ProcSymbol(Symbol):
-    def __init__(self, name: str, formal_params: List[str] = None) -> None:
+    """A procedure."""
+
+    def __init__(self, name: str, formal_params: List[Optional[str]] = None) -> None:
         super().__init__(name, 'PROCEDURE')
         self.formal_params = formal_params if formal_params is not None else []
         # a reference to procedure's body (AST)
@@ -109,14 +113,14 @@ class ProcSymbol(Symbol):
         return self.__str__()
 
 
-class ConstSymbol(Symbol):
+class AmbiguousSymbol(Symbol):
+    """Either a procedure or a constant."""
 
     def __init__(self, name: str) -> None:
-        super().__init__(name, 'CONSTANT')
+        super().__init__(name, 'AMBIGUOUS')
 
     def __str__(self) -> str:
-        return f'<ConstSymbol name:{self.name}>'
+        return f'<AmbiguousSymbol name:{self.name}>'
 
     def __repr__(self) -> str:
         return self.__str__()
-

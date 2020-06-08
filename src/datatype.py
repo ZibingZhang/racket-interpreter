@@ -14,6 +14,9 @@ class Boolean(DataType):
     def __init__(self, value: bool) -> None:
         super().__init__(value)
 
+    def __eq__(self, other):
+        return issubclass(type(other), Boolean) and self.value == other.value
+
     def __str__(self) -> str:
         return f'#{self.value}'
 
@@ -29,6 +32,9 @@ class Number(DataType):
     def __init__(self, value: Union[float, int]) -> None:
         super().__init__(value)
 
+    def __eq__(self, other):
+        return issubclass(type(other), Number) and self.value == other.value
+
     def __str__(self) -> str:
         return str(self.value)
 
@@ -37,6 +43,15 @@ class Number(DataType):
 
     def __add__(self, other) -> Number:
         return Number(self.value + other.value)
+
+    def __sub__(self, other):
+        return Number(self.value - other.value)
+
+    def __mul__(self, other):
+        return Number(self.value * other.value)
+
+    def __truediv__(self, other):
+        return Number(self.value / other.value)
 
 
 class Procedure(DataType):

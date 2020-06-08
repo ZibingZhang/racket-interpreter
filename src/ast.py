@@ -127,14 +127,13 @@ class ProcCall(AST):
     """A procedure and a list of arguments."""
 
     def __init__(self, proc: Token, actual_params: Optional[List[AST]] = None) -> None:
-        self.token = proc
+        self.token = self.original_token = proc
         self.proc_name = proc.value
         self.actual_params = actual_params
-        # a reference to procedure declaration symbol
-        self.proc_symbol = None
 
     def __str__(self) -> str:
-        return f'<ProcCall proc_name:{self.proc_name}  actual_params:{self.actual_params}  proc_symbol:{self.proc_symbol}>'
+        # return f'<ProcCall proc_name:{self.proc_name}  actual_params:{self.actual_params}  proc_symbol:{self.proc_symbol}>'
+        return f'<ProcCall proc_name:{self.proc_name}  actual_params:{self.actual_params}>'
 
     def __repr__(self) -> str:
         return self.__str__()

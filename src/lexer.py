@@ -1,3 +1,4 @@
+from typing import Optional
 from src.errors import LexerError
 import src.token as t
 from src.token import Token, TokenType
@@ -35,7 +36,7 @@ class Lexer:
             self.current_char = self.text[self.pos]
             self.column += 1
 
-    def peek(self) -> str:
+    def peek(self) -> Optional[str]:
         pos = self.pos + 1
         if pos > len(self.text) - 1:
             return None
