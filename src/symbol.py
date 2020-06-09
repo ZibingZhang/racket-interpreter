@@ -1,6 +1,7 @@
 from __future__ import annotations
 from collections import OrderedDict
 from typing import Any, List, Optional
+from src.builtins import BUILT_IN_PROCS
 from src.constants import C
 
 
@@ -29,7 +30,7 @@ class ScopedSymbolTable:
         self.enclosing_scope = enclosing_scope
 
     def _init_builtin_procs(self) -> None:
-        for proc in C.BUILT_IN_PROCS:
+        for proc in BUILT_IN_PROCS:
             # TODO: better representation for accepted inputs
             self._symbols[proc] = ProcSymbol(proc)
 

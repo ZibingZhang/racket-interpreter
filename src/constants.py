@@ -4,9 +4,6 @@ class Constants:
     SHOULD_LOG_SCOPE = True
     SHOULD_LOG_STACK = True
 
-    # should not be modified at runtime
-    BUILT_IN_PROCS = ['+', '-', '*', '/', '=', 'add1', 'and', 'if']
-
 
 C = Constants()
 

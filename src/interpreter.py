@@ -1,12 +1,13 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Any, List
 from src.ast import ASTVisitor
+from src.builtins import BUILT_IN_PROCS
 from src.constants import C
 from src.datatype import Boolean, Number, Procedure, String
 from src.errors import ErrorCode, IllegalStateError, InterpreterError
 from src.semantics import SemanticAnalyzer
 from src.stack import ActivationRecord, ARType, CallStack
-from src.token import Token, TokenType
+from src.token import Token
 
 if TYPE_CHECKING:
     from src.ast import AST, Const, ConstAssign, Num, Param, ProcAssign, ProcCall, Program
@@ -191,7 +192,7 @@ class Interpreter(ASTVisitor):
 
     def _define_builtin_procs(self):
         ar = self.call_stack.peek()
-        for proc in C.BUILT_IN_PROCS:
+        for proc in BUILT_IN_PROCS:
             ar[proc] = Procedure(proc)
 
     def _visit_builtin_ProcCall(self, node: ProcCall) -> DataType:

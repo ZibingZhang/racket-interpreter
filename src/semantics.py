@@ -1,10 +1,11 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Tuple, List, Optional
 from src.ast import ASTVisitor
+from src.builtins import BUILT_IN_PROCS
 from src.constants import C
 from src.errors import ErrorCode, IllegalStateError, SemanticError
 from src.symbol import AmbiguousSymbol, ConstSymbol, ProcSymbol, ScopedSymbolTable
-from src.token import Token, TokenType
+from src.token import Token
 
 if TYPE_CHECKING:
     from src.ast import AST, Const, ConstAssign, Num, Param, ProcAssign, ProcCall, Program
@@ -207,7 +208,7 @@ class SemanticAnalyzer(ASTVisitor):
             # None if builtin proc
             expr = proc_symbol.expr
 
-            if proc_name in C.BUILT_IN_PROCS and expr is None:
+            if proc_name in BUILT_IN_PROCS and expr is None:
                 old_token = node.token
                 line_no = old_token.line_no
                 column = old_token.column
@@ -223,7 +224,7 @@ class SemanticAnalyzer(ASTVisitor):
                 #     )
 
                 return formal_params, actual_params, expr
-            elif proc_name not in C.BUILT_IN_PROCS and expr is not None:
+            elif proc_name not in BUILT_IN_PROCS and expr is not None:
                 if formal_params_len != actual_params_len:
                     self.arg_count_error(
                         proc=node.token,

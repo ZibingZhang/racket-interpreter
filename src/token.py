@@ -1,8 +1,7 @@
 from __future__ import annotations
 from typing import Any
 from enum import Enum
-from src.constants import C
-from src.errors import IllegalStateError
+from src.builtins import BUILT_IN_PROCS
 
 
 class TokenType(Enum):
@@ -53,7 +52,7 @@ class Token:
 
     @staticmethod
     def is_builtin_proc(token: Token) -> bool:
-        return token.value in C.BUILT_IN_PROCS
+        return token.value in BUILT_IN_PROCS
 
     @staticmethod
     def create_proc(name: str, line_no: int = None, column: int = None) -> Token:
