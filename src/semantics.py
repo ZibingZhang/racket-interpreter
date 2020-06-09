@@ -156,17 +156,6 @@ class SemanticAnalyzer(ASTVisitor):
     def enter_proc(self, node: ProcCall) -> Tuple[List[Symbol], List[AST], Optional[ProcCall]]:
         proc_name = node.proc_name
         proc = self.current_scope.lookup(proc_name)
-        # print('')
-        # print(self.current_scope)
-        # print(node)
-        # print('')
-
-        # if proc is None:
-        #     self.error(
-        #         error_code=ErrorCode.ID_NOT_FOUND,
-        #         token=node.token,
-        #         message=f"'{node.token.value}'"
-        #     )
 
         if proc.type == 'PROCEDURE':
             expr = proc.expr
@@ -200,14 +189,8 @@ class SemanticAnalyzer(ASTVisitor):
             return formal_params, actual_params, expr
         elif proc.type == 'AMBIGUOUS':
             call_stack = self.interpreter.call_stack
-            # TODO: while statement here?
-            # TODO: better way of checking builtin type
-
-            # TODO: deal with builtins
-            # node.token = Token(TokenType.PLUS, TokenType.PLUS.value)
-            # node.token = Token(TokenType.ID, 'add1')
-
             scope = self.current_scope
+
             proc = call_stack.get(proc_name)
             proc_name = proc.value
             proc_symbol = scope.lookup(proc_name)
@@ -220,15 +203,15 @@ class SemanticAnalyzer(ASTVisitor):
             formal_params_len = len(formal_params)
             actual_params = node.actual_params
             actual_params_len = len(actual_params)
+
             # None if builtin proc
             expr = proc_symbol.expr
 
-            if proc_name in C.BUILT_IN_PROCS:
+            if proc_name in C.BUILT_IN_PROCS and expr is None:
                 old_token = node.token
                 line_no = old_token.line_no
                 column = old_token.column
                 node.token = Token.create_proc(proc_name, line_no, column)
-                # print(node.token)
                 # TODO: builtin functions can have any number of inputs potentially
                 # TODO: add a better check for such a thing
                 # if formal_params_len != actual_params_len:
@@ -240,37 +223,31 @@ class SemanticAnalyzer(ASTVisitor):
                 #     )
 
                 return formal_params, actual_params, expr
+            elif proc_name not in C.BUILT_IN_PROCS and expr is not None:
+                if formal_params_len != actual_params_len:
+                    self.arg_count_error(
+                        proc=node.token,
+                        received=actual_params_len,
+                        lower=formal_params_len,
+                        upper=formal_params_len
+                    )
 
-            # print(self.current_scope)
-            if expr is None:
-                return formal_params, actual_params, expr
-
-            # old_token = node.token
-            # line_no = old_token.line_no
-            # column = old_token.column
-            # node.token = Token.create_proc(proc_name, line_no, column)
-            if formal_params_len != actual_params_len:
-                self.arg_count_error(
-                    proc=node.token,
-                    received=actual_params_len,
-                    lower=formal_params_len,
-                    upper=formal_params_len
+                self.log_scope('')
+                self.log_scope(f'ENTER SCOPE: {proc_name}')
+                # scope for parameters
+                proc_scope = ScopedSymbolTable(
+                    scope_name=proc_name,
+                    scope_level=self.current_scope.scope_level + 1,
+                    enclosing_scope=self.current_scope
                 )
+                self.current_scope = proc_scope
 
-            self.log_scope('')
-            self.log_scope(f'ENTER SCOPE: {proc_name}')
-            # scope for parameters
-            proc_scope = ScopedSymbolTable(
-                scope_name=proc_name,
-                scope_level=self.current_scope.scope_level + 1,
-                enclosing_scope=self.current_scope
-            )
-            self.current_scope = proc_scope
+                for param in formal_params:
+                    self.current_scope.define(param)
 
-            for param in formal_params:
-                self.current_scope.define(param)
-
-            return formal_params, actual_params, expr
+                return formal_params, actual_params, expr
+            else:
+                raise IllegalStateError('Built in procs should have no expr.')
         else:
             self.error(
                 error_code=ErrorCode.NOT_A_PROCEDURE,
@@ -279,14 +256,12 @@ class SemanticAnalyzer(ASTVisitor):
             )
 
     def leave_proc(self, node: ProcCall) -> None:
-        # TODO: check name matches
-        # node.token = node.original_token
         proc_scope = self.current_scope
         proc_name = node.proc_name
         self.log_scope('')
         self.log_scope(str(proc_scope))
 
-        self.current_scope = self.current_scope.enclosing_scope
+        self.current_scope = proc_scope.enclosing_scope
         self.log_scope(f'LEAVE SCOPE: {proc_name}')
         self.log_scope('')
 

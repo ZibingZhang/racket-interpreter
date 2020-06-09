@@ -83,16 +83,47 @@ class Interpreter(ASTVisitor):
         ar[proc_name] = proc_value
 
     def visit_ProcCall(self, node: ProcCall) -> DataType:
+        # TODO: edit logic here because its all over the place... but hey it seems to work :)
         # 1. perform semantic analysis on node
         #    a. is the proc built in
         #       #T 1. check number of actual args
         #       #F 1. ensure proc is defined
         #          2. ensure len of formal and actual params match if not ambiguous
         #          3. visit actual params
-        # 2. is the proc built in
-        #    #T 1. visit actual params
-        #       2. evaluate result based on number and value of actual params
-        #    #F 1.
+        # 2. is the proc built in (or is ambiguous
+        #    #T a. visit actual params
+        #       b. evaluate result based on number and value of actual params
+        #    #F a. tell semantic analyzer to enter proc
+        #          1. look up proc in current scope
+        #          2. error if symbol is not procedure or ambiguous
+        #          3. is the symbol a procedure
+        #             #T a. ensure formal params len matches actual param len
+        #                b. create and enter proc scope
+        #                c. define formal params in scope
+        #                d. return formal params, actual params, and proc expr
+        #             #F a. determine node proc name
+        #                b. lookup proc in stack and get new proc name
+        #                c. lookup proc symbol in current scope with new proc name
+        #                d. if proc symbol is ambiguous go to step 1
+        #                e. now proc symbol should not be ambiguous
+        #                f. is proc builtin (i.e. proc expr is None)
+        #                   #T 1. update token with builtin proc token
+        #                      2. return formal params, actual params, and proc expr
+        #                   #F 1. ensure len of formal and actual params
+        #                      2. create and enter scope for proc call
+        #                      3. define formal params in scope
+        #                      4. return formal params, actual params, proc expr
+        #       b. proc is builtin (i.e. expr is None)
+        #          #T a. visit node
+        #             b. set token of node to original token
+        #             c. return result
+        #          #F a. create and push activation record
+        #             b. visit actual params
+        #             c. map formal params to actual params in activation record
+        #             d. visit expr
+        #             e. tell semantic analyzer to leave proc
+        #                1. leave current scope
+        #             f. leave activation record
         self.semantic_analyzer.visit_ProcCall(node)
 
         proc_token = node.token
@@ -366,21 +397,19 @@ class Interpreter(ASTVisitor):
     def _visit_user_defined_ProcCall(self, node: ProcCall) -> DataType:
         proc_name = node.proc_name
 
+        formal_params, actual_params, expr = self.semantic_analyzer.enter_proc(node)
+        # expr is None if the proc is builtin
+        if expr is None:
+            result = self._visit_builtin_ProcCall(node)
+            node.token = node.original_token
+            return result
+
         current_ar = self.call_stack.peek()
         ar = ActivationRecord(
             name=proc_name,
             type=ARType.PROCEDURE,
             nesting_level=current_ar.nesting_level + 1,
         )
-
-        formal_params, actual_params, expr = self.semantic_analyzer.enter_proc(node)
-        # TODO: also fix here
-        # semantics edits node to represent what it acutally is?
-        # separation of responsibility?
-        if expr is None:
-            result = self.visit(node)
-            node.token = node.original_token
-            return result
 
         self.log_stack('')
         self.log_stack(f'ENTER: PROCEDURE {proc_name}')
@@ -391,11 +420,6 @@ class Interpreter(ASTVisitor):
         self.call_stack.push(ar)
 
         result = self.visit(expr)
-
-        # node.token = node.original_token
-        if node.token.value != node.original_token.value:
-            print(node.token)
-            print(node.original_token)
 
         self.semantic_analyzer.leave_proc(node)
 
