@@ -1,7 +1,7 @@
 from __future__ import annotations
 import abc
 from typing import TYPE_CHECKING, List, Optional
-from src.datatype import Boolean, Number, String
+from src.datatype import Boolean, Integer, Number, String
 
 if TYPE_CHECKING:
     from src.ast import AST
@@ -43,9 +43,9 @@ class SymbolPlus(BuiltInProc):
     @staticmethod
     def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
         if len(actual_params) == 0:
-            result = Number(0)
+            result = Integer(0)
         else:
-            result = Number(0)
+            result = Integer(0)
             for idx, param in enumerate(actual_params):
                 param_value = interpreter.visit(param)
 
@@ -85,7 +85,7 @@ class SymbolMinus(BuiltInProc):
                     idx=0
                 )
 
-            result = Number(-param_value)
+            result = -param_value
         else:
             param_value = interpreter.visit(actual_params[0])
 
@@ -127,9 +127,9 @@ class SymbolMultiply(BuiltInProc):
     @staticmethod
     def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
         if len(actual_params) == 0:
-            result = Number(1)
+            result = Integer(1)
         else:
-            result = Number(1)
+            result = Integer(1)
             for idx, param in enumerate(actual_params):
                 param_value = interpreter.visit(param)
 
@@ -140,6 +140,10 @@ class SymbolMultiply(BuiltInProc):
                         param_value=param_value,
                         idx=idx
                     )
+
+                if param_value == Integer(0):
+                    result = Integer(0)
+                    break
 
                 result *= param_value
         return result
@@ -169,7 +173,7 @@ class SymbolDivide(BuiltInProc):
                     idx=0
                 )
 
-            result = Number(-param_value)
+            result = Integer(1)/param_value
         else:
             param_value = interpreter.visit(actual_params[0])
 
@@ -263,7 +267,7 @@ class Add1(BuiltInProc):
                 idx=0
             )
 
-        result = param_value + Number(1)
+        result = param_value + Integer(1)
         return result
 
 
