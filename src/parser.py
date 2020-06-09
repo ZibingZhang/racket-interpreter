@@ -73,10 +73,6 @@ class Parser:
         elif token.type is TokenType.LPAREN:
             node = self.expr()
             return node
-        elif token.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV]:
-            # TODO: shouldn't be constants, same for first if block
-            self.eat(token.type)
-            return ast.Const(token)
         else:
             return self.data()
 
@@ -91,9 +87,7 @@ class Parser:
         self.eat(TokenType.LPAREN)
         op = self.current_token
         node = ast.ProcCall(op, [])
-        if op.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV, TokenType.EQUAL]:
-            self.eat(op.type)
-        elif op.type is TokenType.ID:
+        if op.type is TokenType.ID:
             self.eat(TokenType.ID)
         else:
             self.error()
@@ -189,13 +183,12 @@ class Parser:
                  | expr
                  | empty
         """
-        token = self.current_token
-        if token.type in [TokenType.NUMBER, TokenType.BOOLEAN, TokenType.STRING, TokenType.ID, TokenType.EQUAL]:
-            node = self.expr()
-            return node
+        current_token = self.current_token
+        if current_token.type in [TokenType.BOOLEAN, TokenType.NUMBER, TokenType.STRING]:
+            return self.expr()
 
         next_token = self.lexer.peek_next_token()
-        if next_token.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV, TokenType.ID, TokenType.EQUAL]:
+        if next_token.type is TokenType.ID:
             node = self.expr()
             return node
         elif next_token.type is TokenType.DEFINE:

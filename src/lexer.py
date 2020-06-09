@@ -7,6 +7,7 @@ from src.token import Token, TokenType
 class Lexer:
 
     RESERVED_KEYWORDS = t.RESERVED_KEYWORDS
+    NON_ID_CHARS = ['"', "'", '`', '(', ')', '[', ']', '{', '}', '|', ';', '#']
 
     def __init__(self, text: str) -> None:
         self.text = text
@@ -67,13 +68,18 @@ class Lexer:
         else:
             number = ''
 
-        while self.current_char is not None and self.current_char.isdigit():
+        while self.current_char is not None and not self.current_char.isspace() \
+                and self.current_char not in self.NON_ID_CHARS:
+            if self.current_char not in self.NON_ID_CHARS and not self.current_char.isdigit():
+                return self.identifier(number)
+
             number += self.current_char
             self.advance()
 
         return Token(TokenType.NUMBER, float(number), self.line_no, self.column)
 
     def string(self) -> Token:
+        """Handles strings."""
         self.advance()
 
         string = ''
@@ -84,10 +90,11 @@ class Lexer:
 
         return Token(TokenType.STRING, string, self.line_no, self.column)
 
-    def identifier(self) -> Token:
-        """Handles identifiers and reserved keywords."""
-        result = ''
-        while self.current_char is not None and self.current_char.isalnum():
+    def identifier(self, initial: str = '') -> Token:
+        """Handles identifiers (including builtin functions)."""
+        result = initial
+        while self.current_char is not None and self.current_char not in self.NON_ID_CHARS \
+                and not self.current_char.isspace():
             result += self.current_char
             self.advance()
 
@@ -117,11 +124,11 @@ class Lexer:
                 self.skip_line_comment()
                 continue
 
-            if self.current_char.isalpha():
-                return self.identifier()
-
             if self.current_char.isdigit() or (self.current_char == '-' and self.peek().isdigit()):
                 return self.number()
+
+            if self.current_char not in self.NON_ID_CHARS:
+                return self.identifier()
 
             if self.current_char == '#':
                 return self.boolean()

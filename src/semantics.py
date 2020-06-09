@@ -269,34 +269,33 @@ class SemanticAnalyzer(ASTVisitor):
         proc = node.token
         actual_param_len = len(node.actual_params)
 
-        if proc.type is TokenType.PLUS:
+        if proc.value == '+':
             pass
-        elif proc.type is TokenType.MINUS:
+        elif proc.value == '-':
             if actual_param_len == 0:
                 self.arg_count_error(proc=proc, received=actual_param_len, lower=1)
-        elif proc.type is TokenType.MUL:
+        elif proc.value == '*':
             pass
-        elif proc.type is TokenType.DIV:
+        elif proc.value == '/':
             if actual_param_len == 0:
                 self.arg_count_error(proc=proc, received=actual_param_len, lower=1)
-        elif proc.type is TokenType.EQUAL:
+        elif proc.value == '=':
             if actual_param_len == 0:
                 self.arg_count_error(proc=proc, received=actual_param_len, lower=1)
-        elif proc.type is TokenType.ID:
-            if proc.value == 'add1':
-                if actual_param_len != 1:
-                    self.arg_count_error(proc=proc, received=actual_param_len, lower=1, upper=1)
-            elif proc.value == 'and':
-                if actual_param_len < 0:
-                    self.arg_count_error(proc=proc, received=actual_param_len, lower=0)
-            elif proc.value == 'if':
-                if actual_param_len != 3:
-                    self.arg_count_error(proc=proc, received=actual_param_len, lower=3, upper=3)
-            elif proc.value in C.BUILT_IN_PROCS:
-                raise NotImplementedError(f"Semantic analyzer cannot handle builtin procedure '{proc.value}'")
-            else:
-                # TODO: make more specific, not a user defined thing
-                raise Exception()
+        elif proc.value == 'add1':
+            if actual_param_len != 1:
+                self.arg_count_error(proc=proc, received=actual_param_len, lower=1, upper=1)
+        elif proc.value == 'and':
+            if actual_param_len < 0:
+                self.arg_count_error(proc=proc, received=actual_param_len, lower=0)
+        elif proc.value == 'if':
+            if actual_param_len != 3:
+                self.arg_count_error(proc=proc, received=actual_param_len, lower=3, upper=3)
+        elif proc.value in C.BUILT_IN_PROCS:
+            raise NotImplementedError(f"Semantic analyzer cannot handle builtin procedure '{proc.value}'")
+        else:
+            # TODO: make more specific, not a user defined thing
+            raise Exception()
 
         for param in node.actual_params:
             self.visit(param)

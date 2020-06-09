@@ -9,11 +9,6 @@ class TokenType(Enum):
     # single-character token types
     LPAREN = '('
     RPAREN = ')'
-    PLUS = '+'
-    MINUS = '-'
-    MUL = '*'
-    DIV = '/'
-    EQUAL = '='
     # data types
     NUMBER = 'NUMBER'
     BOOLEAN = 'BOOLEAN'
@@ -58,28 +53,11 @@ class Token:
 
     @staticmethod
     def is_builtin_proc(token: Token) -> bool:
-        if token.type in [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV, TokenType.EQUAL]:
-            return True
-        elif token.type is TokenType.ID:
-            return token.value in C.BUILT_IN_PROCS
-        else:
-            raise IllegalStateError('Should not be checking if other token types are builtin procedures.')
+        return token.value in C.BUILT_IN_PROCS
 
     @staticmethod
     def create_proc(name: str, line_no: int = None, column: int = None) -> Token:
-        if name not in C.BUILT_IN_PROCS:
-            return Token(TokenType.ID, name, line_no, column)
-        else:
-            if name == '+':
-                return Token(TokenType.PLUS, name, line_no, column)
-            elif name == '-':
-                return Token(TokenType.MINUS, name, line_no, column)
-            elif name == '*':
-                return Token(TokenType.MUL, name, line_no, column)
-            elif name == '/':
-                return Token(TokenType.DIV, name, line_no, column)
-            else:
-                return Token(TokenType.ID, name, line_no, column)
+        return Token(TokenType.ID, name, line_no, column)
 
 def _build_reserved_keywords():
     """Build a dictionary of reserved keywords.

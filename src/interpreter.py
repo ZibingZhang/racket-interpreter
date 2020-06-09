@@ -196,9 +196,10 @@ class Interpreter(ASTVisitor):
 
     def _visit_builtin_ProcCall(self, node: ProcCall) -> DataType:
         proc_token = node.token
+        proc_name = proc_token.value
         actual_params = node.actual_params
 
-        if proc_token.type is TokenType.PLUS:
+        if proc_name == '+':
             if len(actual_params) == 0:
                 result = Number(0)
             else:
@@ -215,7 +216,7 @@ class Interpreter(ASTVisitor):
                         )
 
                     result += param_value
-        elif proc_token.type is TokenType.MINUS:
+        elif proc_name == '-':
             if len(actual_params) == 1:
                 param = actual_params[0]
                 param_value = self.visit(param)
@@ -254,7 +255,7 @@ class Interpreter(ASTVisitor):
                         )
 
                     result -= param_value
-        elif proc_token.type is TokenType.MUL:
+        elif proc_name == '*':
             if len(actual_params) == 0:
                 result = Number(1)
             else:
@@ -271,7 +272,7 @@ class Interpreter(ASTVisitor):
                         )
 
                     result *= param_value
-        elif proc_token.type is TokenType.DIV:
+        elif proc_name == '/':
             if len(actual_params) == 1:
                 param = actual_params[0]
                 param_value = self.visit(param)
@@ -310,7 +311,7 @@ class Interpreter(ASTVisitor):
                         )
 
                     result /= param_value
-        elif proc_token.type is TokenType.EQUAL:
+        elif proc_name == '=':
             if len(actual_params) == 1:
                 param = actual_params[0]
                 param_value = self.visit(param)
@@ -349,48 +350,44 @@ class Interpreter(ASTVisitor):
                         )
 
                     result = result and first_param_value == param_value
-        elif proc_token.type is TokenType.ID:
-            proc_name = proc_token.value
-            if proc_name == 'add1':
-                param_value = self.visit(actual_params[0])
+        elif proc_name == 'add1':
+            param_value = self.visit(actual_params[0])
 
-                if not issubclass(type(param_value), Number):
+            if not issubclass(type(param_value), Number):
+                self.builtin_proc_type_error(
+                    proc_token=proc_token,
+                    expected_type='Number',
+                    param_value=param_value,
+                    idx=0
+                )
+
+            result = param_value + Number(1)
+        elif proc_name == 'and':
+            result = Boolean(True)
+
+            for idx, param in enumerate(actual_params):
+                param_value = self.visit(param)
+
+                if not issubclass(type(param_value), Boolean):
                     self.builtin_proc_type_error(
                         proc_token=proc_token,
-                        expected_type='Number',
+                        expected_type='Boolean',
                         param_value=param_value,
-                        idx=0
+                        idx=idx
                     )
 
-                result = param_value + Number(1)
-            elif proc_name == 'and':
-                result = Boolean(True)
-
-                for idx, param in enumerate(actual_params):
-                    param_value = self.visit(param)
-
-                    if not issubclass(type(param_value), Boolean):
-                        self.builtin_proc_type_error(
-                            proc_token=proc_token,
-                            expected_type='Boolean',
-                            param_value=param_value,
-                            idx=idx
-                        )
-
-                    result = result and param_value
-            elif proc_name == 'if':
-                boolean = self.visit(actual_params[0])
-                if bool(boolean):
-                    result = self.visit(actual_params[1])
-                else:
-                    result = self.visit(actual_params[2])
-                return result
-            elif proc_name in C.BUILT_IN_PROCS:
-                raise NotImplementedError(f"Interpreter cannot handle builtin procedure '{proc_name}'")
+                result = result and param_value
+        elif proc_name == 'if':
+            boolean = self.visit(actual_params[0])
+            if bool(boolean):
+                result = self.visit(actual_params[1])
             else:
-                raise IllegalStateError(f"Procedure '{proc_name}' is not a builtin procedure.")
+                result = self.visit(actual_params[2])
+            return result
+        elif proc_name in C.BUILT_IN_PROCS:
+            raise NotImplementedError(f"Interpreter cannot handle builtin procedure '{proc_name}'")
         else:
-            raise IllegalStateError('Invalid operator should have been caught during semantic analysis.')
+            raise IllegalStateError(f"Procedure '{proc_name}' is not a builtin procedure.")
 
         return result
 
