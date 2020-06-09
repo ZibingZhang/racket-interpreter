@@ -208,23 +208,35 @@ class SemanticAnalyzer(ASTVisitor):
             # None if builtin proc
             expr = proc_symbol.expr
 
-            if proc_name in BUILT_IN_PROCS and expr is None:
+            if proc_name in BUILT_IN_PROCS.keys() and expr is None:
                 old_token = node.token
                 line_no = old_token.line_no
                 column = old_token.column
                 node.token = Token.create_proc(proc_name, line_no, column)
-                # TODO: builtin functions can have any number of inputs potentially
-                # TODO: add a better check for such a thing
-                # if formal_params_len != actual_params_len:
-                #     self.arg_count_error(
-                #         proc=node.token,
-                #         received=actual_params_len,
-                #         lower=formal_params_len,
-                #         upper=formal_params_len
-                #     )
+
+                built_in_proc = BUILT_IN_PROCS[proc_name]
+                lower = built_in_proc.lower()
+                upper = built_in_proc.upper()
+
+                if upper is None:
+                    if not lower <= actual_params_len:
+                        self.arg_count_error(
+                            proc=node.token,
+                            received=actual_params_len,
+                            lower=lower,
+                            upper=upper
+                        )
+                else:
+                    if not lower <= actual_params_len <= upper:
+                        self.arg_count_error(
+                            proc=node.token,
+                            received=actual_params_len,
+                            lower=lower,
+                            upper=upper
+                        )
 
                 return formal_params, actual_params, expr
-            elif proc_name not in BUILT_IN_PROCS and expr is not None:
+            elif proc_name not in BUILT_IN_PROCS.keys() and expr is not None:
                 if formal_params_len != actual_params_len:
                     self.arg_count_error(
                         proc=node.token,
@@ -268,35 +280,18 @@ class SemanticAnalyzer(ASTVisitor):
 
     def _visit_builtin_ProcCall(self, node: ProcCall) -> None:
         proc = node.token
+        proc_name = proc.value
         actual_param_len = len(node.actual_params)
 
-        if proc.value == '+':
-            pass
-        elif proc.value == '-':
-            if actual_param_len == 0:
-                self.arg_count_error(proc=proc, received=actual_param_len, lower=1)
-        elif proc.value == '*':
-            pass
-        elif proc.value == '/':
-            if actual_param_len == 0:
-                self.arg_count_error(proc=proc, received=actual_param_len, lower=1)
-        elif proc.value == '=':
-            if actual_param_len == 0:
-                self.arg_count_error(proc=proc, received=actual_param_len, lower=1)
-        elif proc.value == 'add1':
-            if actual_param_len != 1:
-                self.arg_count_error(proc=proc, received=actual_param_len, lower=1, upper=1)
-        elif proc.value == 'and':
-            if actual_param_len < 0:
-                self.arg_count_error(proc=proc, received=actual_param_len, lower=0)
-        elif proc.value == 'if':
-            if actual_param_len != 3:
-                self.arg_count_error(proc=proc, received=actual_param_len, lower=3, upper=3)
-        elif proc.value in C.BUILT_IN_PROCS:
-            raise NotImplementedError(f"Semantic analyzer cannot handle builtin procedure '{proc.value}'")
+        built_in_proc = BUILT_IN_PROCS[proc_name]
+        lower = built_in_proc.lower()
+        upper = built_in_proc.upper()
+        if upper is None:
+            if not lower <= actual_param_len:
+                self.arg_count_error(proc=proc, received=actual_param_len, lower=lower)
         else:
-            # TODO: make more specific, not a user defined thing
-            raise Exception()
+            if not lower <= actual_param_len <= upper:
+                self.arg_count_error(proc=proc, received=actual_param_len, lower=lower, upper=upper)
 
         for param in node.actual_params:
             self.visit(param)

@@ -30,7 +30,7 @@ class ScopedSymbolTable:
         self.enclosing_scope = enclosing_scope
 
     def _init_builtin_procs(self) -> None:
-        for proc in BUILT_IN_PROCS:
+        for proc in BUILT_IN_PROCS.keys():
             # TODO: better representation for accepted inputs
             self._symbols[proc] = ProcSymbol(proc)
 
