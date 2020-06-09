@@ -1,9 +1,9 @@
 from src import constants
+from src.constants import C
 from src.errors import InterpreterError, LexerError, ParserError, SemanticError
 from src.interpreter import Interpreter
 from src.lexer import Lexer
 from src.parser import Parser
-from src.semantics import SemanticAnalyzer
 
 
 def main():
@@ -37,6 +37,7 @@ def main():
             (r factorial)
             (r add1)
             (r mul2)
+            (r +)
             
             ; (define (zz zzz) zzzz)
             """
@@ -48,7 +49,8 @@ def main():
         interpreter = Interpreter(tree)
         result = interpreter.interpret()
 
-        print('')
+        if C.SHOULD_LOG_SCOPE or C.SHOULD_LOG_STACK:
+            print('')
         print('Output:')
         for output in result:
             print(f'     {output}')

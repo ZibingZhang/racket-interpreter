@@ -55,6 +55,9 @@ class Parser:
         elif token.type is TokenType.STRING:
             self.eat(TokenType.STRING)
             return ast.Str(token)
+        elif token.type is TokenType.RATIONAL:
+            self.eat(TokenType.RATIONAL)
+            return ast.Rat(token)
         else:
             self.error()
 
@@ -184,18 +187,20 @@ class Parser:
                  | empty
         """
         current_token = self.current_token
-        if current_token.type in [TokenType.BOOLEAN, TokenType.NUMBER, TokenType.STRING]:
+        if current_token.type in [TokenType.BOOLEAN, TokenType.NUMBER, TokenType.RATIONAL, TokenType.STRING, TokenType.ID]:
             return self.expr()
-
-        next_token = self.lexer.peek_next_token()
-        if next_token.type is TokenType.ID:
-            node = self.expr()
-            return node
-        elif next_token.type is TokenType.DEFINE:
-            node = self.assignment_statement()
-            return node
+        elif current_token.type is TokenType.LPAREN:
+            next_token = self.lexer.peek_next_token()
+            if next_token.type is TokenType.ID:
+                node = self.expr()
+                return node
+            elif next_token.type is TokenType.DEFINE:
+                node = self.assignment_statement()
+                return node
+            else:
+                self.error(token=next_token)
         else:
-            self.error()
+            self.error(token=current_token)
 
     def program(self) -> Program:
         """
@@ -212,7 +217,8 @@ class Parser:
 
     def parse(self) -> Program:
         node = self.program()
-        if self.current_token.type != TokenType.EOF:
-            self.error()
+        current_token = self.current_token
+        if current_token.type != TokenType.EOF:
+            self.error(token=current_token)
 
         return node

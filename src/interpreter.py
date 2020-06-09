@@ -1,16 +1,17 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Any, List
+import fractions as f
+from typing import TYPE_CHECKING, Any, List, Union
 from src.ast import ASTVisitor
 from src.builtins import BUILT_IN_PROCS
 from src.constants import C
-from src.datatype import Boolean, InexactNumber, Integer, Procedure, String
+from src.datatype import Boolean, InexactNumber, Integer, Procedure, Rational, String
 from src.errors import ErrorCode, IllegalStateError, InterpreterError
 from src.semantics import SemanticAnalyzer
 from src.stack import ActivationRecord, ARType, CallStack
 from src.token import Token
 
 if TYPE_CHECKING:
-    from src.ast import AST, Const, ConstAssign, Num, Param, ProcAssign, ProcCall, Program
+    from src.ast import AST, Const, ConstAssign, Num, Param, ProcAssign, ProcCall, Program, Rat
     from src.datatype import DataType, Number
 
 
@@ -30,15 +31,27 @@ class Interpreter(ASTVisitor):
     def visit_Num(self, node: Num) -> Number:
         # 1. return number
         number = node.value
-        is_integer = number.is_integer()
-        if is_integer:
-            return Integer(number)
-        else:
-            return InexactNumber(number)
+        return Integer(number)
+        # is_integer = number.is_integer()
+        # if is_integer:
+        #
+        # else:
+        #     raise IllegalStateError
+            # return InexactNumber(number)
 
     def visit_Str(self, node: Num) -> String:
         # 1. return string
         return String(node.value)
+
+    def visit_Rat(self, node: Rat) -> Union[Integer, Rational]:
+        # 1. return rational number
+        numerator = node.value[0]
+        denominator = node.value[1]
+        fraction = f.Fraction(numerator, denominator)
+        if fraction.denominator == 1:
+            return Integer(fraction.numerator)
+        else:
+            return Rational(fraction)
 
     def visit_Const(self, node: Const) -> DataType:
         # 1. lookup value of const

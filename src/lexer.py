@@ -5,7 +5,6 @@ from src.token import Token, TokenType
 
 
 class Lexer:
-
     RESERVED_KEYWORDS = t.RESERVED_KEYWORDS
     NON_ID_CHARS = ['"', "'", '`', '(', ')', '[', ']', '{', '}', '|', ';', '#']
 
@@ -70,13 +69,34 @@ class Lexer:
 
         while self.current_char is not None and not self.current_char.isspace() \
                 and self.current_char not in self.NON_ID_CHARS:
-            if self.current_char not in self.NON_ID_CHARS and not self.current_char.isdigit():
+            # rational
+            if self.current_char == '/':
+                self.advance()
+                if self.current_char is None or not self.current_char.isdigit():
+                    return self.identifier(number)
+                else:
+                    numerator = number
+                    denominator = self.current_char
+                    self.advance()
+
+                    while self.current_char is not None and not self.current_char.isspace() \
+                            and self.current_char not in self.NON_ID_CHARS:
+                        if not self.current_char.isdigit():
+                            return self.identifier(numerator + denominator)
+
+                        denominator += self.current_char
+                        self.advance()
+
+                    return Token(TokenType.RATIONAL, (int(numerator), int(denominator)))
+
+            # NaN
+            if not self.current_char.isdigit():
                 return self.identifier(number)
 
             number += self.current_char
             self.advance()
 
-        return Token(TokenType.NUMBER, float(number), self.line_no, self.column)
+        return Token(TokenType.NUMBER, int(number), self.line_no, self.column)
 
     def string(self) -> Token:
         """Handles strings."""

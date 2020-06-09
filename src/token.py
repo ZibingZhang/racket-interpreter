@@ -10,6 +10,7 @@ class TokenType(Enum):
     RPAREN = ')'
     # data types
     NUMBER = 'NUMBER'
+    RATIONAL = 'RATIONAL'
     BOOLEAN = 'BOOLEAN'
     STRING = 'STRING'
     # reserved keywords

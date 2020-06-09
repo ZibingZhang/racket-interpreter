@@ -65,6 +65,13 @@ class Str(AST):
         return self.__str__()
 
 
+class Rat(Num):
+    """A rational number."""
+
+    def __str__(self) -> str:
+        return f'<Rational value:{self.value}>'
+
+
 class Const(AST):
     """A constant value."""
 

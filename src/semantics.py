@@ -8,7 +8,7 @@ from src.symbol import AmbiguousSymbol, ConstSymbol, ProcSymbol, ScopedSymbolTab
 from src.token import Token
 
 if TYPE_CHECKING:
-    from src.ast import AST, Const, ConstAssign, Num, Param, ProcAssign, ProcCall, Program
+    from src.ast import AST, Bool, Const, ConstAssign, Num, Param, ProcAssign, ProcCall, Program, Rat, Str
     from src.symbol import Symbol
 
 
@@ -18,41 +18,16 @@ class SemanticAnalyzer(ASTVisitor):
         self.current_scope = None
         self.interpreter = None
 
-    def error(self, error_code: ErrorCode, token: Token, message: str):
-        raise SemanticError(
-            error_code=error_code,
-            token=token,
-            message=f'{error_code.value}: {message}; {token}.',
-        )
-
-    def arg_count_error(self, proc: Token, received: int, lower: int = None, upper: int = None):
-        if lower is None and upper is None:
-            msg = ''
-            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
-        elif lower is not None and upper is None:
-            msg = f'expected at least {lower} arguments, received {received}'
-            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
-        elif lower is None and upper is not None:
-            msg = f'expected at most {upper} arguments, received {received}'
-            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
-        elif lower is not None and upper is not None and lower != upper:
-            msg = f'expected at between {lower} and {upper} arguments, received {received}'
-            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
-        elif lower is not None and upper is not None and lower == upper:
-            msg = f'expected {lower} arguments, received {received}'
-            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
-
-    def log_scope(self, msg: str) -> None:
-        if C.SHOULD_LOG_SCOPE:
-            print(msg)
-
-    def visit_Bool(self, node: Num) -> None:
+    def visit_Bool(self, node: Bool) -> None:
         pass
 
     def visit_Num(self, node: Num) -> None:
         pass
 
-    def visit_Str(self, node: Num) -> None:
+    def visit_Str(self, node: Str) -> None:
+        pass
+
+    def visit_Rat(self, node: Rat) -> None:
         pass
 
     def visit_Const(self, node: Const) -> None:
@@ -277,6 +252,34 @@ class SemanticAnalyzer(ASTVisitor):
         self.current_scope = proc_scope.enclosing_scope
         self.log_scope(f'LEAVE SCOPE: {proc_name}')
         self.log_scope('')
+
+    def error(self, error_code: ErrorCode, token: Token, message: str):
+        raise SemanticError(
+            error_code=error_code,
+            token=token,
+            message=f'{error_code.value}: {message}; {token}.',
+        )
+
+    def arg_count_error(self, proc: Token, received: int, lower: int = None, upper: int = None):
+        if lower is None and upper is None:
+            msg = ''
+            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
+        elif lower is not None and upper is None:
+            msg = f'expected at least {lower} arguments, received {received}'
+            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
+        elif lower is None and upper is not None:
+            msg = f'expected at most {upper} arguments, received {received}'
+            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
+        elif lower is not None and upper is not None and lower != upper:
+            msg = f'expected at between {lower} and {upper} arguments, received {received}'
+            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
+        elif lower is not None and upper is not None and lower == upper:
+            msg = f'expected {lower} arguments, received {received}'
+            self.error(ErrorCode.ARGUMENT_COUNT, proc, msg)
+
+    def log_scope(self, msg: str) -> None:
+        if C.SHOULD_LOG_SCOPE:
+            print(msg)
 
     def _visit_builtin_ProcCall(self, node: ProcCall) -> None:
         proc = node.token

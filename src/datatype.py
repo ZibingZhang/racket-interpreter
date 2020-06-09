@@ -19,7 +19,7 @@ class Boolean(DataType):
         return issubclass(type(other), Boolean) and self.value == other.value
 
     def __str__(self) -> str:
-        return f'#{self.value}'
+        return f'#{"t" if self.value else "f"}'
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -79,6 +79,9 @@ class Procedure(DataType):
     def __init__(self, value: str) -> None:
         super().__init__(value)
 
+    def __eq__(self, other):
+        return issubclass(type(other), Procedure) and self.value == other.value
+
     def __str__(self) -> str:
         return f'#<procedure:{self.value}>'
 
@@ -89,6 +92,9 @@ class Procedure(DataType):
 class String(DataType):
     def __init__(self, value: str) -> None:
         super().__init__(value)
+
+    def __eq__(self, other):
+        return issubclass(type(other), String) and self.value == other.value
 
     def __str__(self) -> str:
         return f'"{self.value}"'
@@ -181,7 +187,7 @@ class Integer(ExactNumber):
         super().__init__(value)
 
     def __str__(self):
-        return str(int(self.value))
+        return str(self.value)
 
     def __add__(self, other) -> Number:
         if other.precedence > self.precedence:
