@@ -11,39 +11,32 @@ from src.stack import ActivationRecord, ARType, CallStack
 from src.token import Token
 
 if TYPE_CHECKING:
-    from src.ast import AST, Const, ConstAssign, Num, Param, ProcAssign, ProcCall, Program, Rat
+    from src import ast
     from src.datatype import DataType, Number
 
 
 class Interpreter(ASTVisitor):
 
-    def __init__(self, tree: AST) -> None:
+    def __init__(self, tree: ast.AST) -> None:
         self.tree = tree
         self.call_stack = CallStack()
 
         self.semantic_analyzer = SemanticAnalyzer()
         self.semantic_analyzer.interpreter = self
 
-    def visit_Bool(self, node: Num) -> Boolean:
+    def visit_Bool(self, node: ast.Bool) -> Boolean:
         # 1. return boolean
         return Boolean(node.value)
 
-    def visit_Num(self, node: Num) -> Number:
-        # 1. return number
-        number = node.value
-        return Integer(number)
-        # is_integer = number.is_integer()
-        # if is_integer:
-        #
-        # else:
-        #     raise IllegalStateError
-            # return InexactNumber(number)
+    def visit_Int(self, node: ast.Int) -> Number:
+        # 1. return integer
+        return Integer(node.value)
 
-    def visit_Str(self, node: Num) -> String:
+    def visit_Str(self, node: ast.Str) -> String:
         # 1. return string
         return String(node.value)
 
-    def visit_Rat(self, node: Rat) -> Union[Integer, Rational]:
+    def visit_Rat(self, node: ast.Rat) -> Union[Integer, Rational]:
         # 1. return rational number
         numerator = node.value[0]
         denominator = node.value[1]
@@ -53,16 +46,23 @@ class Interpreter(ASTVisitor):
         else:
             return Rational(fraction)
 
-    def visit_Const(self, node: Const) -> DataType:
-        # 1. lookup value of const
-        # 2. return value
+    def visit_Dec(self, node: ast.Dec) -> InexactNumber:
+        # 1. return decimal
+        return InexactNumber(node.value)
+
+    def visit_Const(self, node: ast.Const) -> DataType:
+        # 1. perform semantic analysis on node
+        # 2. lookup value of const
+        # 3. return value
+        self.semantic_analyzer.visit_Const(node)
+
         var_name = node.value
 
         var_value = self.call_stack.get(var_name)
 
         return var_value
 
-    def visit_ConstAssign(self, node: ConstAssign) -> None:
+    def visit_ConstAssign(self, node: ast.ConstAssign) -> None:
         # 1. perform semantic analysis on node
         #    a. ensure ID not already taken
         #    b. visit expr
@@ -77,11 +77,11 @@ class Interpreter(ASTVisitor):
         ar = self.call_stack.peek()
         ar[var_name] = var_value
 
-    def visit_Param(self, node: Param) -> None:
+    def visit_Param(self, node: ast.Param) -> None:
         # 1. should never visit param, raise error
         raise IllegalStateError('Interpreter should never have to visit a parameter.')
 
-    def visit_ProcAssign(self, node: ProcAssign) -> None:
+    def visit_ProcAssign(self, node: ast.ProcAssign) -> None:
         # 1. perform semantic analysis on node
         #    a. ensure ID not already taken
         #    b. define proc symbol
@@ -100,7 +100,7 @@ class Interpreter(ASTVisitor):
         ar = self.call_stack.peek()
         ar[proc_name] = proc_value
 
-    def visit_ProcCall(self, node: ProcCall) -> DataType:
+    def visit_ProcCall(self, node: ast.ProcCall) -> DataType:
         # TODO: edit logic here because its all over the place... but hey it seems to work :)
         # 1. perform semantic analysis on node
         #    a. is the proc built in
@@ -150,7 +150,7 @@ class Interpreter(ASTVisitor):
         else:
             return self._visit_user_defined_ProcCall(node)
 
-    def visit_Program(self, node: Program) -> List[DataType]:
+    def visit_Program(self, node: ast.Program) -> List[DataType]:
         # 1. create global activation record
         # 2. define builtin procs
         # 3. create global scope in semantic analyzer
@@ -212,14 +212,14 @@ class Interpreter(ASTVisitor):
         for proc in BUILT_IN_PROCS:
             ar[proc] = Procedure(proc)
 
-    def _visit_builtin_ProcCall(self, node: ProcCall) -> DataType:
+    def _visit_builtin_ProcCall(self, node: ast.ProcCall) -> DataType:
         proc_token = node.token
         proc_name = proc_token.value
         actual_params = node.actual_params
 
         return BUILT_IN_PROCS[proc_name].interpret(self, actual_params, proc_token)
 
-    def _visit_user_defined_ProcCall(self, node: ProcCall) -> DataType:
+    def _visit_user_defined_ProcCall(self, node: ast.ProcCall) -> DataType:
         proc_name = node.proc_name
 
         formal_params, actual_params, expr = self.semantic_analyzer.enter_proc(node)

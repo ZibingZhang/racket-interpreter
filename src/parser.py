@@ -40,15 +40,15 @@ class Parser:
 
     def data(self) -> AST:
         """
-        data: NUMBER
+        data: INTEGER
             | BOOLEAN
             | STRING
         """
         token = self.current_token
 
-        if token.type is TokenType.NUMBER:
-            self.eat(TokenType.NUMBER)
-            return ast.Num(token)
+        if token.type is TokenType.INTEGER:
+            self.eat(TokenType.INTEGER)
+            return ast.Int(token)
         elif token.type is TokenType.BOOLEAN:
             self.eat(TokenType.BOOLEAN)
             return ast.Bool(token)
@@ -58,6 +58,9 @@ class Parser:
         elif token.type is TokenType.RATIONAL:
             self.eat(TokenType.RATIONAL)
             return ast.Rat(token)
+        elif token.type is TokenType.DECIMAL:
+            self.eat(TokenType.DECIMAL)
+            return ast.Dec(token)
         else:
             self.error()
 
@@ -187,7 +190,7 @@ class Parser:
                  | empty
         """
         current_token = self.current_token
-        if current_token.type in [TokenType.BOOLEAN, TokenType.NUMBER, TokenType.RATIONAL, TokenType.STRING, TokenType.ID]:
+        if current_token.type in [TokenType.BOOLEAN, TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL, TokenType.STRING, TokenType.ID]:
             return self.expr()
         elif current_token.type is TokenType.LPAREN:
             next_token = self.lexer.peek_next_token()

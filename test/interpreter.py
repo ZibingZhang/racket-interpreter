@@ -59,13 +59,17 @@ class TestInterpreter(unittest.TestCase):
                 -987
                 1/2
                 -2/1
+                000.100
+                -.05
             '''
         expected = [
             Integer(123),
             Integer(1),
             Integer(-987),
             Rational(f.Fraction(1, 2)),
-            Integer(-2)
+            Integer(-2),
+            InexactNumber(0.1),
+            InexactNumber(-0.05),
         ]
         self.interpret_text(text, expected)
 

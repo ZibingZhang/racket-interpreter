@@ -89,14 +89,29 @@ class Lexer:
 
                     return Token(TokenType.RATIONAL, (int(numerator), int(denominator)))
 
+            # decimal
+            elif self.current_char == '.':
+                number += self.current_char
+                self.advance()
+
+                while self.current_char is not None and not self.current_char.isspace() \
+                        and self.current_char not in self.NON_ID_CHARS:
+                    if not self.current_char.isdigit():
+                        return self.identifier(number)
+
+                    number += self.current_char
+                    self.advance()
+
+                return Token(TokenType.DECIMAL, float(number))
+
             # NaN
-            if not self.current_char.isdigit():
+            elif not self.current_char.isdigit():
                 return self.identifier(number)
 
             number += self.current_char
             self.advance()
 
-        return Token(TokenType.NUMBER, int(number), self.line_no, self.column)
+        return Token(TokenType.INTEGER, int(number), self.line_no, self.column)
 
     def string(self) -> Token:
         """Handles strings."""
@@ -144,7 +159,8 @@ class Lexer:
                 self.skip_line_comment()
                 continue
 
-            if self.current_char.isdigit() or (self.current_char == '-' and self.peek().isdigit()):
+            if self.current_char.isdigit() or \
+                    (self.current_char == '-' and (self.peek().isdigit() or self.peek() == '.')):
                 return self.number()
 
             if self.current_char not in self.NON_ID_CHARS:

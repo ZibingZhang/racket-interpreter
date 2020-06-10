@@ -9,8 +9,9 @@ class TokenType(Enum):
     LPAREN = '('
     RPAREN = ')'
     # data types
-    NUMBER = 'NUMBER'
+    INTEGER = 'INTEGER'
     RATIONAL = 'RATIONAL'
+    DECIMAL = 'DECIMAL'
     BOOLEAN = 'BOOLEAN'
     STRING = 'STRING'
     # reserved keywords

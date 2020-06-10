@@ -37,7 +37,7 @@ class Bool(AST):
         return self.__str__()
 
 
-class Num(AST):
+class Int(AST):
     """A number."""
 
     def __init__(self, number: Token) -> None:
@@ -45,7 +45,7 @@ class Num(AST):
         self.value = number.value
 
     def __str__(self) -> str:
-        return f'<Num value:{self.value}>'
+        return f'<Int value:{self.value}>'
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -65,11 +65,32 @@ class Str(AST):
         return self.__str__()
 
 
-class Rat(Num):
+class Rat(AST):
     """A rational number."""
 
+    def __init__(self, number: Token) -> None:
+        self.token = number
+        self.value = number.value
+
     def __str__(self) -> str:
-        return f'<Rational value:{self.value}>'
+        return f'<Rat value:{self.value}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Dec(AST):
+    """A decimal number."""
+
+    def __init__(self, number: Token) -> None:
+        self.token = number
+        self.value = number.value
+
+    def __str__(self) -> str:
+        return f'<Dec value:{self.value}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class Const(AST):

@@ -8,7 +8,7 @@ from src.symbol import AmbiguousSymbol, ConstSymbol, ProcSymbol, ScopedSymbolTab
 from src.token import Token
 
 if TYPE_CHECKING:
-    from src.ast import AST, Bool, Const, ConstAssign, Num, Param, ProcAssign, ProcCall, Program, Rat, Str
+    from src import ast
     from src.symbol import Symbol
 
 
@@ -18,21 +18,25 @@ class SemanticAnalyzer(ASTVisitor):
         self.current_scope = None
         self.interpreter = None
 
-    def visit_Bool(self, node: Bool) -> None:
+    def visit_Bool(self, node: ast.Bool) -> None:
         pass
 
-    def visit_Num(self, node: Num) -> None:
+    def visit_Int(self, node: ast.Int) -> None:
         pass
 
-    def visit_Str(self, node: Str) -> None:
+    def visit_Str(self, node: ast.Str) -> None:
         pass
 
-    def visit_Rat(self, node: Rat) -> None:
+    def visit_Rat(self, node: ast.Rat) -> None:
         pass
 
-    def visit_Const(self, node: Const) -> None:
+    def visit_Dec(self, node: ast.Dec) -> None:
+        pass
+
+    def visit_Const(self, node: ast.Const) -> None:
         var_name = node.value
         var_symbol = self.current_scope.lookup(var_name)
+        print(var_symbol)
         if var_symbol is None:
             self.error(
                 error_code=ErrorCode.ID_NOT_FOUND,
@@ -40,7 +44,7 @@ class SemanticAnalyzer(ASTVisitor):
                 message=f"'{node.token.value}'"
             )
 
-    def visit_ConstAssign(self, node: ConstAssign) -> None:
+    def visit_ConstAssign(self, node: ast.ConstAssign) -> None:
         var_name = node.identifier
         var_symbol = ConstSymbol(var_name)
 
@@ -55,10 +59,10 @@ class SemanticAnalyzer(ASTVisitor):
 
         self.current_scope.define(var_symbol)
 
-    def visit_Param(self, node: Param) -> None:
+    def visit_Param(self, node: ast.Param) -> None:
         raise IllegalStateError('Semantic analyzer should never have to visit a parameter.')
 
-    def visit_ProcAssign(self, node: ProcAssign) -> None:
+    def visit_ProcAssign(self, node: ast.ProcAssign) -> None:
         proc_name = node.identifier
         proc_symbol = ProcSymbol(proc_name)
 
@@ -100,13 +104,13 @@ class SemanticAnalyzer(ASTVisitor):
         # accessed when interpreter is executing procedure call
         proc_symbol.expr = node.expr
 
-    def visit_ProcCall(self, node: ProcCall) -> None:
+    def visit_ProcCall(self, node: ast.ProcCall) -> None:
         if Token.is_builtin_proc(node.token):
             self._visit_builtin_ProcCall(node)
         else:
             self._visit_user_defined_ProcCall(node)
 
-    def visit_Program(self, node: Program) -> None:
+    def visit_Program(self, node: ast.Program) -> None:
         raise NotImplementedError
 
     def enter_program(self) -> None:
@@ -129,7 +133,7 @@ class SemanticAnalyzer(ASTVisitor):
         self.current_scope = self.current_scope.enclosing_scope
         self.log_scope('LEAVE SCOPE: global')
 
-    def enter_proc(self, node: ProcCall) -> Tuple[List[Symbol], List[AST], Optional[ProcCall]]:
+    def enter_proc(self, node: ast.ProcCall) -> Tuple[List[Symbol], List[ast.AST], Optional[ast.ProcCall]]:
         proc_name = node.proc_name
         proc = self.current_scope.lookup(proc_name)
 
@@ -243,7 +247,7 @@ class SemanticAnalyzer(ASTVisitor):
                 message=f"'{proc_name}' is not a procedure"
             )
 
-    def leave_proc(self, node: ProcCall) -> None:
+    def leave_proc(self, node: ast.ProcCall) -> None:
         proc_scope = self.current_scope
         proc_name = node.proc_name
         self.log_scope('')
@@ -281,7 +285,7 @@ class SemanticAnalyzer(ASTVisitor):
         if C.SHOULD_LOG_SCOPE:
             print(msg)
 
-    def _visit_builtin_ProcCall(self, node: ProcCall) -> None:
+    def _visit_builtin_ProcCall(self, node: ast.ProcCall) -> None:
         proc = node.token
         proc_name = proc.value
         actual_param_len = len(node.actual_params)
@@ -299,7 +303,7 @@ class SemanticAnalyzer(ASTVisitor):
         for param in node.actual_params:
             self.visit(param)
 
-    def _visit_user_defined_ProcCall(self, node: ProcCall) -> None:
+    def _visit_user_defined_ProcCall(self, node: ast.ProcCall) -> None:
         proc = node.token
         actual_param_len = len(node.actual_params)
 
