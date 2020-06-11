@@ -26,6 +26,7 @@ class TestInterpreter(unittest.TestCase):
         result = interpreter.interpret()
 
         for output, expected in zip(result, expected):
+            self.assertEqual(type(output), type(expected))
             if issubclass(type(expected), InexactNumber):
                 self.assertTrue(abs(output.value - expected.value) < 0.01)
             else:
@@ -61,15 +62,21 @@ class TestInterpreter(unittest.TestCase):
                 -2/1
                 000.100
                 -.05
+                -.0
+                .0
+                .01
             '''
         expected = [
             Integer(123),
             Integer(1),
             Integer(-987),
-            Rational(f.Fraction(1, 2)),
+            Rational(1, 2),
             Integer(-2),
             InexactNumber(0.1),
             InexactNumber(-0.05),
+            InexactNumber(0.0),
+            InexactNumber(0.0),
+            InexactNumber(0.01)
         ]
         self.interpret_text(text, expected)
 
@@ -123,17 +130,46 @@ class TestInterpreter(unittest.TestCase):
         text = \
             '''
                 (define (factorial n)
-                (if (= n 0)
-                    1
-                    (* n (factorial (- n 1)))))
+                    (if (= n 0)
+                        1
+                        (* n (factorial (- n 1)))))
+                (factorial 0)
                 (factorial 10)
             '''
         expected = [
+            Integer(1),
             Integer(3628800)
         ]
         self.interpret_text(text, expected)
 
-    def test_builtin_procs(self) -> None:
+        text = \
+            '''
+                (define (fibonacci-acc n i n2 n1)
+                    (if (= n i) (+ n1 n2)
+                        (fibonacci-acc n (add1 i) n1 (+ n1 n2))))
+                (define (fibonacci n)
+                    (cond [(= n 0) 0]
+                          [(= n 1) 1]
+                          [else (fibonacci-acc n 2 0 1)]))
+                
+                (fibonacci 0)
+                (fibonacci 1)
+                (fibonacci 2)
+                (fibonacci 3)
+                (fibonacci 4)
+                ; (fibonacci 121)
+            '''
+        expected = [
+            Integer(0),
+            Integer(1),
+            Integer(1),
+            Integer(2),
+            Integer(3),
+            # Integer(8670007398507948658051921)
+        ]
+        self.interpret_text(text, expected)
+
+    def test_builtin_if(self) -> None:
         text = \
             '''
                 (if #t 1 2)
@@ -145,17 +181,19 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
+    def test_builtin_add1(self) -> None:
         text = \
             '''
                 (add1 (- (/ 3 2)))
                 (add1 2)
             '''
         expected = [
-            Rational(f.Fraction(-1, 2)),
+            Rational(-1, 2),
             Integer(3)
         ]
         self.interpret_text(text, expected)
 
+    def test_builtin_and(self) -> None:
         text = \
             '''
                 (and)
@@ -170,6 +208,88 @@ class TestInterpreter(unittest.TestCase):
             Boolean(True),
             Boolean(True),
             Boolean(False)
+        ]
+        self.interpret_text(text, expected)
+
+    def test_builtin_symbol_plus(self) -> None:
+        text = \
+            '''
+                (+)
+                (+ 1)
+                (+ 1 1/2)
+                (+ 1/2 1)
+                (+ 5/7 3/9)
+                (+ 5/7 3/9 -1/22 0.)
+                (+ 1/2 1/2)
+            '''
+        expected = [
+            Integer(0),
+            Integer(1),
+            Rational(3, 2),
+            Rational(3, 2),
+            Rational(66, 63),
+            InexactNumber(1),
+            Integer(1)
+        ]
+        self.interpret_text(text, expected)
+
+    def test_builtin_symbol_minus(self) -> None:
+        text = \
+            '''
+                (- 1)
+                (- 1 1/2)
+                (- 1/2 1)
+                (- 5/7 3/9)
+                (- 3. 2)
+                (- 3/2 1/2)
+            '''
+        expected = [
+            Integer(-1),
+            Rational(1, 2),
+            Rational(-1, 2),
+            Rational(24, 63),
+            InexactNumber(1),
+            Integer(1)
+        ]
+        self.interpret_text(text, expected)
+
+    def test_builtin_symbol_multiply(self) -> None:
+        text = \
+            '''
+                (*)
+                (* 2)
+                (* 1/2 5/3)
+                (* 1/2 9 3)
+                (* 3/2 2/3)
+                (* 1. 0)
+            '''
+        expected = [
+            Integer(1),
+            Integer(2),
+            Rational(5, 6),
+            Rational(27, 2),
+            Integer(1),
+            Integer(0),
+        ]
+        self.interpret_text(text, expected)
+
+    def test_builtin_symbol_division(self) -> None:
+        text = \
+            '''
+                (/ 1)
+                (/ 2)
+                (/ 1.)
+                (/ 1/2 1/2)
+                (/ 1/2 1/4 2)
+                (/ 1/2 1/4 2.)
+            '''
+        expected = [
+            Integer(1),
+            Rational(1, 2),
+            InexactNumber(1.0),
+            Integer(1),
+            Integer(1),
+            InexactNumber(1.0)
         ]
         self.interpret_text(text, expected)
 

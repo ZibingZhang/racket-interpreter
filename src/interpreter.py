@@ -44,7 +44,7 @@ class Interpreter(ASTVisitor):
         if fraction.denominator == 1:
             return Integer(fraction.numerator)
         else:
-            return Rational(fraction)
+            return Rational(fraction.numerator, fraction.denominator)
 
     def visit_Dec(self, node: ast.Dec) -> InexactNumber:
         # 1. return decimal
@@ -188,6 +188,41 @@ class Interpreter(ASTVisitor):
 
         return result
 
+    def visit_CondElse(self, node: ast.CondElse) -> None:
+        raise IllegalStateError('Interpreter should never have to visit a cond else.')
+
+    def visit_CondBranch(self, node: ast.CondBranch) -> None:
+        raise IllegalStateError('Interpreter should never have to visit a cond branch.')
+
+    def visit_Cond(self, node: ast.Cond) -> DataType:
+        token = node.token
+
+        idx = 0
+        for idx, branch in enumerate(node.branches):
+            predicate_result = self.visit(branch.predicate)
+
+            if not issubclass(type(predicate_result), Boolean):
+                self.builtin_proc_type_error(
+                    proc_token=token,
+                    expected_type="Boolean",
+                    param_value=predicate_result,
+                    idx=idx
+                )
+
+            if predicate_result:
+                return self.visit(branch.expr)
+        else_branch = node.else_branch
+        if node.else_branch is not None:
+            else_expr = else_branch.expr
+            return self.visit(else_expr)
+
+        self.error(
+            error_code=ErrorCode.NO_COND_BRANCH,
+            token=token,
+            message='did not enter a branch',
+            idx=idx
+        )
+
     def interpret(self) -> Any:
         tree = self.tree
         return self.visit(tree)
@@ -195,6 +230,13 @@ class Interpreter(ASTVisitor):
     def log_stack(self, msg) -> None:
         if C.SHOULD_LOG_STACK:
             print(msg)
+
+    def error(self, error_code: ErrorCode, token: Token, message: str, idx: int):
+        raise InterpreterError(
+            error_code=error_code,
+            token=token,
+            message=f'{error_code.value}: {message}; idx={idx}; {token}.',
+        )
 
     def builtin_proc_type_error(self, proc_token: Token, expected_type: str,
                                 param_value: DataType, idx: int) -> None:

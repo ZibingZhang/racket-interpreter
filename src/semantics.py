@@ -36,7 +36,7 @@ class SemanticAnalyzer(ASTVisitor):
     def visit_Const(self, node: ast.Const) -> None:
         var_name = node.value
         var_symbol = self.current_scope.lookup(var_name)
-        print(var_symbol)
+
         if var_symbol is None:
             self.error(
                 error_code=ErrorCode.ID_NOT_FOUND,
@@ -112,6 +112,19 @@ class SemanticAnalyzer(ASTVisitor):
 
     def visit_Program(self, node: ast.Program) -> None:
         raise NotImplementedError
+
+    def visit_CondElse(self, node: ast.CondElse) -> None:
+        self.visit(node.expr)
+
+    def visit_CondBranch(self, node: ast.CondBranch) -> None:
+        self.visit(node.predicate)
+        self.visit(node.expr)
+
+    def visit_Cond(self, node: ast.Cond) -> None:
+        for branch in node.branches:
+            self.visit(branch)
+        if node.else_branch is not None:
+            self.visit(node.else_branch)
 
     def enter_program(self) -> None:
         self.log_scope('ENTER SCOPE: global')

@@ -5,7 +5,6 @@ from src.errors import ErrorCode, ParserError
 from src.token import Token, TokenType
 
 if TYPE_CHECKING:
-    from src.ast import AST, Program
     from src.lexer import Lexer
 
 
@@ -25,7 +24,17 @@ class Parser:
             message=f'{error_code.value}: {token}',
         )
 
-    def eat(self, token_type: TokenType) -> None:
+    def error_mismatched_paren(self, expected: str) -> None:
+        token = self.current_token
+        received = token.value
+        error_code = ErrorCode.WRONG_CLOSING_PARENTHESIS
+        raise ParserError(
+            error_code=error_code,
+            token=token,
+            message=f"{error_code.value}, expected '{expected}' but received '{received}: {token}"
+        )
+
+    def eat(self, token_type: TokenType) -> Token:
         """ Eat the current token and advance to the next one.
 
         Compare the current token to the passed type. If they
@@ -34,11 +43,25 @@ class Parser:
         exception.
         """
         if self.current_token.type is token_type:
+            previous_token = self.current_token
             self.current_token = self.lexer.get_next_token()
+            return previous_token
         else:
             self.error()
 
-    def data(self) -> AST:
+    def eat_right_paren(self, left_paren: Token) -> None:
+        left_value = left_paren.value
+        right_value = self.current_token.value
+        if left_value == '(' and right_value != ')':
+            self.error_mismatched_paren(')')
+        elif left_value == '[' and right_value != ']':
+            self.error_mismatched_paren(']')
+        elif left_value == '{' and right_value != '}':
+            self.error_mismatched_paren('}')
+
+        self.eat(TokenType.RPAREN)
+
+    def data(self) -> ast.AST:
         """
         data: INTEGER
             | BOOLEAN
@@ -64,7 +87,7 @@ class Parser:
         else:
             self.error()
 
-    def term(self) -> AST:
+    def term(self) -> ast.AST:
         """
         term: data
             | expr
@@ -82,7 +105,7 @@ class Parser:
         else:
             return self.data()
 
-    def p_expr(self) -> AST:
+    def p_expr(self) -> ast.AST:
         """
         p-expr: LPAREN PLUS term* RPAREN
               | LPAREN MUL term* RPAREN
@@ -90,7 +113,7 @@ class Parser:
               | LPAREN DIV term+ RPAREN
         """
         # opening left bracket
-        self.eat(TokenType.LPAREN)
+        left_paren = self.eat(TokenType.LPAREN)
         op = self.current_token
         node = ast.ProcCall(op, [])
         if op.type is TokenType.ID:
@@ -102,18 +125,75 @@ class Parser:
             node.append(self.term())
 
         # closing right bracket
-        self.eat(TokenType.RPAREN)
+        self.eat_right_paren(left_paren)
 
         return node
 
-    def expr(self) -> AST:
+    def cond_else(self) -> ast.CondElse:
+        """cond-else: LPAREN ELSE expr RPAREN"""
+        # opening left bracket
+        left_paren = self.eat(TokenType.LPAREN)
+
+        self.eat(TokenType.ELSE)
+
+        expr = self.expr()
+
+        node = ast.CondElse(left_paren, expr)
+
+        # closing right bracket
+        self.eat_right_paren(left_paren)
+
+        return node
+
+    def cond_branch(self) -> ast.CondBranch:
+        """cond-branch: LPAREN expr expr RPAREN"""
+        # opening left bracket
+        left_paren = self.eat(TokenType.LPAREN)
+
+        predicate = self.expr()
+        expr = self.expr()
+
+        node = ast.CondBranch(left_paren, predicate, expr)
+
+        # closing right bracket
+        self.eat_right_paren(left_paren)
+
+        return node
+
+    def cond(self) -> ast.Cond:
+        """cond: LPAREN COND cond-branch+ cond-else? RPAREN"""
+        # opening left bracket
+        left_paren = self.eat(TokenType.LPAREN)
+
+        token = self.eat(TokenType.COND)
+
+        branches = [self.cond_branch()]
+        while self.current_token.type == TokenType.LPAREN and self.lexer.peek_next_token().type == TokenType.LPAREN:
+            branch = self.cond_branch()
+            branches.append(branch)
+
+        else_branch = None
+        if self.lexer.peek_next_token().type == TokenType.ELSE:
+            else_branch = self.cond_else()
+
+        # closing right bracket
+        self.eat_right_paren(left_paren)
+
+        node = ast.Cond(token, branches, else_branch)
+        return node
+
+    def expr(self) -> ast.AST:
         """
         expr: data
             | p-expr
             | const
         """
         if self.current_token.type is TokenType.LPAREN:
-            node = self.p_expr()
+            next_token = self.lexer.peek_next_token()
+            if next_token.type is TokenType.COND:
+                node = self.cond()
+            else:
+                node = self.p_expr()
             return node
         elif self.current_token.type is TokenType.ID:
             token = self.current_token
@@ -122,16 +202,16 @@ class Parser:
         else:
             return self.data()
 
-    def const(self) -> AST:
+    def const(self) -> ast.Const:
         """const: ID"""
         node = ast.Const(self.current_token)
         self.eat(TokenType.ID)
         return node
 
-    def constant_assignment(self) -> AST:
+    def constant_assignment(self) -> ast.ConstAssign:
         """constant_assignment: LPAREN DEFINE const expr RPAREN"""
         # opening left bracket
-        self.eat(TokenType.LPAREN)
+        left_paren = self.eat(TokenType.LPAREN)
 
         self.eat(TokenType.DEFINE)
 
@@ -141,17 +221,17 @@ class Parser:
         expr = self.expr()
 
         # closing right bracket
-        self.eat(TokenType.RPAREN)
+        self.eat_right_paren(left_paren)
 
         return ast.ConstAssign(identifier, expr)
 
-    def function_assignment(self) -> AST:
-        """function_assignment: LPAREN DEFINE LPAREN const* RPAREN expr RPAREN"""
+    def procedure_assignment(self) -> ast.ProcAssign:
+        """procedure_assignment: LPAREN DEFINE LPAREN const* RPAREN expr RPAREN"""
         # opening left bracket
-        self.eat(TokenType.LPAREN)
+        left_paren_1 = self.eat(TokenType.LPAREN)
         self.eat(TokenType.DEFINE)
 
-        self.eat(TokenType.LPAREN)
+        left_paren_2 = self.eat(TokenType.LPAREN)
 
         identifier = self.current_token
         self.eat(TokenType.ID)
@@ -164,26 +244,26 @@ class Parser:
             params.append(param)
             self.eat(TokenType.ID)
 
-        self.eat(TokenType.RPAREN)
+        self.eat_right_paren(left_paren_2)
 
         expr = self.expr()
 
         # closing right bracket
-        self.eat(TokenType.RPAREN)
+        self.eat_right_paren(left_paren_1)
 
         return ast.ProcAssign(identifier, params, expr)
 
-    def assignment_statement(self) -> AST:
+    def assignment_statement(self) -> ast.AST:
         """
         assignment_statement: constant_assignment
-                            | function_assignment
+                            | procedure_assignment
         """
         if self.lexer.peek_next_token(2).type is TokenType.LPAREN:
-            return self.function_assignment()
+            return self.procedure_assignment()
         else:
             return self.constant_assignment()
 
-    def statement(self) -> AST:
+    def statement(self) -> ast.AST:
         """
         statement: assignment_statement
                  | expr
@@ -205,7 +285,7 @@ class Parser:
         else:
             self.error(token=current_token)
 
-    def program(self) -> Program:
+    def program(self) -> ast.Program:
         """
         program : statement
                 | statement compound_statement
@@ -218,7 +298,7 @@ class Parser:
 
         return ast.Program(statements)
 
-    def parse(self) -> Program:
+    def parse(self) -> ast.Program:
         node = self.program()
         current_token = self.current_token
         if current_token.type != TokenType.EOF:

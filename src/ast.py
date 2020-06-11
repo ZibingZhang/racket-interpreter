@@ -160,7 +160,6 @@ class ProcCall(AST):
         self.actual_params = actual_params
 
     def __str__(self) -> str:
-        # return f'<ProcCall proc_name:{self.proc_name}  actual_params:{self.actual_params}  proc_symbol:{self.proc_symbol}>'
         return f'<ProcCall proc_name:{self.proc_name}  actual_params:{self.actual_params}>'
 
     def __repr__(self) -> str:
@@ -182,3 +181,46 @@ class Program(AST):
     def __repr__(self) -> str:
         return self.__str__()
 
+
+class CondElse(AST):
+    """The else cond branch."""
+
+    def __init__(self, token: Token, expr: AST):
+        self.token = token
+        self.expr = expr
+
+    def __str__(self) -> str:
+        return f'<CondBranch  expr{self.expr}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class CondBranch(AST):
+    """A cond branch with a condition."""
+
+    def __init__(self, token: Token, predicate: AST, expr: AST):
+        self.token = token
+        self.predicate = predicate
+        self.expr = expr
+
+    def __str__(self) -> str:
+        return f'<CondBranch predicate:{self.predicate}  expr{self.expr}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Cond(AST):
+    """A cond statement."""
+
+    def __init__(self, token: Token, branches: List[CondBranch], else_branch: Optional[CondElse] = None) -> None:
+        self.token = token
+        self.branches = branches
+        self.else_branch = else_branch
+
+    def __str__(self) -> str:
+        return f'<Cond branches:{self.branches}  else_branch{self.else_branch}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()

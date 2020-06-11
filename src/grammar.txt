@@ -16,9 +16,16 @@ term: data
 
 p-expr: LPAREN proc term* RPAREN
 
+cond-else: LPAREN ELSE expr RPAREN
+
+cond-branch: LPAREN expr expr RPAREN
+
+cond: LPAREN COND cond-branch+ cond-else? RPAREN
+
 expr: data
     | p-expr
     | constant
+    | cond
 
 constant: ID
 

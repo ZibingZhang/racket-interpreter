@@ -6,8 +6,8 @@ from src.builtins import BUILT_IN_PROCS
 
 class TokenType(Enum):
     # single-character token types
-    LPAREN = '('
-    RPAREN = ')'
+    LPAREN = 'LPAREN'
+    RPAREN = 'RPAREN'
     # data types
     INTEGER = 'INTEGER'
     RATIONAL = 'RATIONAL'
@@ -16,6 +16,8 @@ class TokenType(Enum):
     STRING = 'STRING'
     # reserved keywords
     DEFINE = 'define'
+    COND = 'cond'
+    ELSE = 'else'
     # misc
     ID = 'ID'            # start with an alphabetical char followed by any number of alphanumeric chars
     EOF = 'EOF'
@@ -74,7 +76,7 @@ def _build_reserved_keywords():
     # enumerations support iteration, in definition order
     tt_list = list(TokenType)
     start_idx = tt_list.index(TokenType.DEFINE)
-    end_idx = tt_list.index(TokenType.DEFINE)
+    end_idx = tt_list.index(TokenType.ELSE)
     reserved_keywords = {
         token_type.value: token_type
         for token_type in tt_list[start_idx:end_idx + 1]

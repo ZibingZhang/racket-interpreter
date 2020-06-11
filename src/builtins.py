@@ -2,6 +2,7 @@ from __future__ import annotations
 import abc
 from typing import TYPE_CHECKING, List, Optional
 from src.datatype import Boolean, Integer, Number, String
+from src.errors import ErrorCode
 
 if TYPE_CHECKING:
     from src.ast import AST
@@ -173,6 +174,14 @@ class SymbolDivide(BuiltInProc):
                     idx=0
                 )
 
+            if param_value == Integer(0):
+                interpreter.error(
+                    error_code=ErrorCode.DIVIDE_BY_ZERO,
+                    token=proc_token,
+                    message='Cannot divide by zero',
+                    idx=0
+                )
+
             result = Integer(1)/param_value
         else:
             param_value = interpreter.visit(actual_params[0])
@@ -182,6 +191,14 @@ class SymbolDivide(BuiltInProc):
                     proc_token=proc_token,
                     expected_type='Number',
                     param_value=param_value,
+                    idx=0
+                )
+
+            if param_value == Integer(0):
+                interpreter.error(
+                    error_code=ErrorCode.DIVIDE_BY_ZERO,
+                    token=proc_token,
+                    message='Cannot divide by zero',
                     idx=0
                 )
 

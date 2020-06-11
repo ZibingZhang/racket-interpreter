@@ -66,7 +66,7 @@ class Number(DataType):
 
     def __truediv__(self, other) -> Number:
         if other.precedence > self.precedence:
-            return 1/other.__truediv__(self)
+            return Integer(1)/other.__truediv__(self)
         else:
             return Number(self.value / other.value)
 
@@ -129,7 +129,7 @@ class RealNumber(Number):
 
     def __truediv__(self, other) -> Number:
         if other.precedence > self.precedence:
-            return 1/other.__truediv__(self)
+            return Integer(1)/other.__truediv__(self)
         else:
             return RealNumber(self.value / other.value)
 
@@ -173,7 +173,7 @@ class InexactNumber(RealNumber):
 
     def __truediv__(self, other) -> Number:
         if other.precedence > self.precedence:
-            return 1/other.__truediv__(self)
+            return Integer(1)/other.__truediv__(self)
         else:
             return InexactNumber(self.value / other.value)
 
@@ -182,6 +182,10 @@ class InexactNumber(RealNumber):
 
 
 class Integer(ExactNumber):
+
+    @property
+    def precedence(self):
+        return 1
 
     def __init__(self, value: int) -> None:
         super().__init__(value)
@@ -208,14 +212,22 @@ class Integer(ExactNumber):
             return Integer(self.value * other.value)
 
     def __truediv__(self, other) -> Number:
-        if other.precedence > self.precedence:
-            return 1/other.__truediv__(self)
+        other_type = type(other)
+        if issubclass(other_type, Rational):
+            numerator = self.value * other.denominator
+            denominator = other.numerator
+            fraction = f.Fraction(numerator, denominator)
+        elif issubclass(other_type, Integer):
+            numerator = self.value
+            denominator = other.value
+            fraction = f.Fraction(numerator, denominator)
         else:
-            fraction = f.Fraction(self.value, other.value)
-            if fraction.denominator == 1:
-                return Integer(fraction.numerator)
-            else:
-                return Rational(fraction)
+            return InexactNumber(self.value/other.value)
+
+        if fraction.denominator == 1:
+            return Integer(fraction.numerator)
+        else:
+            return Rational(fraction.numerator, fraction.denominator)
 
     def __neg__(self) -> Number:
         return Integer(-self.value)
@@ -223,9 +235,11 @@ class Integer(ExactNumber):
 
 class Rational(ExactNumber):
 
-    def __init__(self, fraction: f.Fraction) -> None:
-        numerator = fraction.numerator
-        denominator = fraction.denominator
+    @property
+    def precedence(self):
+        return 2
+
+    def __init__(self, numerator: int, denominator: int) -> None:
         super().__init__(numerator / denominator)
         self.numerator = numerator
         self.denominator = denominator
@@ -243,7 +257,7 @@ class Rational(ExactNumber):
                 denominator = self.denominator
                 numerator = self.numerator + (denominator * other.value)
                 fraction = f.Fraction(numerator, denominator)
-                return Rational(fraction)
+                return Rational(fraction.numerator, fraction.denominator)
             else:
                 numerator = (self.numerator * other.denominator) + (self.denominator * other.numerator)
                 denominator = self.denominator * other.denominator
@@ -251,7 +265,7 @@ class Rational(ExactNumber):
                 if fraction.denominator == 1:
                     return Integer(fraction.numerator)
                 else:
-                    return Rational(fraction)
+                    return Rational(fraction.numerator, fraction.denominator)
 
     def __sub__(self, other) -> Number:
         if other.precedence > self.precedence:
@@ -263,7 +277,7 @@ class Rational(ExactNumber):
                 denominator = self.denominator
                 numerator = self.numerator - (denominator * other.value)
                 fraction = f.Fraction(numerator, denominator)
-                return Rational(fraction)
+                return Rational(fraction.numerator, fraction.denominator)
             else:
                 numerator = (self.numerator * other.denominator) - (self.denominator * other.numerator)
                 denominator = self.denominator * other.denominator
@@ -271,7 +285,7 @@ class Rational(ExactNumber):
                 if fraction.denominator == 1:
                     return Integer(fraction.numerator)
                 else:
-                    return Rational(fraction)
+                    return Rational(fraction.numerator, fraction.denominator)
 
     def __mul__(self, other) -> Number:
         if other.precedence > self.precedence:
@@ -289,11 +303,11 @@ class Rational(ExactNumber):
             if fraction.denominator == 1:
                 return Integer(fraction.numerator)
             else:
-                return Rational(fraction)
+                return Rational(fraction.numerator, fraction.denominator)
 
     def __truediv__(self, other) -> Number:
         if other.precedence > self.precedence:
-            return 1/other.__truediv__(self)
+            return Integer(1)/other.__truediv__(self)
         else:
             other_type = type(other)
             is_other_integer = issubclass(other_type, Integer)
@@ -307,8 +321,8 @@ class Rational(ExactNumber):
             if fraction.denominator == 1:
                 return Integer(fraction.numerator)
             else:
-                return Rational(fraction)
+                return Rational(fraction.numerator, fraction.denominator)
 
     def __neg__(self) -> Number:
         fraction = f.Fraction(-self.numerator, self.denominator)
-        return Rational(fraction)
+        return Rational(fraction.numerator, fraction.denominator)
