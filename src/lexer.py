@@ -44,6 +44,9 @@ class Lexer:
             return self.text[pos]
 
     def boolean(self) -> Token:
+        line_no = self.line_no
+        column = self.column
+
         boolean = self.current_char
         self.advance()
         while self.current_char is not None and self.current_char.isalpha():
@@ -51,70 +54,104 @@ class Lexer:
             self.advance()
 
         if boolean in ['#T', '#t', '#true']:
-            return Token(TokenType.BOOLEAN, True, self.line_no, self.column)
+            return Token(
+                type=TokenType.BOOLEAN,
+                value=True,
+                line_no=line_no,
+                column=column
+            )
         elif boolean in ['#F', '#f', '#false']:
-            return Token(TokenType.BOOLEAN, False, self.line_no, self.column)
+            return Token(
+                type=TokenType.BOOLEAN,
+                value=False,
+                line_no=line_no,
+                column=column
+            )
         else:
             self.error()
 
     def number(self) -> Token:
-        # TODO: Add in more number types
-        # TODO: Recognize more than just positive and negative ints
-        """Return a number token from a number consumed from the input."""
+        # TODO: clean up logic
+        """Return a number token from a number consumed from the input (or an ID if not a valid number)."""
+        line_no = self.line_no
+        column = self.column
+
         if self.current_char == '-':
             number = '-'
             self.advance()
         else:
             number = ''
 
+        is_rational = False
+        numerator = ''
+        denominator = ''
+
         while self.current_char is not None and not self.current_char.isspace() \
                 and self.current_char not in self.NON_ID_CHARS:
-            # rational
             if self.current_char == '/':
-                self.advance()
-                if self.current_char is None or not self.current_char.isdigit():
-                    return self.identifier(number)
-                else:
-                    numerator = number
-                    denominator = self.current_char
-                    self.advance()
-
-                    while self.current_char is not None and not self.current_char.isspace() \
-                            and self.current_char not in self.NON_ID_CHARS:
-                        if not self.current_char.isdigit():
-                            return self.identifier(numerator + denominator)
-
-                        denominator += self.current_char
-                        self.advance()
-
-                    return Token(TokenType.RATIONAL, (int(numerator), int(denominator)))
-
-            # decimal
-            elif self.current_char == '.':
+                is_rational = True
+                numerator = number
                 number += self.current_char
                 self.advance()
+                continue
 
-                while self.current_char is not None and not self.current_char.isspace() \
-                        and self.current_char not in self.NON_ID_CHARS:
-                    if not self.current_char.isdigit():
-                        return self.identifier(number)
-
-                    number += self.current_char
-                    self.advance()
-
-                return Token(TokenType.DECIMAL, float(number))
-
-            # NaN
-            elif not self.current_char.isdigit():
-                return self.identifier(number)
+            if is_rational:
+                denominator += self.current_char
 
             number += self.current_char
             self.advance()
 
-        return Token(TokenType.INTEGER, int(number), self.line_no, self.column)
+        if is_rational:
+            try:
+                numerator = int(numerator)
+                denominator = int(denominator)
+            except ValueError:
+                return Token(
+                    type=TokenType.ID,
+                    value=number,
+                    line_no=line_no,
+                    column=column
+                )
+            else:
+                return Token(
+                    type=TokenType.RATIONAL,
+                    value=(numerator, denominator),
+                    line_no=line_no,
+                    column=column
+                )
+        else:
+            try:
+                number = int(number)
+            except ValueError:
+                try:
+                    number = float(number)
+                except ValueError:
+                    return Token(
+                        type=TokenType.ID,
+                        value=number,
+                        line_no=line_no,
+                        column=column
+                    )
+                else:
+                    return Token(
+                        type=TokenType.DECIMAL,
+                        value=number,
+                        line_no=line_no,
+                        column=column
+                    )
+            else:
+                return Token(
+                    type=TokenType.INTEGER,
+                    value=number,
+                    line_no=line_no,
+                    column=column
+                )
 
     def string(self) -> Token:
         """Handles strings."""
+        line_no = self.line_no
+        column = self.column
+
         self.advance()
 
         string = ''
@@ -123,7 +160,12 @@ class Lexer:
             self.advance()
         self.advance()
 
-        return Token(TokenType.STRING, string, self.line_no, self.column)
+        return Token(
+            type=TokenType.STRING,
+            value=string,
+            line_no=line_no,
+            column=column
+        )
 
     def identifier(self, initial: str = '') -> Token:
         """Handles identifiers (including builtin functions)."""
@@ -134,7 +176,7 @@ class Lexer:
             self.advance()
 
         token_type = self.RESERVED_KEYWORDS.get(result, TokenType.ID)
-        token_value = result if token_type is TokenType.ID else None
+        token_value = result if token_type is TokenType.ID else token_type.value
         return Token(token_type, token_value, self.line_no, self.column)
 
     def skip_whitespace(self) -> None:
@@ -159,8 +201,8 @@ class Lexer:
                 self.skip_line_comment()
                 continue
 
-            if self.current_char.isdigit() or \
-                    (self.current_char == '-' and (self.peek().isdigit() or self.peek() == '.')):
+            if self.current_char.isdigit() or self.current_char == '.' \
+                    or (self.current_char == '-' and (self.peek().isdigit() or self.peek() == '.')):
                 return self.number()
 
             if self.current_char not in self.NON_ID_CHARS:
@@ -171,6 +213,30 @@ class Lexer:
 
             if self.current_char == '"':
                 return self.string()
+
+            if self.current_char in ['(', '{', '[']:
+                token_type = TokenType.LPAREN
+                value = self.current_char
+                token = Token(
+                    type=token_type,
+                    value=value,
+                    line_no=self.line_no,
+                    column=self.column
+                )
+                self.advance()
+                return token
+
+            if self.current_char in [')', '}', ']']:
+                token_type = TokenType.RPAREN
+                value = self.current_char
+                token = Token(
+                    type=token_type,
+                    value=value,
+                    line_no=self.line_no,
+                    column=self.column
+                )
+                self.advance()
+                return token
 
             try:
                 # get enum member by value
