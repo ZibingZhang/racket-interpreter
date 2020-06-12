@@ -43,22 +43,19 @@ class SymbolPlus(BuiltInProc):
 
     @staticmethod
     def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
-        if len(actual_params) == 0:
-            result = Integer(0)
-        else:
-            result = Integer(0)
-            for idx, param in enumerate(actual_params):
-                param_value = interpreter.visit(param)
+        result = Integer(0)
+        for idx, param in enumerate(actual_params):
+            param_value = interpreter.visit(param)
 
-                if not issubclass(type(param_value), Number):
-                    interpreter.builtin_proc_type_error(
-                        proc_token=proc_token,
-                        expected_type='Number',
-                        param_value=param_value,
-                        idx=idx
-                    )
+            if not issubclass(type(param_value), Number):
+                interpreter.builtin_proc_type_error(
+                    proc_token=proc_token,
+                    expected_type='Number',
+                    param_value=param_value,
+                    idx=idx
+                )
 
-                result += param_value
+            result += param_value
         return result
 
 
@@ -74,30 +71,19 @@ class SymbolMinus(BuiltInProc):
 
     @staticmethod
     def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+        param_value = interpreter.visit(actual_params[0])
+
+        if not issubclass(type(param_value), Number):
+            interpreter.builtin_proc_type_error(
+                proc_token=proc_token,
+                expected_type='Number',
+                param_value=param_value,
+                idx=0
+            )
+
         if len(actual_params) == 1:
-            param = actual_params[0]
-            param_value = interpreter.visit(param)
-
-            if not issubclass(type(param_value), Number):
-                interpreter.builtin_proc_type_error(
-                    proc_token=proc_token,
-                    expected_type='Number',
-                    param_value=param_value,
-                    idx=0
-                )
-
             result = -param_value
         else:
-            param_value = interpreter.visit(actual_params[0])
-
-            if not issubclass(type(param_value), Number):
-                interpreter.builtin_proc_type_error(
-                    proc_token=proc_token,
-                    expected_type='Number',
-                    param_value=param_value,
-                    idx=0
-                )
-
             result = param_value
             params = actual_params[1:]
             for idx, param in enumerate(params):
@@ -108,7 +94,7 @@ class SymbolMinus(BuiltInProc):
                         proc_token=proc_token,
                         expected_type='Number',
                         param_value=param_value,
-                        idx=idx
+                        idx=idx+1
                     )
 
                 result -= param_value
@@ -127,26 +113,23 @@ class SymbolMultiply(BuiltInProc):
 
     @staticmethod
     def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
-        if len(actual_params) == 0:
-            result = Integer(1)
-        else:
-            result = Integer(1)
-            for idx, param in enumerate(actual_params):
-                param_value = interpreter.visit(param)
+        result = Integer(1)
+        for idx, param in enumerate(actual_params):
+            param_value = interpreter.visit(param)
 
-                if not issubclass(type(param_value), Number):
-                    interpreter.builtin_proc_type_error(
-                        proc_token=proc_token,
-                        expected_type='Number',
-                        param_value=param_value,
-                        idx=idx
-                    )
+            if not issubclass(type(param_value), Number):
+                interpreter.builtin_proc_type_error(
+                    proc_token=proc_token,
+                    expected_type='Number',
+                    param_value=param_value,
+                    idx=idx
+                )
 
-                if param_value == Integer(0):
-                    result = Integer(0)
-                    break
+            if param_value == Integer(0):
+                result = Integer(0)
+                break
 
-                result *= param_value
+            result *= param_value
         return result
 
 
@@ -162,46 +145,27 @@ class SymbolDivide(BuiltInProc):
 
     @staticmethod
     def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+        param_value = interpreter.visit(actual_params[0])
+
+        if not issubclass(type(param_value), Number):
+            interpreter.builtin_proc_type_error(
+                proc_token=proc_token,
+                expected_type='Number',
+                param_value=param_value,
+                idx=0
+            )
+
         if len(actual_params) == 1:
-            param = actual_params[0]
-            param_value = interpreter.visit(param)
-
-            if not issubclass(type(param_value), Number):
-                interpreter.builtin_proc_type_error(
-                    proc_token=proc_token,
-                    expected_type='Number',
-                    param_value=param_value,
-                    idx=0
-                )
-
             if param_value == Integer(0):
                 interpreter.error(
                     error_code=ErrorCode.DIVIDE_BY_ZERO,
                     token=proc_token,
-                    message='Cannot divide by zero',
+                    message='cannot divide by zero',
                     idx=0
                 )
 
             result = Integer(1)/param_value
         else:
-            param_value = interpreter.visit(actual_params[0])
-
-            if not issubclass(type(param_value), Number):
-                interpreter.builtin_proc_type_error(
-                    proc_token=proc_token,
-                    expected_type='Number',
-                    param_value=param_value,
-                    idx=0
-                )
-
-            if param_value == Integer(0):
-                interpreter.error(
-                    error_code=ErrorCode.DIVIDE_BY_ZERO,
-                    token=proc_token,
-                    message='Cannot divide by zero',
-                    idx=0
-                )
-
             result = param_value
             params = actual_params[1:]
             for idx, param in enumerate(params):
@@ -213,6 +177,14 @@ class SymbolDivide(BuiltInProc):
                         expected_type='Number',
                         param_value=param_value,
                         idx=idx
+                    )
+
+                if param_value.value == Integer(0):
+                    interpreter.error(
+                        error_code=ErrorCode.DIVIDE_BY_ZERO,
+                        token=proc_token,
+                        message='cannot divide by zero',
+                        idx=0
                     )
 
                 result /= param_value
