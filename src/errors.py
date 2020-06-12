@@ -22,7 +22,6 @@ class Error(Exception):
         self.token = token
         # add exception class name before the message
         self.message = f'[{self.__class__.__name__}] {message}'
-        print(self.message)
 
 
 class LexerError(Error):
