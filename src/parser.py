@@ -106,12 +106,7 @@ class Parser:
             return self.data()
 
     def p_expr(self) -> ast.AST:
-        """
-        p-expr: LPAREN PLUS term* RPAREN
-              | LPAREN MUL term* RPAREN
-              | LPAREN MINUS term+ RPAREN
-              | LPAREN DIV term+ RPAREN
-        """
+        """p-expr: LPAREN proc term* RPAREN"""
         # opening left bracket
         left_paren = self.eat(TokenType.LPAREN)
         op = self.current_token
@@ -236,9 +231,7 @@ class Parser:
         identifier = self.current_token
         self.eat(TokenType.ID)
 
-        param = ast.Param(self.current_token)
-        params = [param]
-        self.eat(TokenType.ID)
+        params = []
         while self.current_token.type is TokenType.ID:
             param = ast.Param(self.current_token)
             params.append(param)
