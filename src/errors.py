@@ -43,6 +43,7 @@ class InterpreterError(Error):
 
     pass
 
+
 class IllegalStateError(RuntimeError):
 
     pass

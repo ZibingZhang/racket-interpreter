@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import Any
 from enum import Enum
-from src.builtins import BUILT_IN_PROCS
 
 
 class TokenType(Enum):
@@ -19,7 +18,7 @@ class TokenType(Enum):
     COND = 'cond'
     ELSE = 'else'
     # misc
-    ID = 'ID'            # start with an alphabetical char followed by any number of alphanumeric chars
+    ID = 'ID'
     EOF = 'EOF'
 
 
@@ -57,6 +56,7 @@ class Token:
     @staticmethod
     def create_proc(name: str, line_no: int = None, column: int = None) -> Token:
         return Token(TokenType.ID, name, line_no, column)
+
 
 def _build_reserved_keywords():
     """Build a dictionary of reserved keywords.

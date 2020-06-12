@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Tuple, List, Optional
+from typing import TYPE_CHECKING, Tuple, List
 from src.ast import ASTVisitor
 from src.builtins import BUILT_IN_PROCS
 from src.constants import C
@@ -9,7 +9,6 @@ from src.token import Token
 
 if TYPE_CHECKING:
     from src import ast
-    from src.symbol import Symbol
 
 
 class SemanticAnalyzer(ASTVisitor):
@@ -186,7 +185,8 @@ class SemanticAnalyzer(ASTVisitor):
 
         return proc_symbol, actual_params
 
-    def assert_actual_param_len(self, token: Token, proc_name: str, formal_params_len: int, actual_params_len: int) -> None:
+    def assert_actual_param_len(self, token: Token, proc_name: str,
+                                formal_params_len: int, actual_params_len: int) -> None:
         if proc_name in BUILT_IN_PROCS.keys():
             built_in_proc = BUILT_IN_PROCS[proc_name]
             lower = built_in_proc.lower()

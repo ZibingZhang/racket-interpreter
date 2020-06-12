@@ -1,6 +1,5 @@
 class Constants:
 
-    # can be modified at runtime
     SHOULD_LOG_SCOPE = True
     SHOULD_LOG_STACK = True
 
