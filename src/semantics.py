@@ -105,10 +105,19 @@ class SemanticAnalyzer(ASTVisitor):
         proc_symbol.expr = node.expr
 
     def visit_ProcCall(self, node: ast.ProcCall) -> None:
-        if Token.is_builtin_proc(node.token):
-            self._visit_builtin_ProcCall(node)
-        else:
-            self._visit_user_defined_ProcCall(node)
+        proc_token = node.token
+        proc_name = proc_token.value
+
+        defined_proc = self.current_scope.lookup(proc_name)
+        if defined_proc is None:
+            self.error(
+                error_code=ErrorCode.PROCEDURE_NOT_FOUND,
+                token=proc_token,
+                message=f"'{proc_name}'"
+            )
+
+        for param in node.actual_params:
+            self.visit(param)
 
     def visit_Program(self, node: ast.Program) -> None:
         raise NotImplementedError
@@ -146,41 +155,15 @@ class SemanticAnalyzer(ASTVisitor):
         self.current_scope = self.current_scope.enclosing_scope
         self.log_scope('LEAVE SCOPE: global')
 
-    def enter_proc(self, node: ast.ProcCall) -> Tuple[List[Symbol], List[ast.AST], Optional[ast.ProcCall]]:
+    def get_proc_symbol_and_actual_params(self, node: ast.ProcCall) \
+            -> Tuple[ProcSymbol, List[ast.Expr]]:
         proc_name = node.proc_name
-        proc = self.current_scope.lookup(proc_name)
+        proc_symbol = self.current_scope.lookup(proc_name)
 
-        if proc.type == 'PROCEDURE':
-            expr = proc.expr
+        if proc_symbol.type == 'PROCEDURE':
+            pass
 
-            formal_params = proc.formal_params
-            formal_params_len = len(formal_params)
-            actual_params = node.actual_params
-            actual_params_len = len(actual_params)
-
-            if formal_params_len != actual_params_len:
-                self.arg_count_error(
-                    proc=node.token,
-                    received=actual_params_len,
-                    lower=formal_params_len,
-                    upper=formal_params_len
-                )
-
-            self.log_scope('')
-            self.log_scope(f'ENTER SCOPE: {proc_name}')
-            # scope for parameters
-            proc_scope = ScopedSymbolTable(
-                scope_name=proc_name,
-                scope_level=self.current_scope.scope_level + 1,
-                enclosing_scope=self.current_scope
-            )
-            self.current_scope = proc_scope
-
-            for param in formal_params:
-                self.current_scope.define(param)
-
-            return formal_params, actual_params, expr
-        elif proc.type == 'AMBIGUOUS':
+        elif proc_symbol.type == 'AMBIGUOUS':
             call_stack = self.interpreter.call_stack
             scope = self.current_scope
 
@@ -192,67 +175,6 @@ class SemanticAnalyzer(ASTVisitor):
                 proc_name = proc_symbol.name
                 proc_symbol = scope.lookup(proc_name)
 
-            formal_params = proc_symbol.formal_params
-            formal_params_len = len(formal_params)
-            actual_params = node.actual_params
-            actual_params_len = len(actual_params)
-
-            # None if builtin proc
-            expr = proc_symbol.expr
-
-            if proc_name in BUILT_IN_PROCS.keys() and expr is None:
-                old_token = node.token
-                line_no = old_token.line_no
-                column = old_token.column
-                node.token = Token.create_proc(proc_name, line_no, column)
-
-                built_in_proc = BUILT_IN_PROCS[proc_name]
-                lower = built_in_proc.lower()
-                upper = built_in_proc.upper()
-
-                if upper is None:
-                    if not lower <= actual_params_len:
-                        self.arg_count_error(
-                            proc=node.token,
-                            received=actual_params_len,
-                            lower=lower,
-                            upper=upper
-                        )
-                else:
-                    if not lower <= actual_params_len <= upper:
-                        self.arg_count_error(
-                            proc=node.token,
-                            received=actual_params_len,
-                            lower=lower,
-                            upper=upper
-                        )
-
-                return formal_params, actual_params, expr
-            elif proc_name not in BUILT_IN_PROCS.keys() and expr is not None:
-                if formal_params_len != actual_params_len:
-                    self.arg_count_error(
-                        proc=node.token,
-                        received=actual_params_len,
-                        lower=formal_params_len,
-                        upper=formal_params_len
-                    )
-
-                self.log_scope('')
-                self.log_scope(f'ENTER SCOPE: {proc_name}')
-                # scope for parameters
-                proc_scope = ScopedSymbolTable(
-                    scope_name=proc_name,
-                    scope_level=self.current_scope.scope_level + 1,
-                    enclosing_scope=self.current_scope
-                )
-                self.current_scope = proc_scope
-
-                for param in formal_params:
-                    self.current_scope.define(param)
-
-                return formal_params, actual_params, expr
-            else:
-                raise IllegalStateError('Built in procs should have no expr.')
         else:
             self.error(
                 error_code=ErrorCode.NOT_A_PROCEDURE,
@@ -260,9 +182,58 @@ class SemanticAnalyzer(ASTVisitor):
                 message=f"'{proc_name}' is not a procedure"
             )
 
-    def leave_proc(self, node: ast.ProcCall) -> None:
+        actual_params = node.actual_params
+
+        return proc_symbol, actual_params
+
+    def assert_actual_param_len(self, token: Token, proc_name: str, formal_params_len: int, actual_params_len: int) -> None:
+        if proc_name in BUILT_IN_PROCS.keys():
+            built_in_proc = BUILT_IN_PROCS[proc_name]
+            lower = built_in_proc.lower()
+            upper = built_in_proc.upper()
+
+            if upper is None:
+                if not lower <= actual_params_len:
+                    self.arg_count_error(
+                        proc=token,
+                        received=actual_params_len,
+                        lower=lower,
+                        upper=upper
+                    )
+            else:
+                if not lower <= actual_params_len <= upper:
+                    self.arg_count_error(
+                        proc=token,
+                        received=actual_params_len,
+                        lower=lower,
+                        upper=upper
+                    )
+        else:
+            if formal_params_len != actual_params_len:
+                self.arg_count_error(
+                    proc=token,
+                    received=actual_params_len,
+                    lower=formal_params_len,
+                    upper=formal_params_len
+                )
+
+    def enter_proc(self, proc_name, formal_params) -> None:
+        self.log_scope('')
+        self.log_scope(f'ENTER SCOPE: {proc_name}')
+        # scope for parameters
+        proc_scope = ScopedSymbolTable(
+            scope_name=proc_name,
+            scope_level=self.current_scope.scope_level + 1,
+            enclosing_scope=self.current_scope
+        )
+        self.current_scope = proc_scope
+
+        for param in formal_params:
+            self.current_scope.define(param)
+
+    def leave_proc(self, proc_name) -> None:
         proc_scope = self.current_scope
-        proc_name = node.proc_name
+
         self.log_scope('')
         self.log_scope(str(proc_scope))
 
@@ -297,54 +268,3 @@ class SemanticAnalyzer(ASTVisitor):
     def log_scope(self, msg: str) -> None:
         if C.SHOULD_LOG_SCOPE:
             print(msg)
-
-    def _visit_builtin_ProcCall(self, node: ast.ProcCall) -> None:
-        proc = node.token
-        proc_name = proc.value
-        actual_param_len = len(node.actual_params)
-
-        built_in_proc = BUILT_IN_PROCS[proc_name]
-        lower = built_in_proc.lower()
-        upper = built_in_proc.upper()
-        if upper is None:
-            if not lower <= actual_param_len:
-                self.arg_count_error(proc=proc, received=actual_param_len, lower=lower)
-        else:
-            if not lower <= actual_param_len <= upper:
-                self.arg_count_error(proc=proc, received=actual_param_len, lower=lower, upper=upper)
-
-        for param in node.actual_params:
-            self.visit(param)
-
-    def _visit_user_defined_ProcCall(self, node: ast.ProcCall) -> None:
-        proc = node.token
-        actual_param_len = len(node.actual_params)
-
-        defined_proc = self.current_scope.lookup(proc.value)
-        if defined_proc is None:
-            self.error(
-                error_code=ErrorCode.PROCEDURE_NOT_FOUND,
-                token=proc,
-                message=f"'{proc.value}'"
-            )
-
-        if defined_proc.type == 'PROCEDURE':
-            formal_param_len = len(defined_proc.formal_params)
-            if actual_param_len != formal_param_len:
-                self.arg_count_error(
-                    proc=proc,
-                    received=actual_param_len,
-                    lower=formal_param_len,
-                    upper=formal_param_len
-                )
-        elif defined_proc.type == 'AMBIGUOUS':
-            pass
-        else:
-            self.error(
-                error_code=ErrorCode.NOT_A_PROCEDURE,
-                token=proc,
-                message=f"'{proc.value}' is not a procedure"
-            )
-
-        for param in node.actual_params:
-            self.visit(param)

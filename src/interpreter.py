@@ -8,6 +8,7 @@ from src.datatype import Boolean, InexactNumber, Integer, Procedure, Rational, S
 from src.errors import ErrorCode, IllegalStateError, InterpreterError
 from src.semantics import SemanticAnalyzer
 from src.stack import ActivationRecord, ARType, CallStack
+from src.symbol import AmbiguousSymbol
 from src.token import Token
 
 if TYPE_CHECKING:
@@ -54,7 +55,7 @@ class Interpreter(ASTVisitor):
         # 1. perform semantic analysis on node
         # 2. lookup value of const
         # 3. return value
-        self.semantic_analyzer.visit_Const(node)
+        self.semantic_analyzer.visit(node)
 
         var_name = node.value
 
@@ -69,7 +70,7 @@ class Interpreter(ASTVisitor):
         #    c. define symbol
         # 2. visit expr to get value of const (type DataType)
         # 3. assign value of const to const name
-        self.semantic_analyzer.visit_ConstAssign(node)
+        self.semantic_analyzer.visit(node)
 
         var_name = node.identifier
         var_value = self.visit(node.expr)
@@ -92,7 +93,7 @@ class Interpreter(ASTVisitor):
         #    g. assign node expr to proc expr (for when interpreter is executing proc call)
         # 2. use proc name to create Procedure (type DataType)
         # 3. assign Procedure to proc name
-        self.semantic_analyzer.visit_ProcAssign(node)
+        self.semantic_analyzer.visit(node)
 
         proc_name = node.identifier
         proc_value = Procedure(proc_name)
@@ -101,54 +102,31 @@ class Interpreter(ASTVisitor):
         ar[proc_name] = proc_value
 
     def visit_ProcCall(self, node: ast.ProcCall) -> DataType:
-        # TODO: edit logic here because its all over the place... but hey it seems to work :)
-        # 1. perform semantic analysis on node
-        #    a. is the proc built in
-        #       #T 1. check number of actual args
-        #       #F 1. ensure proc is defined
-        #          2. ensure len of formal and actual params match if not ambiguous
-        #          3. visit actual params
-        # 2. is the proc built in (or is ambiguous
-        #    #T a. visit actual params
-        #       b. evaluate result based on number and value of actual params
-        #    #F a. tell semantic analyzer to enter proc
-        #          1. look up proc in current scope
-        #          2. error if symbol is not procedure or ambiguous
-        #          3. is the symbol a procedure
-        #             #T a. ensure formal params len matches actual param len
-        #                b. create and enter proc scope
-        #                c. define formal params in scope
-        #                d. return formal params, actual params, and proc expr
-        #             #F a. determine node proc name
-        #                b. lookup proc in stack and get new proc name
-        #                c. lookup proc symbol in current scope with new proc name
-        #                d. if proc symbol is ambiguous go to step 1
-        #                e. now proc symbol should not be ambiguous
-        #                f. is proc builtin (i.e. proc expr is None)
-        #                   #T 1. update token with builtin proc token
-        #                      2. return formal params, actual params, and proc expr
-        #                   #F 1. ensure len of formal and actual params
-        #                      2. create and enter scope for proc call
-        #                      3. define formal params in scope
-        #                      4. return formal params, actual params, proc expr
-        #       b. proc is builtin (i.e. expr is None)
-        #          #T a. visit node
-        #             b. set token of node to original token
-        #             c. return result
-        #          #F a. create and push activation record
-        #             b. visit actual params
-        #             c. map formal params to actual params in activation record
-        #             d. visit expr
-        #             e. tell semantic analyzer to leave proc
-        #                1. leave current scope
-        #             f. leave activation record
-        self.semantic_analyzer.visit_ProcCall(node)
+        # TODO: document this and the cond stuff down below
+        # 1.
+        self.semantic_analyzer.visit(node)
 
-        proc_token = node.token
-        if Token.is_builtin_proc(proc_token):
-            return self._visit_builtin_ProcCall(node)
+        proc_symbol, actual_params = self.semantic_analyzer.get_proc_symbol_and_actual_params(node)
+        proc_name = proc_symbol.name
+        expr = proc_symbol.expr
+        formal_params = proc_symbol.formal_params
+
+        formal_params_len = len(formal_params)
+        actual_params_len = len(actual_params)
+        self.semantic_analyzer.assert_actual_param_len(node.token, proc_name, formal_params_len, actual_params_len)
+
+        if proc_name in BUILT_IN_PROCS.keys():
+            old_token = node.token
+            line_no = old_token.line_no
+            column = old_token.column
+            node.token = Token.create_proc(proc_name, line_no, column)
+
+            result = self._visit_builtin_ProcCall(node)
+
+            node.token = old_token
+            return result
         else:
-            return self._visit_user_defined_ProcCall(node)
+            return self._visit_user_defined_ProcCall(proc_name, expr, formal_params, actual_params)
 
     def visit_Program(self, node: ast.Program) -> List[DataType]:
         # 1. create global activation record
@@ -261,15 +239,9 @@ class Interpreter(ASTVisitor):
 
         return BUILT_IN_PROCS[proc_name].interpret(self, actual_params, proc_token)
 
-    def _visit_user_defined_ProcCall(self, node: ast.ProcCall) -> DataType:
-        proc_name = node.proc_name
-
-        formal_params, actual_params, expr = self.semantic_analyzer.enter_proc(node)
-        # expr is None if the proc is builtin
-        if expr is None:
-            result = self._visit_builtin_ProcCall(node)
-            node.token = node.original_token
-            return result
+    def _visit_user_defined_ProcCall(self, proc_name: str, expr: ast.Expr,
+                                     formal_params: List[AmbiguousSymbol], actual_params: List[ast.Expr]) -> DataType:
+        self.semantic_analyzer.enter_proc(proc_name, formal_params)
 
         current_ar = self.call_stack.peek()
         ar = ActivationRecord(
@@ -288,7 +260,7 @@ class Interpreter(ASTVisitor):
 
         result = self.visit(expr)
 
-        self.semantic_analyzer.leave_proc(node)
+        self.semantic_analyzer.leave_proc(proc_name)
 
         self.log_stack(f'LEAVE: PROCEDURE {proc_name}')
         self.log_stack(str(self.call_stack))

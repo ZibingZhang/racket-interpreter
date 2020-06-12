@@ -55,10 +55,6 @@ class Token:
         return self.__str__()
 
     @staticmethod
-    def is_builtin_proc(token: Token) -> bool:
-        return token.value in BUILT_IN_PROCS.keys()
-
-    @staticmethod
     def create_proc(name: str, line_no: int = None, column: int = None) -> Token:
         return Token(TokenType.ID, name, line_no, column)
 
