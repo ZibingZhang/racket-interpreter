@@ -12,6 +12,12 @@ class AST(abc.ABC):
     pass
 
 
+class Expr(AST):
+    """An expression."""
+
+    pass
+
+
 class ASTVisitor(abc.ABC):
 
     def visit(self, node: AST) -> Any:
@@ -23,7 +29,7 @@ class ASTVisitor(abc.ABC):
         raise Exception(f'No visit_{type(node).__name__} method.')
 
 
-class Bool(AST):
+class Bool(Expr):
     """A boolean."""
 
     def __init__(self, boolean: Token) -> None:
@@ -37,7 +43,7 @@ class Bool(AST):
         return self.__str__()
 
 
-class Int(AST):
+class Int(Expr):
     """A number."""
 
     def __init__(self, number: Token) -> None:
@@ -51,7 +57,7 @@ class Int(AST):
         return self.__str__()
 
 
-class Str(AST):
+class Str(Expr):
     """A string."""
 
     def __init__(self, string: Token) -> None:
@@ -65,7 +71,7 @@ class Str(AST):
         return self.__str__()
 
 
-class Rat(AST):
+class Rat(Expr):
     """A rational number."""
 
     def __init__(self, number: Token) -> None:
@@ -79,7 +85,7 @@ class Rat(AST):
         return self.__str__()
 
 
-class Dec(AST):
+class Dec(Expr):
     """A decimal number."""
 
     def __init__(self, number: Token) -> None:
@@ -93,8 +99,8 @@ class Dec(AST):
         return self.__str__()
 
 
-class Const(AST):
-    """A constant value."""
+class Const(Expr):
+    """A constant value (including procedures)."""
 
     def __init__(self, token: Token) -> None:
         self.token = token
@@ -151,7 +157,7 @@ class ProcAssign(AST):
         return self.__str__()
 
 
-class ProcCall(AST):
+class ProcCall(Expr):
     """A procedure and a list of arguments."""
 
     def __init__(self, proc: Token, actual_params: Optional[List[AST]] = None) -> None:
@@ -211,7 +217,7 @@ class CondBranch(AST):
         return self.__str__()
 
 
-class Cond(AST):
+class Cond(Expr):
     """A cond statement."""
 
     def __init__(self, token: Token, branches: List[CondBranch], else_branch: Optional[CondElse] = None) -> None:
