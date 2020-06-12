@@ -1,7 +1,0 @@
-When adding a builtin procedure, the places to edit are:
-  - constants.py
-    - BUILT_IN_PROCS
-  - semantics.py
-    - visit_ProcCall
-  - interpreter.py
-    - _visit_builtin_ProcCall

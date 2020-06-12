@@ -87,26 +87,8 @@ class Parser:
         else:
             self.error()
 
-    def term(self) -> ast.AST:
-        """
-        term: data
-            | expr
-            | const
-            | proc
-        """
-        token = self.current_token
-
-        if token.type is TokenType.ID:
-            self.eat(TokenType.ID)
-            return ast.Const(token)
-        elif token.type is TokenType.LPAREN:
-            node = self.expr()
-            return node
-        else:
-            return self.data()
-
     def p_expr(self) -> ast.AST:
-        """p-expr: LPAREN proc term* RPAREN"""
+        """p-expr: LPAREN ID expr* RPAREN"""
         # opening left bracket
         left_paren = self.eat(TokenType.LPAREN)
         op = self.current_token
@@ -117,7 +99,7 @@ class Parser:
             self.error()
 
         while self.current_token.type != TokenType.RPAREN:
-            node.append(self.term())
+            node.append(self.expr())
 
         # closing right bracket
         self.eat_right_paren(left_paren)
@@ -181,7 +163,8 @@ class Parser:
         """
         expr: data
             | p-expr
-            | const
+            | ID
+            | cond
         """
         if self.current_token.type is TokenType.LPAREN:
             next_token = self.lexer.peek_next_token()
@@ -197,14 +180,8 @@ class Parser:
         else:
             return self.data()
 
-    def const(self) -> ast.Const:
-        """const: ID"""
-        node = ast.Const(self.current_token)
-        self.eat(TokenType.ID)
-        return node
-
     def constant_assignment(self) -> ast.ConstAssign:
-        """constant_assignment: LPAREN DEFINE const expr RPAREN"""
+        """constant_assignment: LPAREN DEFINE ID expr RPAREN"""
         # opening left bracket
         left_paren = self.eat(TokenType.LPAREN)
 
@@ -221,7 +198,7 @@ class Parser:
         return ast.ConstAssign(identifier, expr)
 
     def procedure_assignment(self) -> ast.ProcAssign:
-        """procedure_assignment: LPAREN DEFINE LPAREN const* RPAREN expr RPAREN"""
+        """procedure_assignment: LPAREN DEFINE LPAREN ID* RPAREN expr RPAREN"""
         # opening left bracket
         left_paren_1 = self.eat(TokenType.LPAREN)
         self.eat(TokenType.DEFINE)
@@ -263,7 +240,8 @@ class Parser:
                  | empty
         """
         current_token = self.current_token
-        if current_token.type in [TokenType.BOOLEAN, TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL, TokenType.STRING, TokenType.ID]:
+        if current_token.type in [TokenType.BOOLEAN, TokenType.DECIMAL, TokenType.INTEGER,
+                                  TokenType.RATIONAL, TokenType.STRING, TokenType.ID]:
             return self.expr()
         elif current_token.type is TokenType.LPAREN:
             next_token = self.lexer.peek_next_token()

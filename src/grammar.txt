@@ -1,20 +1,8 @@
-proc: ID
-    | PLUS
-    | MUL
-    | MINUS
-    | DIV
-
 data: NUMBER
     | BOOLEAN
     | STRING
-    | proc
 
-term: data
-    | expr
-    | constant
-    | proc
-
-p-expr: LPAREN proc term* RPAREN
+p-expr: LPAREN ID expr* RPAREN
 
 cond-else: LPAREN ELSE expr RPAREN
 
@@ -24,14 +12,12 @@ cond: LPAREN COND cond-branch+ cond-else? RPAREN
 
 expr: data
     | p-expr
-    | constant
+    | ID
     | cond
 
-constant: ID
+constant_assignment: LPAREN DEFINE ID expr RPAREN
 
-constant_assignment: LPAREN DEFINE constant expr RPAREN
-
-function_assignment: LPAREN DEFINE LPAREN constant* RPAREN expr RPAREN
+procedure_assignment: LPAREN DEFINE LPAREN ID* RPAREN expr RPAREN
 
 assignment_statement: constant_assignment
                     | function_assignment
