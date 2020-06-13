@@ -4,6 +4,14 @@ An interpreter written for Racket, more specifically the student languages which
 These student languages are what first-semester, computer-science students at Northeastern learn to program in.
 The end goal of this project is to successfully interpret the code I wrote for a homework assignment regarding graphs.
 
+## Table of Contents
+
+  * [Getting Started](#getting-started)
+  * [Prerequisites](#prerequisites)
+  * [Licence](#licence)
+  * [Acknowledgments](#acknowledgments)
+  * [Documentation](#documentation)
+
 ## Getting Started
 
 There is no IDE nor does the interpreter read from a text file... yet.
@@ -22,6 +30,8 @@ cd racket-interpreter
 python -m src
 ```
 
+To change the code that is being interpreted, change the value of `text` in `__main__.py`.
+
 ## Licence
 
 This project is licensed under the MIT license.
@@ -31,3 +41,7 @@ This project is licensed under the MIT license.
 This initially started as an adaptation of Ruslan Spivak's [tutorial](https://ruslanspivak.com/lsbasi-part1/) for writing an interpreter.
 Most of the structure of this codebase come from the tutorial, but as I've begun to understand his design decisions better I've been able to change and adapt them to fit this project.
 This [template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2) has also been helpful in understanding how to format a README and what I should include.
+
+## Documentation
+
+I've decided to keep the documentation in the same README for the time being.
