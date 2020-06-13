@@ -1226,6 +1226,9 @@ class And(BuiltInProc):
 
 
 BUILT_IN_PROCS = {
+    # control flow
+    'if': If,
+    # numeric
     '+': SymbolPlus,
     '-': SymbolMinus,
     '*': SymbolMultiply,
@@ -1264,6 +1267,31 @@ BUILT_IN_PROCS = {
     'sqrt': Sqrt,  # cannot handle negative numbers for now
     'sub1': Sub1,
     'zero?': ZeroHuh,
+    # boolean
     'and': And,
-    'if': If
+    # 'boolean->string': BooleanToString,
+    # 'boolean=?': BooleanSymbolEqualHuh,
+    # 'boolean?': BooleanHuh,
+    # 'false?': FalseHuh,
+    # 'not': Not,
+    # 'or': Or,
+    # string,
+    # 'string-alphabetic?': StringAlphabeticHuh,
+    # 'string-append': StringAppend,
+    # 'string-contains?': StringContainsHuh,
+    # 'string-downcase': StringDowncase,
+    # 'string-ith': StringIth,
+    # 'string-length': StringLength,
+    # 'string-lower-case?': StringLowerCaseHuh,
+    # 'string-numeric?': StringNumericHuh,
+    # 'string-upcase': StringUpcase,
+    # 'string-upper-case?': StringUpperCaseHuh,
+    # 'string-whitespace': StringWhitespace,
+    # 'string<=?': StringSymbolLessEqualHuh,
+    # 'string<?': StringSymbolLessHuh,
+    # 'string=?': StringSymbolEqualHuh,
+    # 'string>=?': StringSymbolGreaterEqualHuh,
+    # 'string>?': StringSymbolGreaterHuh,
+    # 'string?': StringHuh,
+    # 'substring': Substring
 }
