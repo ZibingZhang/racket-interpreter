@@ -7,7 +7,8 @@ The end goal of this project is to successfully interpret the code I wrote for a
 ## Table of Contents
 
   * [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
+    * [Prerequisites](#prerequisites)
+    * [Installing & Running](#installing--running)
   * [Licence](#licence)
   * [Acknowledgments](#acknowledgments)
   * [Documentation](#documentation)
