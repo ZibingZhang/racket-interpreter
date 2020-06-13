@@ -1221,6 +1221,181 @@ class And(BuiltInProc):
 
             if param_value == Boolean(False):
                 result = param_value
+                break
+
+        return result
+
+
+class BooleanToString(BuiltInProc):
+
+    @staticmethod
+    def lower() -> int:
+        return 1
+
+    @staticmethod
+    def upper() -> Optional[int]:
+        return 1
+
+    @staticmethod
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> String:
+        param_value = interpreter.visit(actual_params[0])
+
+        if not issubclass(type(param_value), Boolean):
+            interpreter.builtin_proc_type_error(
+                proc_token=proc_token,
+                expected_type='Boolean',
+                param_value=param_value,
+                idx=0
+            )
+
+        result = String(str(param_value))
+        return result
+
+
+class BooleanSymbolEqualHuh(BuiltInProc):
+
+    @staticmethod
+    def lower() -> int:
+        return 1
+
+    @staticmethod
+    def upper() -> Optional[int]:
+        return None
+
+    @staticmethod
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+        evaluated_params = []
+        for idx, param in enumerate(actual_params):
+            param_value = interpreter.visit(param)
+
+            if not issubclass(type(param_value), Boolean):
+                interpreter.builtin_proc_type_error(
+                    proc_token=proc_token,
+                    expected_type='Boolean',
+                    param_value=param_value,
+                    idx=idx
+                )
+
+            evaluated_params.append(param_value)
+
+        first_param_value = evaluated_params[0]
+
+        result = Boolean(True)
+
+        for param_value in evaluated_params:
+            if first_param_value != param_value:
+                result = Boolean(False)
+                break
+
+        return result
+
+
+class BooleanHuh(BuiltInProc):
+
+    @staticmethod
+    def lower() -> int:
+        return 1
+
+    @staticmethod
+    def upper() -> Optional[int]:
+        return 1
+
+    @staticmethod
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+        param_value = interpreter.visit(actual_params[0])
+
+        if not issubclass(type(param_value), DataType):
+            interpreter.builtin_proc_type_error(
+                proc_token=proc_token,
+                expected_type='Any',
+                param_value=param_value,
+                idx=0
+            )
+
+        result = Boolean(issubclass(type(param_value), Boolean))
+        return result
+
+
+class FalseHuh(BuiltInProc):
+
+    @staticmethod
+    def lower() -> int:
+        return 1
+
+    @staticmethod
+    def upper() -> Optional[int]:
+        return 1
+
+    @staticmethod
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+        param_value = interpreter.visit(actual_params[0])
+
+        if not issubclass(type(param_value), DataType):
+            interpreter.builtin_proc_type_error(
+                proc_token=proc_token,
+                expected_type='Any',
+                param_value=param_value,
+                idx=0
+            )
+
+        result = Boolean(issubclass(type(param_value), Boolean) and param_value == Boolean(False))
+        return result
+
+
+class Not(BuiltInProc):
+
+    @staticmethod
+    def lower() -> int:
+        return 1
+
+    @staticmethod
+    def upper() -> Optional[int]:
+        return 1
+
+    @staticmethod
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+        param_value = interpreter.visit(actual_params[0])
+
+        if not issubclass(type(param_value), Boolean):
+            interpreter.builtin_proc_type_error(
+                proc_token=proc_token,
+                expected_type='Boolean',
+                param_value=param_value,
+                idx=0
+            )
+
+        result = Boolean(not param_value.value)
+        return result
+
+
+class Or(BuiltInProc):
+
+    @staticmethod
+    def lower() -> int:
+        return 0
+
+    @staticmethod
+    def upper() -> Optional[int]:
+        return None
+
+    @staticmethod
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+        result = Boolean(False)
+
+        for idx, param in enumerate(actual_params):
+            param_value = interpreter.visit(param)
+
+            if not issubclass(type(param_value), Boolean):
+                interpreter.builtin_proc_type_error(
+                    proc_token=proc_token,
+                    expected_type='Boolean',
+                    param_value=param_value,
+                    idx=idx
+                )
+
+            if param_value == Boolean(True):
+                result = param_value
+                break
 
         return result
 
@@ -1269,12 +1444,12 @@ BUILT_IN_PROCS = {
     'zero?': ZeroHuh,
     # boolean
     'and': And,
-    # 'boolean->string': BooleanToString,
-    # 'boolean=?': BooleanSymbolEqualHuh,
-    # 'boolean?': BooleanHuh,
-    # 'false?': FalseHuh,
-    # 'not': Not,
-    # 'or': Or,
+    'boolean->string': BooleanToString,
+    'boolean=?': BooleanSymbolEqualHuh,
+    'boolean?': BooleanHuh,
+    'false?': FalseHuh,
+    'not': Not,
+    'or': Or,
     # string,
     # 'string-alphabetic?': StringAlphabeticHuh,
     # 'string-append': StringAppend,
