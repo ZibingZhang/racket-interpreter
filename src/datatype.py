@@ -37,42 +37,6 @@ class Number(DataType):
     def precedence(self):
         return 6
 
-    def __eq__(self, other):
-        return issubclass(type(other), Number) and self.value == other.value
-
-    def __str__(self) -> str:
-        return str(self.value)
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-    def __add__(self, other) -> Number:
-        if other.precedence > self.precedence:
-            return other.__add__(self)
-        else:
-            return Number(self.value + other.value)
-
-    def __sub__(self, other) -> Number:
-        if other.precedence > self.precedence:
-            return -other.__sub__(self)
-        else:
-            return Number(self.value - other.value)
-
-    def __mul__(self, other) -> Number:
-        if other.precedence > self.precedence:
-            return other.__mul__(self)
-        else:
-            return Number(self.value * other.value)
-
-    def __truediv__(self, other) -> Number:
-        if other.precedence > self.precedence:
-            return Integer(1)/other.__truediv__(self)
-        else:
-            return Number(self.value / other.value)
-
-    def __neg__(self) -> Number:
-        return Number(-self.value)
-
 
 class Procedure(DataType):
 
@@ -109,6 +73,15 @@ class RealNumber(Number):
     def precedence(self):
         return 5
 
+    def __eq__(self, other):
+        return self.value == other.value
+
+    def __str__(self) -> str:
+        return str(self.value)
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def __add__(self, other) -> Number:
         if other.precedence > self.precedence:
             return other.__add__(self)
@@ -133,11 +106,26 @@ class RealNumber(Number):
         else:
             return RealNumber(self.value / other.value)
 
+    def __neg__(self) -> RealNumber:
+        return RealNumber(-self.value)
+
+    def __lt__(self, other) -> bool:
+        return self.value < other.value
+
+    def __gt__(self, other) -> bool:
+        return self.value > other.value
+
+    def __le__(self, other) -> bool:
+        return self.value <= other.value
+
+    def __ge__(self, other) -> bool:
+        return self.value >= other.value
+
+    def __abs__(self) -> RealNumber:
+        return RealNumber(abs(self.value))
+
 
 class ExactNumber(RealNumber):
-
-    def __init__(self, value: Union[float, int]) -> None:
-        super().__init__(value)
 
     @property
     def precedence(self):
@@ -177,8 +165,11 @@ class InexactNumber(RealNumber):
         else:
             return InexactNumber(self.value / other.value)
 
-    def __neg__(self) -> Number:
+    def __neg__(self) -> InexactNumber:
         return InexactNumber(-self.value)
+
+    def __abs__(self) -> InexactNumber:
+        return InexactNumber(abs(self.value))
 
 
 class Integer(ExactNumber):
@@ -192,6 +183,9 @@ class Integer(ExactNumber):
 
     def __str__(self):
         return str(self.value)
+
+    def __int__(self):
+        return self.value
 
     def __add__(self, other) -> Number:
         if other.precedence > self.precedence:
@@ -229,8 +223,11 @@ class Integer(ExactNumber):
         else:
             return Rational(fraction.numerator, fraction.denominator)
 
-    def __neg__(self) -> Number:
+    def __neg__(self) -> Integer:
         return Integer(-self.value)
+
+    def __abs__(self) -> Integer:
+        return Integer(abs(self.value))
 
 
 class Rational(ExactNumber):
@@ -323,6 +320,11 @@ class Rational(ExactNumber):
             else:
                 return Rational(fraction.numerator, fraction.denominator)
 
-    def __neg__(self) -> Number:
+    def __neg__(self) -> Rational:
         fraction = f.Fraction(-self.numerator, self.denominator)
         return Rational(fraction.numerator, fraction.denominator)
+
+    def __abs__(self) -> Rational:
+        numerator = abs(self.numerator)
+        denominator = abs(self.denominator)
+        return Rational(numerator, denominator)
