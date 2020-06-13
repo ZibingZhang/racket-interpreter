@@ -12,34 +12,7 @@ def main():
     try:
         text = \
             """
-            ; (define (f a z) a)
-            (define (s t z) (- t 6))
-            (define (t u s) (u s 1))
-            (t s 6)
-            ; (t + 6)
-            ; (t s 10)
-            ; (t add1 6)
-            ; (t f 10)
-            ; (t f 10)
-            
-            ""
-            
-            (define (mul2 n) (* 2 n))
-            
-            (define (factorial n)
-                (if (= n 0)
-                    1
-                    (* n (factorial (- n 1)))))
-            (factorial 10)
-            
-            (define (r f) (f 5))
-            
-            (r factorial)
-            (r add1)
-            (r mul2)
-            (r +)
-            
-            ; (define (zz zzz) zzzz)
+            (zero? (add1 -1))
             """
 
         lexer = Lexer(text)
