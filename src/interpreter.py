@@ -220,7 +220,7 @@ class Interpreter(ASTVisitor):
                                 param_value: DataType, idx: int) -> None:
         error_code_msg = ErrorCode.ARGUMENT_TYPE.value
         msg = f"{error_code_msg}: procedure expected argument of type {expected_type}, " \
-            f"received {param_value}; idx={idx}; {proc_token}."
+            f"received {param_value.__class__.__name__}; idx={idx}; {proc_token}."
         raise InterpreterError(
             error_code=ErrorCode.ARGUMENT_TYPE,
             token=proc_token,
