@@ -866,7 +866,7 @@ class NegativeHuh(BuiltInProc):
                 idx=0
             )
 
-        result = param_value < Integer(0)
+        result = Boolean(param_value < Integer(0))
         return result
 
 
@@ -970,7 +970,7 @@ class PositiveHuh(BuiltInProc):
                 idx=0
             )
 
-        result = param_value > Integer(0)
+        result = Boolean(param_value > Integer(0))
         return result
 
 
@@ -1400,6 +1400,32 @@ class Or(BuiltInProc):
         return result
 
 
+class StringHuh(BuiltInProc):
+
+    @staticmethod
+    def lower() -> int:
+        return 1
+
+    @staticmethod
+    def upper() -> Optional[int]:
+        return 1
+
+    @staticmethod
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+        param_value = interpreter.visit(actual_params[0])
+
+        if not issubclass(type(param_value), Data):
+            interpreter.builtin_proc_type_error(
+                proc_token=proc_token,
+                expected_type='Any',
+                param_value=param_value,
+                idx=0
+            )
+
+        result = Boolean(issubclass(type(param_value), String))
+        return result
+
+
 BUILT_IN_PROCS = {
     # control flow
     'if': If,
@@ -1467,6 +1493,6 @@ BUILT_IN_PROCS = {
     # 'string=?': StringSymbolEqualHuh,
     # 'string>=?': StringSymbolGreaterEqualHuh,
     # 'string>?': StringSymbolGreaterHuh,
-    # 'string?': StringHuh,
+    'string?': StringHuh,
     # 'substring': Substring
 }

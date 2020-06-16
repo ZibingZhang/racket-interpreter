@@ -169,7 +169,6 @@ class ProcAssign(AST):
 
     def __init__(self, identifier: Token, params: List[Param], expr: AST) -> None:
         self.token = identifier
-        print(identifier)
         self.identifier = identifier.value
         self.params = params
         self.expr = expr
