@@ -15,6 +15,7 @@ class TokenType(Enum):
     STRING = 'STRING'
     # reserved keywords
     DEFINE = 'define'
+    DEFINE_STRUCT = 'define-struct'
     COND = 'cond'
     ELSE = 'else'
     # misc

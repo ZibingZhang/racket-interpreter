@@ -3,13 +3,13 @@ import fractions as f
 from typing import TYPE_CHECKING, List
 import unittest
 from src import constants
-from src.datatype import Boolean, InexactNumber, Integer, Procedure, Rational, String
+from src.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
 from src.interpreter import Interpreter
 from src.lexer import Lexer
 from src.parser import Parser
 
 if TYPE_CHECKING:
-    from src.datatype import DataType
+    from src.data import Data
 
 
 class TestInterpreter(unittest.TestCase):
@@ -18,7 +18,7 @@ class TestInterpreter(unittest.TestCase):
     def setUpClass(cls) -> None:
         constants.init(should_log_scope=False, should_log_stack=False)
 
-    def interpret_text(self, text: str, expected: List[DataType]) -> None:
+    def interpret_text(self, text: str, expected: List[Data]) -> None:
         lexer = Lexer(text)
         parser = Parser(lexer)
         tree = parser.parse()
@@ -120,9 +120,11 @@ class TestInterpreter(unittest.TestCase):
                 (define (s t z) (- t 6))
                 (define (t u s) (u s 1))
                 (t s 6)
+                (t * 6)
             '''
         expected = [
-            Integer(0)
+            Integer(0),
+            Integer(6)
         ]
         self.interpret_text(text, expected)
 

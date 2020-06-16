@@ -68,6 +68,7 @@ class Lexer:
                 column=column
             )
         else:
+            # TODO: give a better error, right now the current_char is a space (sometimes)
             self.error()
 
     def number(self) -> Token:

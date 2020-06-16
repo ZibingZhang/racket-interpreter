@@ -1,14 +1,16 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Tuple, List
+from src import ast
 from src.ast import ASTVisitor
 from src.builtins import BUILT_IN_PROCS
 from src.constants import C
+from src.data import StructDataFactory
 from src.errors import ErrorCode, IllegalStateError, SemanticError
 from src.symbol import AmbiguousSymbol, ConstSymbol, ProcSymbol, ScopedSymbolTable
 from src.token import Token
 
 if TYPE_CHECKING:
-    from src import ast
+    from src.data import DataType
 
 
 class SemanticAnalyzer(ASTVisitor):
@@ -119,7 +121,7 @@ class SemanticAnalyzer(ASTVisitor):
             self.visit(param)
 
     def visit_Program(self, node: ast.Program) -> None:
-        raise NotImplementedError
+        raise IllegalStateError('Semantic analyzer should never have to visit a program.')
 
     def visit_CondElse(self, node: ast.CondElse) -> None:
         self.visit(node.expr)
@@ -133,6 +135,41 @@ class SemanticAnalyzer(ASTVisitor):
             self.visit(branch)
         if node.else_branch is not None:
             self.visit(node.else_branch)
+
+    def visit_StructAssign(self, node: ast.StructAssign) -> DataType:
+        struct_name = node.struct_name
+        fields = node.fields
+
+        struct_class = StructDataFactory.create(struct_name, fields)
+
+        new_procs = [f'make-{struct_name}', f'{struct_name}?'] + [f'{struct_name}-{field}' for field in fields]
+
+        for idx, proc_name in enumerate(new_procs + [struct_name]):
+            if idx == 0:
+                proc_symbol = ProcSymbol(proc_name, [AmbiguousSymbol(field) for field in fields])
+            else:
+                proc_symbol = ProcSymbol(proc_name, [AmbiguousSymbol('_')])
+
+            if idx == 0:
+                proc_symbol.expr = ast.StructMake(struct_class)
+            elif idx == 1:
+                proc_symbol.expr = ast.StructHuh(struct_class)
+            else:
+                proc_symbol.expr = ast.StructGet(struct_class)
+
+            if self.current_scope.lookup(proc_name, current_scope_only=True) is not None:
+                self.error(
+                    error_code=ErrorCode.DUPLICATE_ID,
+                    token=node.token,
+                    message=f"'{proc_name}'"
+                )
+
+            self.current_scope.define(proc_symbol)
+
+        return struct_class
+
+    def visit_StructMethod(self, node: ast.StructProc) -> None:
+        raise IllegalStateError('Semantic analyzer should never have to visit a struct method.')
 
     def enter_program(self) -> None:
         self.log_scope('ENTER SCOPE: global')

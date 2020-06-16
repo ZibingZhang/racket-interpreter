@@ -1,10 +1,11 @@
 from __future__ import annotations
 import fractions as f
 from typing import TYPE_CHECKING, Any, List, Union
+from src import ast
 from src.ast import ASTVisitor
 from src.builtins import BUILT_IN_PROCS
 from src.constants import C
-from src.datatype import Boolean, InexactNumber, Integer, Procedure, Rational, String
+from src.data import Boolean, InexactNumber, Integer, Procedure, Rational, String, StructDataFactory
 from src.errors import ErrorCode, IllegalStateError, InterpreterError
 from src.semantics import SemanticAnalyzer
 from src.stack import ActivationRecord, ARType, CallStack
@@ -13,7 +14,7 @@ from src.token import Token
 
 if TYPE_CHECKING:
     from src import ast
-    from src.datatype import DataType, Number
+    from src.data import Data, Number
 
 
 class Interpreter(ASTVisitor):
@@ -51,7 +52,7 @@ class Interpreter(ASTVisitor):
         # 1. return decimal
         return InexactNumber(node.value)
 
-    def visit_Const(self, node: ast.Const) -> DataType:
+    def visit_Const(self, node: ast.Const) -> Data:
         # 1. perform semantic analysis on node
         # 2. lookup value of const
         # 3. return value
@@ -101,7 +102,7 @@ class Interpreter(ASTVisitor):
         ar = self.call_stack.peek()
         ar[proc_name] = proc_value
 
-    def visit_ProcCall(self, node: ast.ProcCall) -> DataType:
+    def visit_ProcCall(self, node: ast.ProcCall) -> Data:
         # TODO: document this and the cond stuff down below
         # 1.
         self.semantic_analyzer.visit(node)
@@ -125,10 +126,27 @@ class Interpreter(ASTVisitor):
 
             node.token = old_token
             return result
+        elif issubclass(type(expr), ast.StructProc):
+            evaluated_params = list(map(lambda param: self.visit(param), actual_params))
+            if type(expr) is ast.StructMake:
+                data = expr.data_class()
+                data.fields = evaluated_params
+                return data
+            elif type(expr) is ast.StructHuh:
+                result = Boolean(type(evaluated_params[0]) == expr.data_class)
+                return result
+            elif type(expr) is ast.StructGet:
+                # TODO: change data_class to datatype
+                datatype_name = expr.data_class.__name__
+                field = proc_name[len(datatype_name)+1:]
+                result = evaluated_params[0].fields[evaluated_params[0].field_names.index(field)]
+                return result
+            else:
+                raise IllegalStateError
         else:
             return self._visit_user_defined_ProcCall(proc_name, expr, formal_params, actual_params)
 
-    def visit_Program(self, node: ast.Program) -> List[DataType]:
+    def visit_Program(self, node: ast.Program) -> List[Data]:
         # 1. create global activation record
         # 2. define builtin procs
         # 3. create global scope in semantic analyzer
@@ -172,7 +190,7 @@ class Interpreter(ASTVisitor):
     def visit_CondBranch(self, node: ast.CondBranch) -> None:
         raise IllegalStateError('Interpreter should never have to visit a cond branch.')
 
-    def visit_Cond(self, node: ast.Cond) -> DataType:
+    def visit_Cond(self, node: ast.Cond) -> Data:
         token = node.token
 
         idx = 0
@@ -201,6 +219,22 @@ class Interpreter(ASTVisitor):
             idx=idx
         )
 
+    def visit_StructAssign(self, node: ast.StructAssign):
+        struct_class = self.semantic_analyzer.visit(node)
+
+        struct_name = node.struct_name
+        fields = node.fields
+
+        # TODO: make this the meta class not just an empty object
+        empty_obj = struct_class.empty_obj()
+
+        ar = self.call_stack.peek()
+        ar[struct_name] = empty_obj
+
+        new_procs = ['make-' + struct_name, struct_name + '?'] + [f'{struct_name}-{field}' for field in fields]
+        for proc_name in new_procs:
+            ar[proc_name] = Procedure(proc_name)
+
     def interpret(self) -> Any:
         tree = self.tree
         return self.visit(tree)
@@ -217,7 +251,7 @@ class Interpreter(ASTVisitor):
         )
 
     def builtin_proc_type_error(self, proc_token: Token, expected_type: str,
-                                param_value: DataType, idx: int) -> None:
+                                param_value: Data, idx: int) -> None:
         error_code_msg = ErrorCode.ARGUMENT_TYPE.value
         msg = f"{error_code_msg}: procedure expected argument of type {expected_type}, " \
             f"received {param_value.__class__.__name__}; idx={idx}; {proc_token}."
@@ -232,7 +266,7 @@ class Interpreter(ASTVisitor):
         for proc in BUILT_IN_PROCS:
             ar[proc] = Procedure(proc)
 
-    def _visit_builtin_ProcCall(self, node: ast.ProcCall) -> DataType:
+    def _visit_builtin_ProcCall(self, node: ast.ProcCall) -> Data:
         proc_token = node.token
         proc_name = proc_token.value
         actual_params = node.actual_params
@@ -240,7 +274,7 @@ class Interpreter(ASTVisitor):
         return BUILT_IN_PROCS[proc_name].interpret(self, actual_params, proc_token)
 
     def _visit_user_defined_ProcCall(self, proc_name: str, expr: ast.Expr,
-                                     formal_params: List[AmbiguousSymbol], actual_params: List[ast.Expr]) -> DataType:
+                                     formal_params: List[AmbiguousSymbol], actual_params: List[ast.Expr]) -> Data:
         self.semantic_analyzer.enter_proc(proc_name, formal_params)
 
         current_ar = self.call_stack.peek()

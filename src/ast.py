@@ -3,6 +3,7 @@ import abc
 from typing import TYPE_CHECKING, Any, List, Optional
 
 if TYPE_CHECKING:
+    from src.data import DataType
     from src.token import Token
 
 
@@ -18,6 +19,13 @@ class Expr(AST):
     pass
 
 
+class StructProc(AST):
+    """A proc related to a struct."""
+
+    def __init__(self, data_class: DataType):
+        self.data_class = data_class
+
+
 class ASTVisitor(abc.ABC):
 
     def visit(self, node: AST) -> Any:
@@ -27,6 +35,21 @@ class ASTVisitor(abc.ABC):
 
     def visit_error(self, node) -> None:
         raise Exception(f'No visit_{type(node).__name__} method.')
+
+
+class StructMake(StructProc):
+
+    pass
+
+
+class StructHuh(StructProc):
+
+    pass
+
+
+class StructGet(StructProc):
+
+    pass
 
 
 class Bool(Expr):
@@ -146,6 +169,7 @@ class ProcAssign(AST):
 
     def __init__(self, identifier: Token, params: List[Param], expr: AST) -> None:
         self.token = identifier
+        print(identifier)
         self.identifier = identifier.value
         self.params = params
         self.expr = expr
@@ -230,3 +254,20 @@ class Cond(Expr):
 
     def __repr__(self) -> str:
         return self.__str__()
+
+
+class StructAssign(AST):
+    """Defining a new structure."""
+
+    def __init__(self, identifier: Token, fields: List[str]) -> None:
+        self.token = identifier
+        self.struct_name = identifier.value
+        self.fields = fields
+
+    def __str__(self) -> str:
+        return f'<StructAssign struct_name:{self.struct_name}  fields:{self.fields}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional
 from src.errors import IllegalStateError
 
 if TYPE_CHECKING:
-    from src.datatype import DataType
+    from src.data import Data
 
 
 class ARType(Enum):
@@ -19,10 +19,10 @@ class ActivationRecord:
         self.nesting_level = nesting_level
         self.members = {}
 
-    def __setitem__(self, key: str, value: DataType) -> None:
+    def __setitem__(self, key: str, value: Data) -> None:
         self.members[key] = value
 
-    def __getitem__(self, key: str) -> DataType:
+    def __getitem__(self, key: str) -> Data:
         return self.members[key]
 
     def __str__(self) -> str:
@@ -42,7 +42,7 @@ class ActivationRecord:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def get(self, key) -> Optional[DataType]:
+    def get(self, key) -> Optional[Data]:
         return self.members.get(key)
 
 
@@ -58,7 +58,7 @@ class CallStack:
     def __repr__(self):
         return self.__str__()
 
-    def get(self, key) -> DataType:
+    def get(self, key) -> Data:
         for ar in reversed(self._records):
             value = ar.get(key)
             if value is not None:

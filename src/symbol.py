@@ -101,7 +101,7 @@ class ConstSymbol(Symbol):
 class ProcSymbol(Symbol):
     """A procedure."""
 
-    def __init__(self, name: str, formal_params: List[Optional[str]] = None) -> None:
+    def __init__(self, name: str, formal_params: Optional[List[AmbiguousSymbol]] = None) -> None:
         super().__init__(name, 'PROCEDURE')
         self.formal_params = formal_params if formal_params is not None else []
         # a reference to procedure's body (AST)

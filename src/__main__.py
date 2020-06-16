@@ -12,7 +12,9 @@ def main():
     try:
         text = \
             """
-            (zero? (add1 -1))
+            (define-struct f (a b))
+            (define x (make-f "1" 2))
+            (f-a x)
             """
 
         lexer = Lexer(text)

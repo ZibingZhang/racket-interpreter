@@ -3,7 +3,7 @@ import abc
 import math
 import time
 from typing import TYPE_CHECKING, List, Optional
-from src.datatype import Boolean, DataType, ExactNumber, InexactNumber, Integer, Number, Rational, RealNumber, String
+from src.data import Boolean, Data, ExactNumber, InexactNumber, Integer, Number, Rational, RealNumber, String
 from src.errors import ErrorCode
 
 if TYPE_CHECKING:
@@ -28,7 +28,7 @@ class BuiltInProc(abc.ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> DataType:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Data:
         pass
 
 
@@ -43,7 +43,7 @@ class If(BuiltInProc):
         return 3
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> DataType:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Data:
         boolean = interpreter.visit(actual_params[0])
         if bool(boolean):
             result = interpreter.visit(actual_params[1])
@@ -910,7 +910,7 @@ class NumberHuh(BuiltInProc):
     def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), DataType):
+        if not issubclass(type(param_value), Data):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Any',
@@ -988,7 +988,7 @@ class RationalHuh(BuiltInProc):
     def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), DataType):
+        if not issubclass(type(param_value), Data):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Any',
@@ -1014,7 +1014,7 @@ class RealHuh(BuiltInProc):
     def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), DataType):
+        if not issubclass(type(param_value), Data):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Any',
@@ -1304,7 +1304,7 @@ class BooleanHuh(BuiltInProc):
     def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), DataType):
+        if not issubclass(type(param_value), Data):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Any',
@@ -1330,7 +1330,7 @@ class FalseHuh(BuiltInProc):
     def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), DataType):
+        if not issubclass(type(param_value), Data):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Any',

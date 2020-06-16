@@ -1,16 +1,37 @@
 from __future__ import annotations
-import abc
 import fractions as f
-from typing import Any, Union
+from typing import Any, List, Optional, Union
 
 
-class DataType(abc.ABC):
+class DataType(type):
 
-    def __init__(self, value: Any) -> None:
+    pass
+
+
+class Data(metaclass=DataType):
+
+    def __init__(self, value: Optional[Any] = None) -> None:
         self.value = value
 
 
-class Boolean(DataType):
+class StructDataFactory:
+
+    @staticmethod
+    def create(struct_name: str, fields: List[str]) -> DataType:
+        struct_data = DataType(struct_name, (Data,), {})
+
+        setattr(struct_data, 'field_names', fields)
+        setattr(struct_data, 'fields', None)
+
+        setattr(struct_data, 'empty_obj', lambda: struct_data())
+        struct_data.empty_obj = staticmethod(struct_data.empty_obj)
+
+        setattr(struct_data, '__str__', lambda self: f'#<{struct_name}>')
+
+        return struct_data
+
+
+class Boolean(Data):
 
     def __init__(self, value: bool) -> None:
         super().__init__(value)
@@ -28,7 +49,7 @@ class Boolean(DataType):
         return self.value
 
 
-class Number(DataType):
+class Number(Data):
 
     def __init__(self, value: Union[float, int]) -> None:
         super().__init__(value)
@@ -38,7 +59,7 @@ class Number(DataType):
         return 6
 
 
-class Procedure(DataType):
+class Procedure(Data):
 
     def __init__(self, value: str) -> None:
         super().__init__(value)
@@ -53,7 +74,7 @@ class Procedure(DataType):
         return self.__str__()
 
 
-class String(DataType):
+class String(Data):
     def __init__(self, value: str) -> None:
         super().__init__(value)
 

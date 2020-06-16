@@ -19,8 +19,11 @@ constant_assignment: LPAREN DEFINE ID expr RPAREN
 
 procedure_assignment: LPAREN DEFINE LPAREN ID* RPAREN expr RPAREN
 
+structure_assignment: LPAREN DEFINE_STRUCT LPAREN ID* RPAREN RPAREN
+
 assignment_statement: constant_assignment
                     | function_assignment
+                    | structure_assignment
 
 statement: assignment_statement
          | expr

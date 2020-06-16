@@ -223,12 +223,38 @@ class Parser:
 
         return ast.ProcAssign(identifier, params, expr)
 
+    def structure_assignment(self) -> ast.StructAssign:
+        """structure_assignment: LPAREN DEFINE_STRUCT LPAREN ID* RPAREN RPAREN"""
+        # opening left bracket
+        left_paren_1 = self.eat(TokenType.LPAREN)
+        self.eat(TokenType.DEFINE_STRUCT)
+
+        identifier = self.current_token
+        self.eat(TokenType.ID)
+
+        left_paren_2 = self.eat(TokenType.LPAREN)
+
+        fields = []
+        while self.current_token.type is TokenType.ID:
+            fields.append(self.current_token.value)
+            self.eat(TokenType.ID)
+
+        self.eat_right_paren(left_paren_2)
+
+        # closing right bracket
+        self.eat_right_paren(left_paren_1)
+
+        return ast.StructAssign(identifier, fields)
+
     def assignment_statement(self) -> ast.AST:
         """
         assignment_statement: constant_assignment
-                            | procedure_assignment
+                            | function_assignment
+                            | structure_assignment
         """
-        if self.lexer.peek_next_token(2).type is TokenType.LPAREN:
+        if self.lexer.peek_next_token().type is TokenType.DEFINE_STRUCT:
+            return self.structure_assignment()
+        elif self.lexer.peek_next_token(2).type is TokenType.LPAREN:
             return self.procedure_assignment()
         else:
             return self.constant_assignment()
@@ -248,7 +274,7 @@ class Parser:
             if next_token.type is TokenType.ID:
                 node = self.expr()
                 return node
-            elif next_token.type is TokenType.DEFINE:
+            elif next_token.type in [TokenType.DEFINE, TokenType.DEFINE_STRUCT]:
                 node = self.assignment_statement()
                 return node
             else:
