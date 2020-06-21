@@ -192,7 +192,7 @@ class Parser:
         formal_params = []
         while self.current_token.type is not TokenType.RPAREN:
             expr = self.expr()
-            param = ast.Param(expr, ast.Param.ParamFor.PROC_ASSIGN)
+            param = ast.FormalParam(expr, ast.FormalParam.ParamFor.PROC_ASSIGN)
             formal_params.append(param)
 
         self.eat(TokenType.RPAREN)
@@ -227,7 +227,7 @@ class Parser:
 
                     while self.current_token.type is not TokenType.RPAREN:
                         expr = self.expr()
-                        param = ast.Param(expr, ast.Param.ParamFor.STRUCT_ASSIGN)
+                        param = ast.FormalParam(expr, ast.FormalParam.ParamFor.STRUCT_ASSIGN)
                         field_asts.append(param)
 
                     node.field_asts = field_asts

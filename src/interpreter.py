@@ -26,19 +26,15 @@ class Interpreter(ASTVisitor):
         self.semantic_analyzer.interpreter = self
 
     def visit_Bool(self, node: ast.Bool) -> Boolean:
-        # 1. return boolean
         return Boolean(node.value)
 
     def visit_Int(self, node: ast.Int) -> Number:
-        # 1. return integer
         return Integer(node.value)
 
     def visit_Str(self, node: ast.Str) -> String:
-        # 1. return string
         return String(node.value)
 
     def visit_Rat(self, node: ast.Rat) -> Union[Integer, Rational]:
-        # 1. return rational number
         numerator = node.value[0]
         denominator = node.value[1]
         fraction = f.Fraction(numerator, denominator)
@@ -48,13 +44,9 @@ class Interpreter(ASTVisitor):
             return Rational(fraction.numerator, fraction.denominator)
 
     def visit_Dec(self, node: ast.Dec) -> InexactNumber:
-        # 1. return decimal
         return InexactNumber(node.value)
 
     def visit_Id(self, node: ast.Id) -> Data:
-        # 1. perform semantic analysis on node
-        # 2. lookup value of const
-        # 3. return value
         self.semantic_analyzer.visit(node)
 
         var_name = node.value
@@ -72,12 +64,6 @@ class Interpreter(ASTVisitor):
         return var_value
 
     def visit_IdAssign(self, node: ast.IdAssign) -> None:
-        # 1. perform semantic analysis on node
-        #    a. ensure ID not already taken
-        #    b. visit expr
-        #    c. define symbol
-        # 2. visit expr to get value of const (type DataType)
-        # 3. assign value of const to const name
         self.semantic_analyzer.visit(node)
 
         var_name = node.identifier
@@ -86,21 +72,10 @@ class Interpreter(ASTVisitor):
         ar = self.call_stack.peek()
         ar[var_name] = var_value
 
-    def visit_Param(self, node: ast.Param) -> None:
-        # 1. should never visit param, raise error
-        raise IllegalStateError('Interpreter should never have to visit a parameter.')
+    def visit_FormalParam(self, node: ast.FormalParam) -> None:
+        raise IllegalStateError('Interpreter should never have to visit a formal parameter.')
 
     def visit_ProcAssign(self, node: ast.ProcAssign) -> None:
-        # 1. perform semantic analysis on node
-        #    a. ensure ID not already taken
-        #    b. define proc symbol
-        #    c. create and enter new scope named after proc
-        #    d. define all formal formal_params
-        #    e. visit proc expr
-        #    f. leave scope
-        #    g. assign node expr to proc expr (for when interpreter is executing proc call)
-        # 2. use proc name to create Procedure (type DataType)
-        # 3. assign Procedure to proc name
         self.semantic_analyzer.visit(node)
 
         proc_name = node.proc_name
@@ -110,8 +85,6 @@ class Interpreter(ASTVisitor):
         ar[proc_name] = proc_value
 
     def visit_ProcCall(self, node: ast.ProcCall) -> Data:
-        # TODO: document this and the cond stuff down below
-        # 1.
         self.semantic_analyzer.visit(node)
 
         proc_symbol, actual_params = self.semantic_analyzer.get_proc_symbol_and_actual_params(node)
@@ -134,7 +107,13 @@ class Interpreter(ASTVisitor):
             column = old_token.column
             node.token = Token.create_proc(proc_name, line_no, column)
 
-            result = self._visit_builtin_ProcCall(node)
+            try:
+                result = self._visit_builtin_ProcCall(node)
+            except ZeroDivisionError as e:
+                raise InterpreterError(
+                    error_code=ErrorCode.DIVISION_BY_ZERO,
+                    token=node.token
+                )
 
             node.token = old_token
             return result
@@ -159,13 +138,6 @@ class Interpreter(ASTVisitor):
             return self._visit_user_defined_ProcCall(proc_name, expr, formal_params, actual_params)
 
     def visit_Program(self, node: ast.Program) -> List[Data]:
-        # 1. create global activation record
-        # 2. define builtin procs
-        # 3. create global scope in semantic analyzer
-        # 4. visit each statement
-        #    a. if result is not None, append to list of results
-        # 5. leave global scope in semantic analyzer
-        # 6. remove global activation record
         if C.SHOULD_LOG_SCOPE:
             print('')
         self.log_stack(f'ENTER: PROGRAM')
@@ -205,7 +177,6 @@ class Interpreter(ASTVisitor):
     def visit_Cond(self, node: ast.Cond) -> Data:
         self.semantic_analyzer.visit(node)
 
-        idx = 0
         for idx, branch in enumerate(node.branches):
             predicate_result = self.visit(branch.predicate)
 
@@ -223,6 +194,11 @@ class Interpreter(ASTVisitor):
         if node.else_branch is not None:
             else_expr = else_branch.expr
             return self.visit(else_expr)
+        else:
+            raise InterpreterError(
+                error_code=ErrorCode.C_ALL_QUESTION_RESULTS_FALSE,
+                token=node.token
+            )
 
     def visit_StructAssign(self, node: ast.StructAssign):
         struct_class = self.semantic_analyzer.visit(node)

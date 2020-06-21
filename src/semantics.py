@@ -130,13 +130,13 @@ class SemanticAnalyzer(ASTVisitor):
 
         self.current_scope.define(var_symbol)
 
-    def visit_Param(self, node: ast.Param) -> None:
+    def visit_FormalParam(self, node: ast.FormalParam) -> None:
         token = node.token
 
         if token.type is not TokenType.ID or token.value in KEYWORDS:
-            if node.param_for is ast.Param.ParamFor.PROC_ASSIGN:
+            if node.param_for is ast.FormalParam.ParamFor.PROC_ASSIGN:
                 error_code = ErrorCode.D_P_EXPECTED_A_VARIABLE
-            elif node.param_for is ast.Param.ParamFor.STRUCT_ASSIGN:
+            elif node.param_for is ast.FormalParam.ParamFor.STRUCT_ASSIGN:
                 error_code = ErrorCode.DS_EXPECTED_A_FIELD
             else:
                 raise IllegalStateError

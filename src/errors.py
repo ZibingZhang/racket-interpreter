@@ -12,6 +12,7 @@ class ErrorCode(Enum):
     USED_BEFORE_DEFINITION = Template('$name is used here before its definition')
     USING_STRUCTURE_TYPE = Template('$name: structure type; do you mean make-$name')
 
+    C_ALL_QUESTION_RESULTS_FALSE = Template('cond: all question results were false')
     C_ELSE_NOT_LAST_CLAUSE = Template("cond: found an else clause that isn't the last clause in its cond expression")
     C_EXPECTED_A_CLAUSE = Template("cond: expected a clause after cond, but nothing's there")
     C_EXPECTED_OPEN_PARENTHESIS = Template('cond: expected an open parenthesis before cond, but found none')
@@ -33,7 +34,6 @@ class ErrorCode(Enum):
     DS_EXPECTED_FIELD_NAMES = Template('define-struct: expected at least one field name (in parentheses) after the structure name, but $found')
     DS_EXPECTED_OPEN_PARENTHESIS = Template('define-struct: expected an open parenthesis before define-struct, but found none')
     DS_EXPECTED_STRUCTURE_NAME = Template('define-struct: expected the structure name after define-struct, but $found')
-    DS_FOUND_EXTRA_PARTS = Template('define-struct: expected nothing after the field names, but $found')
     DS_NOT_TOP_LEVEL = Template('define-struct: found a definition that is not at the top level')
     DS_POST_FIELD_NAMES = Template('define-struct: expected nothing after the field names, but $found')
 
@@ -101,6 +101,9 @@ class Error(Exception):
         elif error_code is ErrorCode.USING_STRUCTURE_TYPE:
             name = kwargs.get('name')
             error_message = template.safe_substitute(name=name)
+
+        elif error_code is ErrorCode.C_ALL_QUESTION_RESULTS_FALSE:
+            error_message = template.safe_substitute()
 
         elif error_code is ErrorCode.C_ELSE_NOT_LAST_CLAUSE:
             error_message = template.safe_substitute()

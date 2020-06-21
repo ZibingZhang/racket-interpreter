@@ -159,8 +159,8 @@ class IdAssign(AST):
         return self.__str__()
 
 
-class Param(AST):
-    """A parameter in a procedure or structure."""
+class FormalParam(AST):
+    """A formal parameter in a procedure or structure."""
 
     class ParamFor(Enum):
 
@@ -185,7 +185,7 @@ class Param(AST):
 class ProcAssign(AST):
     """Defining a function."""
 
-    def __init__(self, token: Token, name_expr: AST, formal_params: List[Param], exprs: List[AST]) -> None:
+    def __init__(self, token: Token, name_expr: AST, formal_params: List[FormalParam], exprs: List[AST]) -> None:
         super().__init__(token)
 
         self.name_expr = name_expr
