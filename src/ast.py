@@ -42,16 +42,19 @@ class ASTVisitor(abc.ABC):
 
 
 class StructMake(StructProc):
+    """A make-[structure-name] procedure."""
 
     pass
 
 
 class StructHuh(StructProc):
+    """A [structure-name]? procedure."""
 
     pass
 
 
 class StructGet(StructProc):
+    """A [structure-name]-[field] procedure."""
 
     pass
 
@@ -140,7 +143,7 @@ class Id(Expr):
         return self.__str__()
 
 
-class ConstAssign(AST):
+class IdAssign(AST):
     """Defining a constant."""
 
     def __init__(self, token: Token, actual_params: List[AST]) -> None:
@@ -150,13 +153,14 @@ class ConstAssign(AST):
         self.expr = None
 
     def __str__(self) -> str:
-        return f'<ConstAssign id:{self.identifier}  expr:{self.expr}>'
+        return f'<IdAssign id:{self.identifier}  expr:{self.expr}>'
 
     def __repr__(self) -> str:
         return self.__str__()
 
 
 class Param(AST):
+    """A parameter in a procedure or structure."""
 
     class ParamFor(Enum):
 
@@ -282,11 +286,6 @@ class Cond(Expr):
 
 class StructAssign(AST):
     """Defining a new structure."""
-
-    # def __init__(self, token: Token, fields: List[str]) -> None:
-    #     super().__init__(token)
-    #     self.struct_name = token.value
-    #     self.fields = fields
 
     def __init__(self, token: Token) -> None:
         super().__init__(token)

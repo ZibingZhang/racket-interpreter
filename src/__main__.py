@@ -1,9 +1,6 @@
 from src import constants
 from src.constants import C
-from src.errors import BuiltinProcedureError, InterpreterError, LexerError, ParserError, SemanticError, SyntaxError
-from src.interpreter import Interpreter
-from src.lexer import Lexer
-from src.parser import Parser
+from src.errors import BuiltinProcedureError, InterpreterError, LexerError, ParserError, SemanticError, PreLexerError
 from src.util import Util
 
 
@@ -109,7 +106,7 @@ def main():
         for output in result:
             print(f'     {output}')
 
-    except (SyntaxError, LexerError, ParserError, SemanticError, InterpreterError, BuiltinProcedureError) as e:
+    except (PreLexerError, LexerError, ParserError, SemanticError, InterpreterError, BuiltinProcedureError) as e:
         print(e.message)
         return
 

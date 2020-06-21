@@ -25,7 +25,6 @@ class StructDataFactory:
     def create(struct_name: str, fields: List[str]) -> StructDataType:
         struct_data = StructDataType(struct_name, (Data,), {})
 
-        # setattr(struct_data, 'name', struct_name)
         setattr(struct_data, 'field_names', fields)
         setattr(struct_data, 'fields', None)
 
@@ -81,6 +80,7 @@ class Procedure(Data):
 
 
 class String(Data):
+
     def __init__(self, value: str) -> None:
         super().__init__(value)
 

@@ -20,9 +20,9 @@ expr: data
 
 constant_assignment: LPAREN DEFINE expr* RPAREN
 
-procedure_assignment: LPAREN DEFINE LPAREN ID* RPAREN expr RPAREN
+procedure_assignment: LPAREN DEFINE LPAREN expr* RPAREN expr* RPAREN
 
-structure_assignment: LPAREN DEFINE_STRUCT LPAREN ID* RPAREN RPAREN
+structure_assignment: LPAREN DEFINE_STRUCT LPAREN expr* RPAREN RPAREN
 
 assignment_statement: constant_assignment
                     | function_assignment

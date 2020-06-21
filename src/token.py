@@ -13,11 +13,6 @@ class TokenType(Enum):
     DECIMAL = 'DECIMAL'
     BOOLEAN = 'BOOLEAN'
     STRING = 'STRING'
-    # reserved keywords
-    # DEFINE = 'define'
-    # DEFINE_STRUCT = 'define-struct'
-    # COND = 'cond'
-    # ELSE = 'else'
     # misc
     ID = 'ID'
     EOF = 'EOF'

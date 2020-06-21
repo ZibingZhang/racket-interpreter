@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from src.errors import ErrorCode, SyntaxError
+from src.errors import ErrorCode, PreLexerError
 from src.token import TokenType
 
 if TYPE_CHECKING:
@@ -29,14 +29,14 @@ class ParenthesesAnalyzer:
 
             elif token.type is TokenType.RPAREN:
                 if len(self.paren_stack) == 0:
-                    raise SyntaxError(
+                    raise PreLexerError(
                         error_code=ErrorCode.RS_UNEXPECTED_RIGHT_PARENTHESIS,
                         token=token
                     )
                 else:
                     left_paren = self.paren_stack[-1].value
                     if self.PAREN_MAP[left_paren] != token.value:
-                        raise SyntaxError(
+                        raise PreLexerError(
                             error_code=ErrorCode.RS_INCORRECT_RIGHT_PARENTHESIS,
                             token=token,
                             left_paren=left_paren,
@@ -50,7 +50,7 @@ class ParenthesesAnalyzer:
 
         if len(self.paren_stack) != 0:
             left_paren = self.paren_stack[-1].value
-            raise SyntaxError(
+            raise PreLexerError(
                 error_code=ErrorCode.RS_EXPECTED_RIGHT_PARENTHESIS,
                 token=token,
                 left_paren=left_paren,

@@ -160,7 +160,7 @@ class Parser:
         else:
             return self.data()
 
-    def constant_assignment(self) -> ast.ConstAssign:
+    def constant_assignment(self) -> ast.IdAssign:
         """constant_assignment: LPAREN DEFINE expr* RPAREN"""
         # opening left bracket
         left_paren_token = self.eat(TokenType.LPAREN)
@@ -175,11 +175,10 @@ class Parser:
         # closing right bracket
         self.eat(TokenType.RPAREN)
 
-        # return ast.ConstAssign(name, expr)
-        return ast.ConstAssign(left_paren_token, actual_params)
+        return ast.IdAssign(left_paren_token, actual_params)
 
     def procedure_assignment(self) -> ast.ProcAssign:
-        """procedure_assignment: LPAREN DEFINE LPAREN ID* RPAREN expr RPAREN"""
+        """procedure_assignment: LPAREN DEFINE LPAREN expr* RPAREN expr* RPAREN"""
         # opening left bracket
         left_paren_token = self.eat(TokenType.LPAREN)
         self.eat(TokenType.ID)
@@ -209,7 +208,7 @@ class Parser:
         return ast.ProcAssign(left_paren_token, name_expr, formal_params, exprs)
 
     def structure_assignment(self) -> ast.StructAssign:
-        """structure_assignment: LPAREN DEFINE_STRUCT LPAREN ID* RPAREN RPAREN"""
+        """structure_assignment: LPAREN DEFINE_STRUCT LPAREN expr* RPAREN RPAREN"""
         # opening left bracket
         left_paren_token = self.eat(TokenType.LPAREN)
         self.eat(TokenType.ID)
@@ -242,19 +241,6 @@ class Parser:
                 node.extra_asts.append(expr)
 
             idx += 1
-
-
-        # identifier = self.current_token
-        # self.eat(TokenType.ID)
-        #
-        # self.eat(TokenType.LPAREN)
-        #
-        # fields = []
-        # while self.current_token.type is TokenType.ID:
-        #     fields.append(self.current_token.value)
-        #     self.eat(TokenType.ID)
-        #
-        # self.eat(TokenType.RPAREN)
 
         # closing right bracket
         self.eat(TokenType.RPAREN)

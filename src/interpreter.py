@@ -71,7 +71,7 @@ class Interpreter(ASTVisitor):
 
         return var_value
 
-    def visit_ConstAssign(self, node: ast.ConstAssign) -> None:
+    def visit_IdAssign(self, node: ast.IdAssign) -> None:
         # 1. perform semantic analysis on node
         #    a. ensure ID not already taken
         #    b. visit expr

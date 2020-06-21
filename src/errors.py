@@ -37,8 +37,6 @@ class ErrorCode(Enum):
     DS_NOT_TOP_LEVEL = Template('define-struct: found a definition that is not at the top level')
     DS_POST_FIELD_NAMES = Template('define-struct: expected nothing after the field names, but $found')
 
-    # define-struct: expected nothing after the field names, but found 1 extra part
-
     E_NOT_ALLOWED = Template('else: not allowed here, because this is not a question in a clause')
 
     FC_EXPECTED_A_FUNCTION = Template('function-call: expected a function after the open parenthesis, but $found')
@@ -54,7 +52,7 @@ class ErrorCode(Enum):
 
 class Error(Exception):
 
-    def __init__(self, error_code, token, message=None, **kwargs) -> None:
+    def __init__(self, error_code, token, **kwargs) -> None:
         self.error_code = error_code
         self.token = token
         self.line_no = token.line_no
@@ -306,13 +304,17 @@ class Error(Exception):
             proc_token = kwargs.get('proc_token')
             if proc_token.type is TokenType.ID:
                 found_data = kwargs.get('found_data')
-                found_data_type = type(found_data)
-                if issubclass(found_data_type, Boolean):
+                found_data_class = type(found_data)
+                if issubclass(found_data_class, Boolean):
                     found_type = 'string'
-                elif issubclass(found_data_type, Number):
+                elif issubclass(found_data_class, Number):
                     found_type = 'number'
-                elif issubclass(found_data_type, String):
+                elif issubclass(found_data_class, String):
                     found_type = 'boolean'
+                elif issubclass(type(found_data_class), StructDataType):
+                    struct_name = found_data_class.__name__
+                    fields = found_data.fields
+                    found_type = f'(make-{struct_name} {" ".join(map(str, fields))})'
                 else:
                     raise IllegalStateError
             else:
@@ -366,19 +368,17 @@ class Error(Exception):
             error_message = template.safe_substitute()
 
         else:
-            error_message = None
-            self.message = f'[{self.__class__.__name__}] {message}'
+            raise IllegalStateError
 
-        if error_message is not None:
-            self.message += error_message
+        self.message += error_message
 
 
-class LexerError(Error):
+class PreLexerError(Error):
 
     pass
 
 
-class SyntaxError(Error):
+class LexerError(Error):
 
     pass
 

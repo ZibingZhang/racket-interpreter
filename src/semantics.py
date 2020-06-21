@@ -53,8 +53,7 @@ class SemanticAnalyzer(ASTVisitor):
                 name=var_name
             )
 
-    # TODO: rename const assign to ID assign
-    def visit_ConstAssign(self, node: ast.ConstAssign) -> None:
+    def visit_IdAssign(self, node: ast.IdAssign) -> None:
         token = node.token
         actual_params = node.actual_params
         actual_params_len = len(actual_params)
