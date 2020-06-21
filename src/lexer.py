@@ -1,11 +1,9 @@
 from typing import Optional
-from src.errors import LexerError
-import src.token as t
+from src.errors import ErrorCode, LexerError
 from src.token import Token, TokenType
 
 
 class Lexer:
-    RESERVED_KEYWORDS = t.RESERVED_KEYWORDS
     NON_ID_CHARS = ['"', "'", '`', '(', ')', '[', ']', '{', '}', '|', ';', '#']
 
     def __init__(self, text: str) -> None:
@@ -49,9 +47,32 @@ class Lexer:
 
         boolean = self.current_char
         self.advance()
-        while self.current_char is not None and self.current_char.isalpha():
+        while self.current_char is not None and not self.current_char.isspace():
+            current_char = self.current_char
+            if current_char in ['"', "'", '`', '#']:
+                boolean += self.current_char
+                break
+            elif current_char in ['(', ')', '{', '}', '[', ']']:
+                break
+
             boolean += self.current_char
             self.advance()
+
+            lowered = boolean.lower()
+            if lowered not in '#true' and lowered not in '#false':
+                break
+
+        if self.current_char is None or boolean not in ['#T', '#t', '#true', '#F', '#f', '#false']:
+            raise LexerError(
+                error_code=ErrorCode.RS_BAD_SYNTAX,
+                token=Token(
+                    type=TokenType.INVALID,
+                    value=boolean,
+                    line_no=line_no,
+                    column=column
+                ),
+                text=boolean
+            )
 
         if boolean in ['#T', '#t', '#true']:
             return Token(
@@ -67,12 +88,8 @@ class Lexer:
                 line_no=line_no,
                 column=column
             )
-        else:
-            # TODO: give a better error, right now the current_char is a space (sometimes)
-            self.error()
 
     def number(self) -> Token:
-        # TODO: clean up logic
         """Return a number token from a number consumed from the input (or an ID if not a valid number)."""
         line_no = self.line_no
         column = self.column
@@ -159,6 +176,18 @@ class Lexer:
         while self.current_char is not None and self.current_char != '"':
             string += self.current_char
             self.advance()
+
+        if self.current_char is None:
+            raise LexerError(
+                error_code=ErrorCode.RS_EXPECTED_DOUBLE_QUOTE,
+                token=Token(
+                    type=TokenType.INVALID,
+                    value=string,
+                    line_no=line_no,
+                    column=column
+                )
+            )
+
         self.advance()
 
         return Token(
@@ -170,15 +199,18 @@ class Lexer:
 
     def identifier(self, initial: str = '') -> Token:
         """Handles identifiers (including builtin functions)."""
+        line_no = self.line_no
+        column = self.column
+
         result = initial
         while self.current_char is not None and self.current_char not in self.NON_ID_CHARS \
                 and not self.current_char.isspace():
             result += self.current_char
             self.advance()
 
-        token_type = self.RESERVED_KEYWORDS.get(result, TokenType.ID)
-        token_value = result if token_type is TokenType.ID else token_type.value
-        return Token(token_type, token_value, self.line_no, self.column)
+        # token_type = self.RESERVED_KEYWORDS.get(result, TokenType.ID)
+        # token_value = result if token_type is TokenType.ID else token_type.value
+        return Token(TokenType.ID, result, line_no, column)
 
     def skip_whitespace(self) -> None:
         """Consume whitespace until next non-whitespace character."""

@@ -2,10 +2,10 @@ from __future__ import annotations
 import fractions as f
 from typing import TYPE_CHECKING, Any, List, Union
 from src import ast
-from src.ast import ASTVisitor
+from src.ast import ASTVisitor, AST
 from src.builtins import BUILT_IN_PROCS
 from src.constants import C
-from src.data import Boolean, InexactNumber, Integer, Procedure, Rational, String, StructDataFactory
+from src.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
 from src.errors import ErrorCode, IllegalStateError, InterpreterError
 from src.semantics import SemanticAnalyzer
 from src.stack import ActivationRecord, ARType, CallStack
@@ -13,7 +13,6 @@ from src.symbol import AmbiguousSymbol
 from src.token import Token
 
 if TYPE_CHECKING:
-    from src import ast
     from src.data import Data, Number
 
 
@@ -52,7 +51,7 @@ class Interpreter(ASTVisitor):
         # 1. return decimal
         return InexactNumber(node.value)
 
-    def visit_Const(self, node: ast.Const) -> Data:
+    def visit_Id(self, node: ast.Id) -> Data:
         # 1. perform semantic analysis on node
         # 2. lookup value of const
         # 3. return value
@@ -61,6 +60,14 @@ class Interpreter(ASTVisitor):
         var_name = node.value
 
         var_value = self.call_stack.get(var_name)
+
+        if issubclass(type(var_value), type):
+            struct_name = var_name
+            raise InterpreterError(
+                error_code=ErrorCode.USING_STRUCTURE_TYPE,
+                token=node.token,
+                name=struct_name
+            )
 
         return var_value
 
@@ -88,7 +95,7 @@ class Interpreter(ASTVisitor):
         #    a. ensure ID not already taken
         #    b. define proc symbol
         #    c. create and enter new scope named after proc
-        #    d. define all formal params
+        #    d. define all formal formal_params
         #    e. visit proc expr
         #    f. leave scope
         #    g. assign node expr to proc expr (for when interpreter is executing proc call)
@@ -96,7 +103,7 @@ class Interpreter(ASTVisitor):
         # 3. assign Procedure to proc name
         self.semantic_analyzer.visit(node)
 
-        proc_name = node.identifier
+        proc_name = node.proc_name
         proc_value = Procedure(proc_name)
 
         ar = self.call_stack.peek()
@@ -114,7 +121,12 @@ class Interpreter(ASTVisitor):
 
         formal_params_len = len(formal_params)
         actual_params_len = len(actual_params)
-        self.semantic_analyzer.assert_actual_param_len(node.token, proc_name, formal_params_len, actual_params_len)
+        self.semantic_analyzer.assert_actual_param_len(
+            node_token=node.token,
+            proc_name=proc_name,
+            formal_params_len=formal_params_len,
+            actual_params_len=actual_params_len
+        )
 
         if proc_name in BUILT_IN_PROCS.keys():
             old_token = node.token
@@ -191,45 +203,37 @@ class Interpreter(ASTVisitor):
         raise IllegalStateError('Interpreter should never have to visit a cond branch.')
 
     def visit_Cond(self, node: ast.Cond) -> Data:
-        token = node.token
+        self.semantic_analyzer.visit(node)
 
         idx = 0
         for idx, branch in enumerate(node.branches):
             predicate_result = self.visit(branch.predicate)
 
             if not issubclass(type(predicate_result), Boolean):
-                self.builtin_proc_type_error(
-                    proc_token=token,
-                    expected_type="Boolean",
-                    param_value=predicate_result,
-                    idx=idx
+                raise InterpreterError(
+                    error_code=ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN,
+                    token=node.token,
+                    result=predicate_result
                 )
 
             if predicate_result:
                 return self.visit(branch.expr)
+
         else_branch = node.else_branch
         if node.else_branch is not None:
             else_expr = else_branch.expr
             return self.visit(else_expr)
 
-        self.error(
-            error_code=ErrorCode.NO_COND_BRANCH,
-            token=token,
-            message='did not enter a branch',
-            idx=idx
-        )
-
     def visit_StructAssign(self, node: ast.StructAssign):
         struct_class = self.semantic_analyzer.visit(node)
 
         struct_name = node.struct_name
-        fields = node.fields
+        fields = node.field_names
 
-        # TODO: make this the meta class not just an empty object
-        empty_obj = struct_class.empty_obj()
+        metaclass = struct_class.metaclass
 
         ar = self.call_stack.peek()
-        ar[struct_name] = empty_obj
+        ar[struct_name] = metaclass
 
         new_procs = ['make-' + struct_name, struct_name + '?'] + [f'{struct_name}-{field}' for field in fields]
         for proc_name in new_procs:
@@ -242,24 +246,6 @@ class Interpreter(ASTVisitor):
     def log_stack(self, msg) -> None:
         if C.SHOULD_LOG_STACK:
             print(msg)
-
-    def error(self, error_code: ErrorCode, token: Token, message: str, idx: int):
-        raise InterpreterError(
-            error_code=error_code,
-            token=token,
-            message=f'{error_code.value}: {message}; idx={idx}; {token}.',
-        )
-
-    def builtin_proc_type_error(self, proc_token: Token, expected_type: str,
-                                param_value: Data, idx: int) -> None:
-        error_code_msg = ErrorCode.ARGUMENT_TYPE.value
-        msg = f"{error_code_msg}: procedure expected argument of type {expected_type}, " \
-            f"received {param_value.__class__.__name__}; idx={idx}; {proc_token}."
-        raise InterpreterError(
-            error_code=ErrorCode.ARGUMENT_TYPE,
-            token=proc_token,
-            message=msg
-        )
 
     def _define_builtin_procs(self):
         ar = self.call_stack.peek()

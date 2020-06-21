@@ -4,7 +4,7 @@ from enum import Enum
 
 
 class TokenType(Enum):
-    # single-character token types
+    # parentheses
     LPAREN = 'LPAREN'
     RPAREN = 'RPAREN'
     # data types
@@ -14,13 +14,15 @@ class TokenType(Enum):
     BOOLEAN = 'BOOLEAN'
     STRING = 'STRING'
     # reserved keywords
-    DEFINE = 'define'
-    DEFINE_STRUCT = 'define-struct'
-    COND = 'cond'
-    ELSE = 'else'
+    # DEFINE = 'define'
+    # DEFINE_STRUCT = 'define-struct'
+    # COND = 'cond'
+    # ELSE = 'else'
     # misc
     ID = 'ID'
     EOF = 'EOF'
+    # invalid
+    INVALID = 'INVALID'
 
 
 class Token:
@@ -59,27 +61,11 @@ class Token:
         return Token(TokenType.ID, name, line_no, column)
 
 
-def _build_reserved_keywords():
-    """Build a dictionary of reserved keywords.
-
-    The function relies on the fact that in the TokenType
-    enumeration the beginning of the block of reserved keywords is
-    marked with DEFINE and the end of the block is marked with
-    the DEFINE keyword.
-
-    Result:
-        {'DEFINE': <TokenType.DEFINE: 'DEFINE'>}
-    """
-    # enumerations support iteration, in definition order
-    tt_list = list(TokenType)
-    start_idx = tt_list.index(TokenType.DEFINE)
-    end_idx = tt_list.index(TokenType.ELSE)
-    reserved_keywords = {
-        token_type.value: token_type
-        for token_type in tt_list[start_idx:end_idx + 1]
-    }
-    return reserved_keywords
+class Keyword(Enum):
+    COND = 'cond'
+    DEFINE = 'define'
+    DEFINE_STRUCT = 'define-struct'
+    ELSE = 'else'
 
 
-# TODO: move to constants file
-RESERVED_KEYWORDS = _build_reserved_keywords()
+KEYWORDS = list(map(lambda keyword: keyword.value, Keyword))

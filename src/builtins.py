@@ -4,7 +4,7 @@ import math
 import time
 from typing import TYPE_CHECKING, List, Optional
 from src.data import Boolean, Data, ExactNumber, InexactNumber, Integer, Number, Rational, RealNumber, String
-from src.errors import ErrorCode
+from src.errors import BuiltinProcedureError, ErrorCode
 
 if TYPE_CHECKING:
     from src.ast import AST
@@ -17,13 +17,13 @@ class BuiltInProc(abc.ABC):
     @staticmethod
     @abc.abstractmethod
     def lower() -> int:
-        """Lower bound on number of params."""
+        """Lower bound on number of formal_params."""
         pass
 
     @staticmethod
     @abc.abstractmethod
     def upper() -> Optional[int]:
-        """Upper bound on number of params (None indicates no bound)."""
+        """Upper bound on number of formal_params (None indicates no bound)."""
         pass
 
     @staticmethod
@@ -183,11 +183,9 @@ class SymbolDivide(BuiltInProc):
                 )
 
             if idx == 0 and len(actual_params) == 1 and param_value == Integer(0):
-                interpreter.error(
-                    error_code=ErrorCode.DIVIDE_BY_ZERO,
-                    token=proc_token,
-                    message='cannot divide by zero',
-                    idx=0
+                raise BuiltinProcedureError(
+                    error_code=ErrorCode.DIVISION_BY_ZERO,
+                    token=proc_token
                 )
 
             evaluated_params.append(param_value)

@@ -8,6 +8,11 @@ class DataType(type):
     pass
 
 
+class StructDataType(DataType):
+
+    pass
+
+
 class Data(metaclass=DataType):
 
     def __init__(self, value: Optional[Any] = None) -> None:
@@ -17,14 +22,15 @@ class Data(metaclass=DataType):
 class StructDataFactory:
 
     @staticmethod
-    def create(struct_name: str, fields: List[str]) -> DataType:
-        struct_data = DataType(struct_name, (Data,), {})
+    def create(struct_name: str, fields: List[str]) -> StructDataType:
+        struct_data = StructDataType(struct_name, (Data,), {})
 
+        # setattr(struct_data, 'name', struct_name)
         setattr(struct_data, 'field_names', fields)
         setattr(struct_data, 'fields', None)
 
-        setattr(struct_data, 'empty_obj', lambda: struct_data())
-        struct_data.empty_obj = staticmethod(struct_data.empty_obj)
+        setattr(struct_data, 'metaclass', StructDataType)
+        struct_data.metaclass = staticmethod(struct_data.metaclass)
 
         setattr(struct_data, '__str__', lambda self: f'#<{struct_name}>')
 

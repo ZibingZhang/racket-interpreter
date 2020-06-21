@@ -1,21 +1,24 @@
+PARSER
+======
+
 data: NUMBER
     | BOOLEAN
     | STRING
 
-p-expr: LPAREN ID expr* RPAREN
+p-expr: LPAREN expr* RPAREN
 
-cond-else: LPAREN ELSE expr RPAREN
+cond-else: p-expr
 
-cond-branch: LPAREN expr expr RPAREN
+cond-branch: p-expr
 
-cond: LPAREN COND cond-branch+ cond-else? RPAREN
+cond: LPAREN COND (cond-branch|data|ID|cond)* cond-else? RPAREN
 
 expr: data
     | p-expr
     | ID
     | cond
 
-constant_assignment: LPAREN DEFINE ID expr RPAREN
+constant_assignment: LPAREN DEFINE expr* RPAREN
 
 procedure_assignment: LPAREN DEFINE LPAREN ID* RPAREN expr RPAREN
 
@@ -29,4 +32,4 @@ statement: assignment_statement
          | expr
 
 program : statement
-        | statement compound_statement
+        | statement program

@@ -31,7 +31,6 @@ class ScopedSymbolTable:
 
     def _init_builtin_procs(self) -> None:
         for proc in BUILT_IN_PROCS.keys():
-            # TODO: better representation for accepted inputs
             self._symbols[proc] = ProcSymbol(proc)
 
     def __str__(self) -> str:
@@ -85,19 +84,6 @@ class ScopedSymbolTable:
         return symbol
 
 
-class ConstSymbol(Symbol):
-    """A constant."""
-
-    def __init__(self, name: str) -> None:
-        super().__init__(name, 'CONSTANT')
-
-    def __str__(self) -> str:
-        return f'<ConstSymbol name:{self.name}>'
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
 class ProcSymbol(Symbol):
     """A procedure."""
 
@@ -115,7 +101,7 @@ class ProcSymbol(Symbol):
 
 
 class AmbiguousSymbol(Symbol):
-    """Either a procedure or a constant."""
+    """Either a procedure or data."""
 
     def __init__(self, name: str) -> None:
         super().__init__(name, 'AMBIGUOUS')

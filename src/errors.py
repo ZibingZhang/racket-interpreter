@@ -1,30 +1,384 @@
 from enum import Enum
+from string import Template
+from src.data import Boolean, Number, String, StructDataType
+from src.token import KEYWORDS, TokenType
 
 
 class ErrorCode(Enum):
+    BUILTIN_OR_IMPORTED_NAME = Template('$name: this name was defined in the language or a required library and cannot be re-defined')
+    DIVISION_BY_ZERO = Template('/: division by zero')
+    INCORRECT_ARGUMENT_COUNT = Template('$name: $expects, but $found')
+    PREVIOUSLY_DEFINED_NAME = Template('$name: this name was defined previously and cannot be re-defined')
+    USED_BEFORE_DEFINITION = Template('$name is used here before its definition')
+    USING_STRUCTURE_TYPE = Template('$name: structure type; do you mean make-$name')
 
-    UNEXPECTED_TOKEN = 'Unexpected token'
-    ID_NOT_FOUND = 'Identifier not found'
-    DUPLICATE_ID = 'Duplicate identifier found'
-    ARGUMENT_COUNT = 'Wrong number of arguments'
-    NOT_A_PROCEDURE = 'Not a procedure'
-    PROCEDURE_NOT_FOUND = 'Procedure not found'
-    ARGUMENT_TYPE = 'Incorrect argument type'
-    DIVIDE_BY_ZERO = 'Divide by zero'
-    WRONG_CLOSING_PARENTHESIS = 'Wrong closing parenthesis'
-    NO_COND_BRANCH = "No cond branch passed"
+    C_ELSE_NOT_LAST_CLAUSE = Template("cond: found an else clause that isn't the last clause in its cond expression")
+    C_EXPECTED_A_CLAUSE = Template("cond: expected a clause after cond, but nothing's there")
+    C_EXPECTED_OPEN_PARENTHESIS = Template('cond: expected an open parenthesis before cond, but found none')
+    C_EXPECTED_QUESTION_ANSWER_CLAUSE = Template('cond: expected a clause with a question and an answer, but $found')
+    C_QUESTION_RESULT_NOT_BOOLEAN = Template('cond: question result is not true or false: $result')
+
+    D_DUPLICATE_VARIABLE = Template('define: found a variable that is used more than once: $name')
+    D_EXPECTED_A_NAME = Template("define: expected a variable name, or a function name and its variables (in parentheses), but $found")
+    D_NOT_TOP_LEVEL = Template('define: found a definition that is not at the top level')
+    D_P_EXPECTED_A_VARIABLE = Template('define: expected a variable, but $found')
+    D_P_EXPECTED_FUNCTION_NAME = Template('define: expected the name of the function, but $found')
+    D_P_EXPECTED_ONE_EXPRESSION = Template('define: expected only one expression for the function body, but $found')
+    D_P_MISSING_AN_EXPRESSION = Template("define: expected an expression for the function body, but nothing's there")
+    D_V_EXPECTED_ONE_EXPRESSION = Template("define: expected only one expression after the variable name $name, but $found")
+    D_V_EXPECTED_OPEN_PARENTHESIS = Template('define: expected an open parenthesis before define, but found none')
+    D_V_MISSING_AN_EXPRESSION = Template("define: expected an expression after the variable name $name, but nothing's there")
+
+    DS_EXPECTED_A_FIELD = Template('define-struct: expected a field name, but $found')
+    DS_EXPECTED_FIELD_NAMES = Template('define-struct: expected at least one field name (in parentheses) after the structure name, but $found')
+    DS_EXPECTED_OPEN_PARENTHESIS = Template('define-struct: expected an open parenthesis before define-struct, but found none')
+    DS_EXPECTED_STRUCTURE_NAME = Template('define-struct: expected the structure name after define-struct, but $found')
+    DS_FOUND_EXTRA_PARTS = Template('define-struct: expected nothing after the field names, but $found')
+    DS_NOT_TOP_LEVEL = Template('define-struct: found a definition that is not at the top level')
+    DS_POST_FIELD_NAMES = Template('define-struct: expected nothing after the field names, but $found')
+
+    # define-struct: expected nothing after the field names, but found 1 extra part
+
+    E_NOT_ALLOWED = Template('else: not allowed here, because this is not a question in a clause')
+
+    FC_EXPECTED_A_FUNCTION = Template('function-call: expected a function after the open parenthesis, but $found')
+
+    RS_BAD_SYNTAX = Template('read-syntax: bad syntax `$text`')
+    RS_EXPECTED_DOUBLE_QUOTE = Template('read-syntax: expected a closing `"`')
+    RS_EXPECTED_RIGHT_PARENTHESIS = Template('read-syntax: expected a `$right_paren` to close `$left_paren`')
+    RS_INCORRECT_RIGHT_PARENTHESIS = Template('read-syntax: expected `$correct_right_paren` to close preceding `$left_paren`, found instead `$incorrect_right_paren`')
+    RS_UNEXPECTED_EOF = Template('read-syntax: unexpected EOF')  # TODO: get rid of this eventually
+    RS_UNEXPECTED_RIGHT_PARENTHESIS = Template('read-syntax: unexpected `)`')
+    RS_UNEXPECTED_TOKEN = Template('read-syntax: unexpected token `$token_value`')  # TODO: and this
 
 
 class Error(Exception):
 
-    def __init__(self, error_code=None, token=None, message=None) -> None:
+    def __init__(self, error_code, token, message=None, **kwargs) -> None:
         self.error_code = error_code
         self.token = token
-        # add exception class name before the message
-        self.message = f'[{self.__class__.__name__}] {message}'
+        self.line_no = token.line_no
+        self.column = token.column
+
+        self.message = f'[{self.line_no}:{self.column}] '
+
+        template = error_code.value
+
+        if error_code is ErrorCode.BUILTIN_OR_IMPORTED_NAME:
+            name = token.value
+
+            error_message = template.safe_substitute(name=name)
+
+        elif error_code is ErrorCode.DIVISION_BY_ZERO:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.INCORRECT_ARGUMENT_COUNT:
+            proc_name = kwargs.get('proc_name')
+            lower = kwargs.get('lower')
+            upper = kwargs.get('upper')
+            received = kwargs.get('received')
+
+            if received == 0:
+                received = 'none'
+
+            expects = 'expects'
+            if upper is None:
+                expects += f' at least {lower} argument{"s" if lower > 1 else ""}'
+            else:
+                expects += f' {"only " if lower == 1 else ""}{lower} argument{"s" if lower > 1 else ""}'
+
+            found = f'found {received}'
+
+            error_message = template.safe_substitute(name=proc_name, expects=expects, found=found)
+
+        elif error_code is ErrorCode.PREVIOUSLY_DEFINED_NAME:
+            name = token.value
+
+            error_message = template.safe_substitute(name=name)
+
+        elif error_code is ErrorCode.USED_BEFORE_DEFINITION:
+            name = kwargs.get('name')
+            error_message = template.safe_substitute(name=name)
+
+        elif error_code is ErrorCode.USING_STRUCTURE_TYPE:
+            name = kwargs.get('name')
+            error_message = template.safe_substitute(name=name)
+
+        elif error_code is ErrorCode.C_ELSE_NOT_LAST_CLAUSE:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.C_EXPECTED_A_CLAUSE:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.C_EXPECTED_OPEN_PARENTHESIS:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE:
+            part_count = kwargs.get('part_count')
+            expr_token = kwargs.get('expr_token')
+
+            if part_count is not None:
+                if part_count == 0:
+                    found = 'found an empty part'
+                elif part_count == 1:
+                    found = 'found a clause with only one part'
+                else:
+                    found = f'found a clause with {part_count} parts'
+
+            else:
+                if expr_token is None or expr_token.type is TokenType.RPAREN:
+                    found = "nothing's there"
+                elif expr_token.type is TokenType.BOOLEAN:
+                    found = 'found a boolean'
+                elif expr_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+                    found = 'found a number'
+                elif expr_token.type is TokenType.STRING:
+                    found = 'found a string'
+                elif expr_token.type is TokenType.ID:
+                    found = 'found something else'
+                else:
+                    raise IllegalStateError
+
+            error_message = template.safe_substitute(found=found)
+
+        elif error_code is ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN:
+            result = kwargs.get('result')
+
+            error_message = template.safe_substitute(result=result)
+
+        elif error_code is ErrorCode.D_DUPLICATE_VARIABLE:
+            name = kwargs.get('name')
+
+            error_message = template.safe_substitute(name=name)
+
+        elif error_code is ErrorCode.D_EXPECTED_A_NAME:
+            proc_token = kwargs.get('next_token')
+
+            if proc_token is None or proc_token.type is TokenType.RPAREN:
+                found = "nothing's there"
+            elif proc_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+                found = 'found a number'
+            elif proc_token.type is TokenType.STRING:
+                found = 'found a string'
+            elif proc_token.value in KEYWORDS:
+                found = 'found a keyword'
+            else:
+                raise IllegalStateError
+
+            error_message = template.safe_substitute(found=found)
+
+        elif error_code is ErrorCode.D_NOT_TOP_LEVEL:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.D_P_EXPECTED_A_VARIABLE:
+            if token.type is TokenType.BOOLEAN:
+                found = 'found a boolean'
+            elif token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+                found = 'found a number'
+            elif token.type is TokenType.STRING:
+                found = 'found a string'
+            elif token.type is TokenType.LPAREN:
+                found = 'found a part'
+            elif token.value in KEYWORDS:
+                found = 'found a keyword'
+            else:
+                raise IllegalStateError
+
+            error_message = template.safe_substitute(found=found)
+
+        elif error_code is ErrorCode.D_P_EXPECTED_FUNCTION_NAME:
+            name_token = kwargs.get('name_token')
+
+            if name_token is None:
+                found = "nothing's there"
+            elif name_token.type is TokenType.BOOLEAN:
+                found = 'found a boolean'
+            elif name_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+                found = 'found a number'
+            elif name_token.type is TokenType.STRING:
+                found = 'found a string'
+            elif name_token.type is TokenType.LPAREN:
+                found = 'found a part'
+            elif name_token.value in KEYWORDS:
+                found = 'found a keyword'
+            else:
+                raise IllegalStateError
+
+            error_message = template.safe_substitute(found=found)
+
+        elif error_code is ErrorCode.D_P_EXPECTED_ONE_EXPRESSION:
+            part_count = kwargs.get('part_count')
+            plural = part_count > 1
+            found = f'found {part_count} extra part{"s" if plural else ""}'
+
+            error_message = template.safe_substitute(found=found)
+
+        elif error_code is ErrorCode.D_P_MISSING_AN_EXPRESSION:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.D_V_EXPECTED_ONE_EXPRESSION:
+            name = kwargs.get('name')
+            extra_count = kwargs.get('extra_count')
+
+            plural = extra_count > 1
+            found = f'found {extra_count} extra part{"s" if plural else ""}'
+
+            error_message = template.safe_substitute(name=name, found=found)
+
+        elif error_code is ErrorCode.D_V_EXPECTED_OPEN_PARENTHESIS:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.D_V_MISSING_AN_EXPRESSION:
+            name = kwargs.get('name')
+
+            error_message = template.safe_substitute(name=name)
+
+        elif error_code is ErrorCode.DS_EXPECTED_A_FIELD:
+            if token.type is TokenType.BOOLEAN:
+                found = 'found a boolean'
+            elif token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+                found = 'found a number'
+            elif token.type is TokenType.STRING:
+                found = 'found a string'
+            elif token.type is TokenType.LPAREN:
+                found = 'found a part'
+            elif token.value in KEYWORDS:
+                found = 'found a keyword'
+            else:
+                raise IllegalStateError
+
+            error_message = template.safe_substitute(found=found)
+
+        elif error_code is ErrorCode.DS_EXPECTED_FIELD_NAMES:
+            found_token = kwargs.get('found_token')
+
+            if found_token is None:
+                found = "nothing's there"
+            elif found_token.type is TokenType.BOOLEAN:
+                found = 'found a boolean'
+            elif found_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+                found = 'found a number'
+            elif found_token.type is TokenType.STRING:
+                found = 'found a string'
+            elif found_token.value in KEYWORDS:
+                found = 'found a keyword'
+            else:
+                raise IllegalStateError
+
+            error_message = template.safe_substitute(found=found)
+
+        elif error_code is ErrorCode.DS_EXPECTED_OPEN_PARENTHESIS:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.DS_EXPECTED_STRUCTURE_NAME:
+            name_token = kwargs.get('name_token')
+            if name_token is None:
+                found = "nothing's there"
+            elif name_token.type is TokenType.BOOLEAN:
+                found = 'found a boolean'
+            elif name_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+                found = 'found a number'
+            elif name_token.type is TokenType.STRING:
+                found = 'found a string'
+            elif name_token.type is TokenType.LPAREN:
+                found = 'found a part'
+            elif name_token.value in KEYWORDS:
+                found = 'found a keyword'
+            else:
+                raise IllegalStateError
+
+            error_message = template.safe_substitute(found=found)
+
+        elif error_code is ErrorCode.DS_NOT_TOP_LEVEL:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.DS_POST_FIELD_NAMES:
+            part_count = kwargs.get('part_count')
+
+            found = f'found {part_count} extra part{"s" if part_count > 1 else ""}'
+
+            error_message = template.safe_substitute(found=found)
+
+        elif error_code is ErrorCode.E_NOT_ALLOWED:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.FC_EXPECTED_A_FUNCTION:
+            proc_token = kwargs.get('proc_token')
+            if proc_token.type is TokenType.ID:
+                found_data = kwargs.get('found_data')
+                found_data_type = type(found_data)
+                if issubclass(found_data_type, Boolean):
+                    found_type = 'string'
+                elif issubclass(found_data_type, Number):
+                    found_type = 'number'
+                elif issubclass(found_data_type, String):
+                    found_type = 'boolean'
+                else:
+                    raise IllegalStateError
+            else:
+                if proc_token is None:
+                    found_type = None
+                elif proc_token.type is TokenType.BOOLEAN:
+                    found_type = 'boolean'
+                elif proc_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+                    found_type = 'number'
+                elif proc_token.type is TokenType.STRING:
+                    found_type = 'string'
+                elif proc_token.type is TokenType.LPAREN:
+                    found_type = 'part'
+                else:
+                    raise IllegalStateError
+
+            found = "nothing's there" if found_type is None else f'found a {found_type}'
+
+            error_message = template.safe_substitute(found=found)
+
+        elif error_code is ErrorCode.RS_BAD_SYNTAX:
+            text = kwargs.get('text')
+            error_message = template.safe_substitute(text=text)
+
+        elif error_code is ErrorCode.RS_EXPECTED_DOUBLE_QUOTE:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.RS_EXPECTED_RIGHT_PARENTHESIS:
+            left_paren = kwargs.get('left_paren')
+            right_paren = kwargs.get('right_paren')
+            error_message = template.safe_substitute(left_paren=left_paren, right_paren=right_paren)
+
+        elif error_code is ErrorCode.RS_INCORRECT_RIGHT_PARENTHESIS:
+            left_paren = kwargs.get('left_paren')
+            correct_right_paren = kwargs.get('correct_right_paren')
+            incorrect_right_paren = kwargs.get('incorrect_right_paren')
+            error_message = template.safe_substitute(
+                left_paren=left_paren,
+                correct_right_paren=correct_right_paren,
+                incorrect_right_paren=incorrect_right_paren
+            )
+
+        elif error_code is ErrorCode.RS_UNEXPECTED_RIGHT_PARENTHESIS:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.RS_UNEXPECTED_TOKEN:
+            token_value = token.value
+            error_message = template.safe_substitute(token_value=token_value)
+
+        elif error_code is ErrorCode.RS_UNEXPECTED_EOF:
+            error_message = template.safe_substitute()
+
+        else:
+            error_message = None
+            self.message = f'[{self.__class__.__name__}] {message}'
+
+        if error_message is not None:
+            self.message += error_message
 
 
 class LexerError(Error):
+
+    pass
+
+
+class SyntaxError(Error):
 
     pass
 
@@ -40,6 +394,11 @@ class SemanticError(Error):
 
 
 class InterpreterError(Error):
+
+    pass
+
+
+class BuiltinProcedureError(Error):
 
     pass
 

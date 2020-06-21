@@ -1,9 +1,10 @@
 from src import constants
 from src.constants import C
-from src.errors import InterpreterError, LexerError, ParserError, SemanticError
+from src.errors import BuiltinProcedureError, InterpreterError, LexerError, ParserError, SemanticError, SyntaxError
 from src.interpreter import Interpreter
 from src.lexer import Lexer
 from src.parser import Parser
+from src.util import Util
 
 
 def main():
@@ -100,12 +101,7 @@ def main():
             (boolean=? (set=? S1 S4) #f)
             """
 
-        lexer = Lexer(text)
-        parser = Parser(lexer)
-        tree = parser.parse()
-
-        interpreter = Interpreter(tree)
-        result = interpreter.interpret()
+        result = Util.text_to_result(text)
 
         if C.SHOULD_LOG_SCOPE or C.SHOULD_LOG_STACK:
             print('')
@@ -113,7 +109,7 @@ def main():
         for output in result:
             print(f'     {output}')
 
-    except (LexerError, ParserError, SemanticError) as e:
+    except (SyntaxError, LexerError, ParserError, SemanticError, InterpreterError, BuiltinProcedureError) as e:
         print(e.message)
         return
 

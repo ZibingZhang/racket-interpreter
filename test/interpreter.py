@@ -1,12 +1,9 @@
 from __future__ import annotations
-import fractions as f
 from typing import TYPE_CHECKING, List
 import unittest
 from src import constants
 from src.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
-from src.interpreter import Interpreter
-from src.lexer import Lexer
-from src.parser import Parser
+from src.util import Util
 
 if TYPE_CHECKING:
     from src.data import Data
@@ -19,11 +16,11 @@ class TestInterpreter(unittest.TestCase):
         constants.init(should_log_scope=False, should_log_stack=False)
 
     def interpret_text(self, text: str, expected: List[Data]) -> None:
-        lexer = Lexer(text)
-        parser = Parser(lexer)
-        tree = parser.parse()
-        interpreter = Interpreter(tree)
-        result = interpreter.interpret()
+        result = Util.text_to_result(text)
+
+        result_len = len(result)
+        expected_len = len(expected)
+        self.assertEqual(result_len, expected_len)
 
         for output, expected in zip(result, expected):
             self.assertEqual(type(output), type(expected))
@@ -114,6 +111,38 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
+    def test_struct(self) -> None:
+        # since structs dynamically generate classes,
+        # haven't thought of a good way to test some of the functionality of structs
+        text = \
+            '''
+                (define-struct s [a b c])
+                (define s0 (make-s .3 "Jeff" #T))
+                
+                (s? 1)
+                (s? "a")
+                (s? #f)
+                (s? s0)
+                
+                (s-a s0)
+                (s-b s0)
+                (s-c s0)
+                
+                (define a-selector s-a)
+                (a-selector s0)
+            '''
+        expected = [
+            Boolean(False),
+            Boolean(False),
+            Boolean(False),
+            Boolean(True),
+            InexactNumber(0.3),
+            String('Jeff'),
+            Boolean(True),
+            InexactNumber(0.3)
+        ]
+        self.interpret_text(text, expected)
+
     def test_scope(self) -> None:
         text = \
             '''
@@ -125,6 +154,18 @@ class TestInterpreter(unittest.TestCase):
         expected = [
             Integer(0),
             Integer(6)
+        ]
+        self.interpret_text(text, expected)
+
+        text = \
+            '''
+                (define a +)
+                (define b a)
+                (define c b)
+                (b 1 2)
+            '''
+        expected = [
+            Integer(3)
         ]
         self.interpret_text(text, expected)
 
