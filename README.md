@@ -33,6 +33,12 @@ python -m src
 
 To change the code that is being interpreted, change the value of `text` in `__main__.py`.
 
+### Testing
+
+```
+python -m unittest
+```
+
 ## Licence
 
 This project is licensed under the MIT license.
