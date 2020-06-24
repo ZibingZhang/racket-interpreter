@@ -94,6 +94,7 @@ class String(Data):
         return self.__str__()
 
 
+# Numbers
 class RealNumber(Number):
 
     @property
@@ -152,13 +153,6 @@ class RealNumber(Number):
         return RealNumber(abs(self.value))
 
 
-class ExactNumber(RealNumber):
-
-    @property
-    def precedence(self):
-        return 3
-
-
 class InexactNumber(RealNumber):
 
     def __init__(self, value: Union[float, int]) -> None:
@@ -199,62 +193,11 @@ class InexactNumber(RealNumber):
         return InexactNumber(abs(self.value))
 
 
-class Integer(ExactNumber):
+class ExactNumber(RealNumber):
 
     @property
     def precedence(self):
-        return 1
-
-    def __init__(self, value: int) -> None:
-        super().__init__(value)
-
-    def __str__(self):
-        return str(self.value)
-
-    def __int__(self):
-        return self.value
-
-    def __add__(self, other) -> Number:
-        if other.precedence > self.precedence:
-            return other.__add__(self)
-        else:
-            return Integer(self.value + other.value)
-
-    def __sub__(self, other) -> Number:
-        if other.precedence > self.precedence:
-            return -other.__sub__(self)
-        else:
-            return Integer(self.value - other.value)
-
-    def __mul__(self, other) -> Number:
-        if other.precedence > self.precedence:
-            return other.__mul__(self)
-        else:
-            return Integer(self.value * other.value)
-
-    def __truediv__(self, other) -> Number:
-        other_type = type(other)
-        if issubclass(other_type, Rational):
-            numerator = self.value * other.denominator
-            denominator = other.numerator
-            fraction = f.Fraction(numerator, denominator)
-        elif issubclass(other_type, Integer):
-            numerator = self.value
-            denominator = other.value
-            fraction = f.Fraction(numerator, denominator)
-        else:
-            return InexactNumber(self.value/other.value)
-
-        if fraction.denominator == 1:
-            return Integer(fraction.numerator)
-        else:
-            return Rational(fraction.numerator, fraction.denominator)
-
-    def __neg__(self) -> Integer:
-        return Integer(-self.value)
-
-    def __abs__(self) -> Integer:
-        return Integer(abs(self.value))
+        return 3
 
 
 class Rational(ExactNumber):
@@ -355,3 +298,61 @@ class Rational(ExactNumber):
         numerator = abs(self.numerator)
         denominator = abs(self.denominator)
         return Rational(numerator, denominator)
+
+
+class Integer(ExactNumber):
+
+    @property
+    def precedence(self):
+        return 1
+
+    def __init__(self, value: int) -> None:
+        super().__init__(value)
+
+    def __str__(self):
+        return str(self.value)
+
+    def __int__(self):
+        return self.value
+
+    def __add__(self, other) -> Number:
+        if other.precedence > self.precedence:
+            return other.__add__(self)
+        else:
+            return Integer(self.value + other.value)
+
+    def __sub__(self, other) -> Number:
+        if other.precedence > self.precedence:
+            return -other.__sub__(self)
+        else:
+            return Integer(self.value - other.value)
+
+    def __mul__(self, other) -> Number:
+        if other.precedence > self.precedence:
+            return other.__mul__(self)
+        else:
+            return Integer(self.value * other.value)
+
+    def __truediv__(self, other) -> Number:
+        other_type = type(other)
+        if issubclass(other_type, Rational):
+            numerator = self.value * other.denominator
+            denominator = other.numerator
+            fraction = f.Fraction(numerator, denominator)
+        elif issubclass(other_type, Integer):
+            numerator = self.value
+            denominator = other.value
+            fraction = f.Fraction(numerator, denominator)
+        else:
+            return InexactNumber(self.value/other.value)
+
+        if fraction.denominator == 1:
+            return Integer(fraction.numerator)
+        else:
+            return Rational(fraction.numerator, fraction.denominator)
+
+    def __neg__(self) -> Integer:
+        return Integer(-self.value)
+
+    def __abs__(self) -> Integer:
+        return Integer(abs(self.value))

@@ -14,13 +14,6 @@ class Lexer:
         self.line_no = 1
         self.column = 1
 
-    def error(self) -> None:
-        lexeme = self.current_char
-        line_no = self.line_no
-        column = self.column
-        msg = f"Invalid character '{lexeme}' position={line_no}:{column}."
-        raise LexerError(message=msg)
-
     def advance(self) -> None:
         """Advance the 'pos' pointer and set the 'current_char' field."""
         if self.current_char == '\n':
@@ -59,6 +52,62 @@ class Lexer:
         self.column = current_column
 
         return next_token
+
+    def get_next_token(self) -> Token:
+        """ Responsible for breaking apart text into tokens."""
+        while self.current_char:
+            if self.current_char.isspace():
+                self.skip_whitespace()
+                continue
+
+            if self.current_char == ';':
+                self.skip_line_comment()
+                continue
+
+            if self.current_char == '#' and self.peek() == '|':
+                self.skip_block_comment()
+                continue
+
+            if self.current_char.isdigit() or self.current_char == '.' \
+                    or (self.current_char == '-' and (self.peek().isdigit() or self.peek() == '.')):
+                return self.number()
+
+            if self.current_char not in self.NON_ID_CHARS:
+                return self.identifier()
+
+            if self.current_char == '#':
+                return self.boolean()
+
+            if self.current_char == '"':
+                return self.string()
+
+            if self.current_char in ['(', '{', '[']:
+                token_type = TokenType.LPAREN
+                value = self.current_char
+                token = Token(
+                    type=token_type,
+                    value=value,
+                    line_no=self.line_no,
+                    column=self.column
+                )
+                self.advance()
+                return token
+
+            if self.current_char in [')', '}', ']']:
+                token_type = TokenType.RPAREN
+                value = self.current_char
+                token = Token(
+                    type=token_type,
+                    value=value,
+                    line_no=self.line_no,
+                    column=self.column
+                )
+                self.advance()
+                return token
+
+            raise IllegalStateError
+
+        return Token(TokenType.EOF, None, self.line_no, self.column)
 
     def boolean(self) -> Token:
         line_no = self.line_no
@@ -277,59 +326,3 @@ class Lexer:
                 )
 
             self.advance()
-
-    def get_next_token(self) -> Token:
-        """ Responsible for breaking apart text into tokens."""
-        while self.current_char:
-            if self.current_char.isspace():
-                self.skip_whitespace()
-                continue
-
-            if self.current_char == ';':
-                self.skip_line_comment()
-                continue
-
-            if self.current_char == '#' and self.peek() == '|':
-                self.skip_block_comment()
-                continue
-
-            if self.current_char.isdigit() or self.current_char == '.' \
-                    or (self.current_char == '-' and (self.peek().isdigit() or self.peek() == '.')):
-                return self.number()
-
-            if self.current_char not in self.NON_ID_CHARS:
-                return self.identifier()
-
-            if self.current_char == '#':
-                return self.boolean()
-
-            if self.current_char == '"':
-                return self.string()
-
-            if self.current_char in ['(', '{', '[']:
-                token_type = TokenType.LPAREN
-                value = self.current_char
-                token = Token(
-                    type=token_type,
-                    value=value,
-                    line_no=self.line_no,
-                    column=self.column
-                )
-                self.advance()
-                return token
-
-            if self.current_char in [')', '}', ']']:
-                token_type = TokenType.RPAREN
-                value = self.current_char
-                token = Token(
-                    type=token_type,
-                    value=value,
-                    line_no=self.line_no,
-                    column=self.column
-                )
-                self.advance()
-                return token
-
-            raise IllegalStateError
-
-        return Token(TokenType.EOF, None, self.line_no, self.column)

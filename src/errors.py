@@ -46,9 +46,9 @@ class ErrorCode(Enum):
     RS_EXPECTED_DOUBLE_QUOTE = Template('read-syntax: expected a closing `"`')
     RS_EXPECTED_RIGHT_PARENTHESIS = Template('read-syntax: expected a `$right_paren` to close `$left_paren`')
     RS_INCORRECT_RIGHT_PARENTHESIS = Template('read-syntax: expected `$correct_right_paren` to close preceding `$left_paren`, found instead `$incorrect_right_paren`')
-    RS_UNEXPECTED_EOF = Template('read-syntax: unexpected EOF')  # TODO: get rid of this eventually
+    RS_UNEXPECTED_EOF = Template('read-syntax: unexpected EOF')  # should hopefully never be raised
     RS_UNEXPECTED_RIGHT_PARENTHESIS = Template('read-syntax: unexpected `)`')
-    RS_UNEXPECTED_TOKEN = Template('read-syntax: unexpected token `$token_value`')  # TODO: and this
+    RS_UNEXPECTED_TOKEN = Template('read-syntax: unexpected token `$token_value`')  # should hopefully never be raised
 
 
 class Error(Exception):

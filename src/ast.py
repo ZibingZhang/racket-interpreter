@@ -41,24 +41,6 @@ class ASTVisitor(abc.ABC):
         raise Exception(f'No visit_{type(node).__name__} method.')
 
 
-class StructMake(StructProc):
-    """A make-[structure-name] procedure."""
-
-    pass
-
-
-class StructHuh(StructProc):
-    """A [structure-name]? procedure."""
-
-    pass
-
-
-class StructGet(StructProc):
-    """A [structure-name]-[field] procedure."""
-
-    pass
-
-
 class Bool(Expr):
     """A boolean."""
 
@@ -68,48 +50,6 @@ class Bool(Expr):
 
     def __str__(self) -> str:
         return f'<Bool value:{self.value}>'
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
-class Int(Expr):
-    """A number."""
-
-    def __init__(self, token: Token) -> None:
-        super().__init__(token)
-        self.value = token.value
-
-    def __str__(self) -> str:
-        return f'<Int value:{self.value}>'
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
-class Str(Expr):
-    """A string."""
-
-    def __init__(self, token: Token) -> None:
-        super().__init__(token)
-        self.value = token.value
-
-    def __str__(self) -> str:
-        return f'<Str value:{self.value}>'
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
-class Rat(Expr):
-    """A rational number."""
-
-    def __init__(self, token: Token) -> None:
-        super().__init__(token)
-        self.value = token.value
-
-    def __str__(self) -> str:
-        return f'<Rat value:{self.value}>'
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -138,6 +78,96 @@ class Id(Expr):
 
     def __str__(self) -> str:
         return f'<Const value:{self.value}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Int(Expr):
+    """A number."""
+
+    def __init__(self, token: Token) -> None:
+        super().__init__(token)
+        self.value = token.value
+
+    def __str__(self) -> str:
+        return f'<Int value:{self.value}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Rat(Expr):
+    """A rational number."""
+
+    def __init__(self, token: Token) -> None:
+        super().__init__(token)
+        self.value = token.value
+
+    def __str__(self) -> str:
+        return f'<Rat value:{self.value}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Str(Expr):
+    """A string."""
+
+    def __init__(self, token: Token) -> None:
+        super().__init__(token)
+        self.value = token.value
+
+    def __str__(self) -> str:
+        return f'<Str value:{self.value}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Cond(Expr):
+    """A cond statement."""
+
+    def __init__(self, token: Token, branches: List[AST], else_branch: Optional[CondElse] = None) -> None:
+        super().__init__(token)
+        self.branches = branches
+        self.else_branch = else_branch
+
+    def __str__(self) -> str:
+        return f'<Cond branches:{self.branches}  else_branch{self.else_branch}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class CondBranch(AST):
+    """A cond branch with a condition."""
+
+    def __init__(self, token: Token, exprs: List[AST]):
+        super().__init__(token)
+        self.exprs = exprs
+
+        self.predicate = None
+        self.expr = None
+
+    def __str__(self) -> str:
+        return f'<CondBranch predicate:{self.predicate}  expr{self.expr}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class CondElse(AST):
+    """The else cond branch."""
+
+    def __init__(self, token: Token, exprs: List[AST]):
+        super().__init__(token)
+        self.exprs = exprs
+
+        self.expr = None
+
+    def __str__(self) -> str:
+        return f'<CondBranch  expr{self.expr}>'
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -222,68 +252,6 @@ class ProcCall(Expr):
         return self.__str__()
 
 
-class Program(AST):
-    """A list of statements."""
-
-    def __init__(self, statements: List[AST]) -> None:
-        super().__init__(None)
-        self.statements = statements
-
-    def __str__(self) -> str:
-        return f'<Program statements:{self.statements}>'
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
-class CondElse(AST):
-    """The else cond branch."""
-
-    def __init__(self, token: Token, exprs: List[AST]):
-        super().__init__(token)
-        self.exprs = exprs
-
-        self.expr = None
-
-    def __str__(self) -> str:
-        return f'<CondBranch  expr{self.expr}>'
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
-class CondBranch(AST):
-    """A cond branch with a condition."""
-
-    def __init__(self, token: Token, exprs: List[AST]):
-        super().__init__(token)
-        self.exprs = exprs
-
-        self.predicate = None
-        self.expr = None
-
-    def __str__(self) -> str:
-        return f'<CondBranch predicate:{self.predicate}  expr{self.expr}>'
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
-class Cond(Expr):
-    """A cond statement."""
-
-    def __init__(self, token: Token, branches: List[AST], else_branch: Optional[CondElse] = None) -> None:
-        super().__init__(token)
-        self.branches = branches
-        self.else_branch = else_branch
-
-    def __str__(self) -> str:
-        return f'<Cond branches:{self.branches}  else_branch{self.else_branch}>'
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
 class StructAssign(AST):
     """Defining a new structure."""
 
@@ -299,6 +267,38 @@ class StructAssign(AST):
 
     def __str__(self) -> str:
         return f'<StructAssign struct_name:{self.struct_name}  field_names:{self.field_names}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class StructMake(StructProc):
+    """A make-[structure-name] procedure."""
+
+    pass
+
+
+class StructHuh(StructProc):
+    """A [structure-name]? procedure."""
+
+    pass
+
+
+class StructGet(StructProc):
+    """A [structure-name]-[field] procedure."""
+
+    pass
+
+
+class Program(AST):
+    """A list of statements."""
+
+    def __init__(self, statements: List[AST]) -> None:
+        super().__init__(None)
+        self.statements = statements
+
+    def __str__(self) -> str:
+        return f'<Program statements:{self.statements}>'
 
     def __repr__(self) -> str:
         return self.__str__()

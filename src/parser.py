@@ -16,6 +16,12 @@ class Parser:
         self.current_token = self.lexer.get_next_token()
         self.left_paren_stack = []
 
+    def parse(self) -> ast.Program:
+        node = self.program()
+        self.eat(TokenType.EOF)
+
+        return node
+
     def error_unexpected_token(self, token) -> None:
         if token.type is TokenType.EOF:
             raise ParserError(
@@ -297,9 +303,3 @@ class Parser:
             statements.append(statement)
 
         return ast.Program(statements)
-
-    def parse(self) -> ast.Program:
-        node = self.program()
-        self.eat(TokenType.EOF)
-
-        return node

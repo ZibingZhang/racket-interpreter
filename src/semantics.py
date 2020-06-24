@@ -27,16 +27,11 @@ class SemanticAnalyzer(ASTVisitor):
             node.passed_semantic_analysis = True
             return result
 
+    def log_scope(self, msg: str) -> None:
+        if C.SHOULD_LOG_SCOPE:
+            print(msg)
+
     def visit_Bool(self, node: ast.Bool) -> None:
-        pass
-
-    def visit_Int(self, node: ast.Int) -> None:
-        pass
-
-    def visit_Str(self, node: ast.Str) -> None:
-        pass
-
-    def visit_Rat(self, node: ast.Rat) -> None:
         pass
 
     def visit_Dec(self, node: ast.Dec) -> None:
@@ -52,6 +47,74 @@ class SemanticAnalyzer(ASTVisitor):
                 token=node.token,
                 name=var_name
             )
+
+    def visit_Int(self, node: ast.Int) -> None:
+        pass
+
+    def visit_Rat(self, node: ast.Rat) -> None:
+        pass
+
+    def visit_Str(self, node: ast.Str) -> None:
+        pass
+
+    def visit_Cond(self, node: ast.Cond) -> None:
+        branches_len = len(node.branches)
+        else_branch = node.else_branch
+
+        if branches_len == 0 and else_branch is None:
+            raise SemanticError(
+                error_code=ErrorCode.C_EXPECTED_A_CLAUSE,
+                token=node.token
+            )
+
+        for branch in node.branches:
+            if type(branch) is not ast.CondBranch:
+                raise SemanticError(
+                    error_code=ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
+                    token=node.token,
+                    expr_token=branch.token
+                )
+
+            self.visit(branch)
+        if else_branch is not None:
+            self.visit(else_branch)
+
+    def visit_CondBranch(self, node: ast.CondBranch) -> None:
+        exprs = node.exprs
+        exprs_len = len(exprs)
+        if exprs_len != 2:
+            raise SemanticError(
+                error_code=ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
+                token=node.token,
+                part_count=exprs_len
+            )
+
+        node.predicate = exprs[0]
+        node.expr = exprs[1]
+
+        predicate_token = node.predicate.token
+        if predicate_token.type is TokenType.ID and predicate_token.value == Keyword.ELSE.value:
+            raise SemanticError(
+                error_code=ErrorCode.C_ELSE_NOT_LAST_CLAUSE,
+                token=node.token
+            )
+
+        self.visit(node.predicate)
+        self.visit(node.expr)
+
+    def visit_CondElse(self, node: ast.CondElse) -> None:
+        exprs = node.exprs
+        exprs_len = len(exprs)
+        if exprs_len != 1:
+            raise SemanticError(
+                error_code=ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
+                token=node.token,
+                part_count=exprs_len + 1
+            )
+
+        node.expr = node.exprs[0]
+
+        self.visit(node.expr)
 
     def visit_IdAssign(self, node: ast.IdAssign) -> None:
         token = node.token
@@ -287,68 +350,6 @@ class SemanticAnalyzer(ASTVisitor):
         for param in node.actual_params:
             self.visit(param)
 
-    def visit_Program(self, node: ast.Program) -> None:
-        raise IllegalStateError('Semantic analyzer should never have to visit a program.')
-
-    def visit_CondElse(self, node: ast.CondElse) -> None:
-        exprs = node.exprs
-        exprs_len = len(exprs)
-        if exprs_len != 1:
-            raise SemanticError(
-                error_code=ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
-                token=node.token,
-                part_count=exprs_len + 1
-            )
-
-        node.expr = node.exprs[0]
-
-        self.visit(node.expr)
-
-    def visit_CondBranch(self, node: ast.CondBranch) -> None:
-        exprs = node.exprs
-        exprs_len = len(exprs)
-        if exprs_len != 2:
-            raise SemanticError(
-                error_code=ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
-                token=node.token,
-                part_count=exprs_len
-            )
-
-        node.predicate = exprs[0]
-        node.expr = exprs[1]
-
-        predicate_token = node.predicate.token
-        if predicate_token.type is TokenType.ID and predicate_token.value == Keyword.ELSE.value:
-            raise SemanticError(
-                error_code=ErrorCode.C_ELSE_NOT_LAST_CLAUSE,
-                token=node.token
-            )
-
-        self.visit(node.predicate)
-        self.visit(node.expr)
-
-    def visit_Cond(self, node: ast.Cond) -> None:
-        branches_len = len(node.branches)
-        else_branch = node.else_branch
-
-        if branches_len == 0 and else_branch is None:
-            raise SemanticError(
-                error_code=ErrorCode.C_EXPECTED_A_CLAUSE,
-                token=node.token
-            )
-
-        for branch in node.branches:
-            if type(branch) is not ast.CondBranch:
-                raise SemanticError(
-                    error_code=ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
-                    token=node.token,
-                    expr_token=branch.token
-                )
-
-            self.visit(branch)
-        if else_branch is not None:
-            self.visit(else_branch)
-
     def visit_StructAssign(self, node: ast.StructAssign) -> DataType:
         struct_name_ast = node.struct_name_ast
         if struct_name_ast is None:
@@ -441,8 +442,17 @@ class SemanticAnalyzer(ASTVisitor):
 
         return struct_class
 
-    def visit_StructMethod(self, node: ast.StructProc) -> None:
-        raise IllegalStateError('Semantic analyzer should never have to visit a struct method.')
+    def visit_StructMake(self, node: ast.StructMake):
+        raise IllegalStateError('Semantic analyzer should never have to visit a struct make.')
+
+    def visit_StructHuh(self, node: ast.StructMake):
+        raise IllegalStateError('Semantic analyzer should never have to visit a struct huh.')
+
+    def visit_StructGet(self, node: ast.StructMake):
+        raise IllegalStateError('Semantic analyzer should never have to visit a struct get.')
+
+    def visit_Program(self, node: ast.Program) -> None:
+        raise IllegalStateError('Semantic analyzer should never have to visit a program.')
 
     def enter_program(self) -> None:
         self.log_scope('ENTER SCOPE: global')
@@ -549,7 +559,3 @@ class SemanticAnalyzer(ASTVisitor):
         self.current_scope = proc_scope.enclosing_scope
         self.log_scope(f'LEAVE SCOPE: {proc_name}')
         self.log_scope('')
-
-    def log_scope(self, msg: str) -> None:
-        if C.SHOULD_LOG_SCOPE:
-            print(msg)

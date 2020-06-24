@@ -2,7 +2,7 @@ from __future__ import annotations
 import fractions as f
 from typing import TYPE_CHECKING, Any, List, Union
 from src import ast
-from src.ast import ASTVisitor, AST
+from src.ast import ASTVisitor
 from src.builtins import BUILT_IN_PROCS
 from src.constants import C
 from src.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
@@ -25,23 +25,16 @@ class Interpreter(ASTVisitor):
         self.semantic_analyzer = SemanticAnalyzer()
         self.semantic_analyzer.interpreter = self
 
+    def interpret(self) -> Any:
+        tree = self.tree
+        return self.visit(tree)
+
+    def log_stack(self, msg) -> None:
+        if C.SHOULD_LOG_STACK:
+            print(msg)
+
     def visit_Bool(self, node: ast.Bool) -> Boolean:
         return Boolean(node.value)
-
-    def visit_Int(self, node: ast.Int) -> Number:
-        return Integer(node.value)
-
-    def visit_Str(self, node: ast.Str) -> String:
-        return String(node.value)
-
-    def visit_Rat(self, node: ast.Rat) -> Union[Integer, Rational]:
-        numerator = node.value[0]
-        denominator = node.value[1]
-        fraction = f.Fraction(numerator, denominator)
-        if fraction.denominator == 1:
-            return Integer(fraction.numerator)
-        else:
-            return Rational(fraction.numerator, fraction.denominator)
 
     def visit_Dec(self, node: ast.Dec) -> InexactNumber:
         return InexactNumber(node.value)
@@ -62,6 +55,53 @@ class Interpreter(ASTVisitor):
             )
 
         return var_value
+
+    def visit_Int(self, node: ast.Int) -> Number:
+        return Integer(node.value)
+
+    def visit_Rat(self, node: ast.Rat) -> Union[Integer, Rational]:
+        numerator = node.value[0]
+        denominator = node.value[1]
+        fraction = f.Fraction(numerator, denominator)
+        if fraction.denominator == 1:
+            return Integer(fraction.numerator)
+        else:
+            return Rational(fraction.numerator, fraction.denominator)
+
+    def visit_Str(self, node: ast.Str) -> String:
+        return String(node.value)
+
+    def visit_Cond(self, node: ast.Cond) -> Data:
+        self.semantic_analyzer.visit(node)
+
+        for idx, branch in enumerate(node.branches):
+            predicate_result = self.visit(branch.predicate)
+
+            if not issubclass(type(predicate_result), Boolean):
+                raise InterpreterError(
+                    error_code=ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN,
+                    token=node.token,
+                    result=predicate_result
+                )
+
+            if predicate_result:
+                return self.visit(branch.expr)
+
+        else_branch = node.else_branch
+        if node.else_branch is not None:
+            else_expr = else_branch.expr
+            return self.visit(else_expr)
+        else:
+            raise InterpreterError(
+                error_code=ErrorCode.C_ALL_QUESTION_RESULTS_FALSE,
+                token=node.token
+            )
+
+    def visit_CondBranch(self, node: ast.CondBranch) -> None:
+        raise IllegalStateError('Interpreter should never have to visit a cond branch.')
+
+    def visit_CondElse(self, node: ast.CondElse) -> None:
+        raise IllegalStateError('Interpreter should never have to visit a cond else.')
 
     def visit_IdAssign(self, node: ast.IdAssign) -> None:
         self.semantic_analyzer.visit(node)
@@ -137,6 +177,30 @@ class Interpreter(ASTVisitor):
         else:
             return self._visit_user_defined_ProcCall(proc_name, expr, formal_params, actual_params)
 
+    def visit_StructAssign(self, node: ast.StructAssign):
+        struct_class = self.semantic_analyzer.visit(node)
+
+        struct_name = node.struct_name
+        fields = node.field_names
+
+        metaclass = struct_class.metaclass
+
+        ar = self.call_stack.peek()
+        ar[struct_name] = metaclass
+
+        new_procs = ['make-' + struct_name, struct_name + '?'] + [f'{struct_name}-{field}' for field in fields]
+        for proc_name in new_procs:
+            ar[proc_name] = Procedure(proc_name)
+
+    def visit_StructMake(self, node: ast.StructMake):
+        raise IllegalStateError('Interpreter should never have to visit a struct make.')
+
+    def visit_StructHuh(self, node: ast.StructMake):
+        raise IllegalStateError('Interpreter should never have to visit a struct huh.')
+
+    def visit_StructGet(self, node: ast.StructMake):
+        raise IllegalStateError('Interpreter should never have to visit a struct get.')
+
     def visit_Program(self, node: ast.Program) -> List[Data]:
         if C.SHOULD_LOG_SCOPE:
             print('')
@@ -167,61 +231,6 @@ class Interpreter(ASTVisitor):
         self.call_stack.pop()
 
         return result
-
-    def visit_CondElse(self, node: ast.CondElse) -> None:
-        raise IllegalStateError('Interpreter should never have to visit a cond else.')
-
-    def visit_CondBranch(self, node: ast.CondBranch) -> None:
-        raise IllegalStateError('Interpreter should never have to visit a cond branch.')
-
-    def visit_Cond(self, node: ast.Cond) -> Data:
-        self.semantic_analyzer.visit(node)
-
-        for idx, branch in enumerate(node.branches):
-            predicate_result = self.visit(branch.predicate)
-
-            if not issubclass(type(predicate_result), Boolean):
-                raise InterpreterError(
-                    error_code=ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN,
-                    token=node.token,
-                    result=predicate_result
-                )
-
-            if predicate_result:
-                return self.visit(branch.expr)
-
-        else_branch = node.else_branch
-        if node.else_branch is not None:
-            else_expr = else_branch.expr
-            return self.visit(else_expr)
-        else:
-            raise InterpreterError(
-                error_code=ErrorCode.C_ALL_QUESTION_RESULTS_FALSE,
-                token=node.token
-            )
-
-    def visit_StructAssign(self, node: ast.StructAssign):
-        struct_class = self.semantic_analyzer.visit(node)
-
-        struct_name = node.struct_name
-        fields = node.field_names
-
-        metaclass = struct_class.metaclass
-
-        ar = self.call_stack.peek()
-        ar[struct_name] = metaclass
-
-        new_procs = ['make-' + struct_name, struct_name + '?'] + [f'{struct_name}-{field}' for field in fields]
-        for proc_name in new_procs:
-            ar[proc_name] = Procedure(proc_name)
-
-    def interpret(self) -> Any:
-        tree = self.tree
-        return self.visit(tree)
-
-    def log_stack(self, msg) -> None:
-        if C.SHOULD_LOG_STACK:
-            print(msg)
 
     def _define_builtin_procs(self):
         ar = self.call_stack.peek()
