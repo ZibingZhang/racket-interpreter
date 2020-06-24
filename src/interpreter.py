@@ -1,8 +1,8 @@
 from __future__ import annotations
 import fractions as f
-from typing import TYPE_CHECKING, Any, List, Union
+from typing import TYPE_CHECKING, Any, List, Tuple, Union
 from src import ast
-from src.ast import ASTVisitor
+from src.ast import AST, ASTVisitor
 from src.builtins import BUILT_IN_PROCS
 from src.constants import C
 from src.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
@@ -212,25 +212,40 @@ class Interpreter(ASTVisitor):
             nesting_level=1
         )
         self.call_stack.push(ar)
-
         self._define_builtin_procs()
 
         self.semantic_analyzer.enter_program()
 
-        result = []
-        for child_node in node.statements:
-            value = self.visit(child_node)
-            if value is not None:
-                result.append(value)
+        definitions, expressions = self._sort_program_statements(node.statements)
+
+        for statement in definitions:
+            self.visit(statement)
+
+        results = []
+        for statement in expressions:
+            result = self.visit(statement)
+            results.append(result)
 
         self.semantic_analyzer.leave_program()
+
+        self.call_stack.pop()
 
         self.log_stack(f'LEAVE: PROGRAM')
         self.log_stack(str(self.call_stack))
 
-        self.call_stack.pop()
+        return results
 
-        return result
+    def _sort_program_statements(self, statements) -> Tuple[List[AST], List[AST]]:
+        definitions = []
+        expressions = []
+
+        for statement in statements:
+            if type(statement) in [ast.IdAssign, ast.ProcAssign, ast.StructAssign]:
+                definitions.append(statement)
+            else:
+                expressions.append(statement)
+
+        return definitions, expressions
 
     def _define_builtin_procs(self):
         ar = self.call_stack.peek()
