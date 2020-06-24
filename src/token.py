@@ -22,8 +22,7 @@ class TokenType(Enum):
 
 class Token:
 
-    def __init__(self, type: TokenType, value: Any,
-                 line_no: int = None, column: int = None) -> None:
+    def __init__(self, type: TokenType, value: Any, line_no: int, column: int) -> None:
         self._type = type
         self._value = value
         self._line_no = line_no
