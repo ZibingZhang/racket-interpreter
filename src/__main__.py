@@ -10,10 +10,10 @@ def main():
     try:
         text = \
             """
-            ; Code written for an assignment at Northeastern. It has been slightly modified as some of the original
-            ; code made use of Lists which are not yet implemented in the interpreter. Another change is the removal
-            ; of check-expect statements, which are replaced with either an = or boolean=?, depending on the output
-            ; of the procedure being tested.
+            #| Code written for an assignment at Northeastern. It has been slightly modified as some of the original
+            code made use of Lists which are not yet implemented in the interpreter. Another change is the removal
+            of check-expect statements, which are replaced with either an = or boolean=?, depending on the output
+            of the procedure being tested. |#
             
             (define-struct plist [frst rst])
             ; A PseudoLON is one of :

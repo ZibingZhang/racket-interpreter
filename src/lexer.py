@@ -1,5 +1,5 @@
 from typing import Optional
-from src.errors import ErrorCode, LexerError
+from src.errors import ErrorCode, IllegalStateError, LexerError
 from src.token import Token, TokenType
 
 
@@ -40,6 +40,25 @@ class Lexer:
             return None
         else:
             return self.text[pos]
+
+    def peek_next_token(self, pos_ahead: int = 1) -> Token:
+        current_pos = self.pos
+        current_char = self.current_char
+        current_line_no = self.line_no
+        current_column = self.column
+
+        next_token = self.get_next_token()
+        for _ in range(pos_ahead - 1):
+            next_token = self.get_next_token()
+            if next_token.type is TokenType.EOF:
+                return Token(TokenType.EOF, None, self.line_no, self.column)
+
+        self.pos = current_pos
+        self.current_char = current_char
+        self.line_no = current_line_no
+        self.column = current_column
+
+        return next_token
 
     def boolean(self) -> Token:
         line_no = self.line_no
@@ -208,8 +227,6 @@ class Lexer:
             result += self.current_char
             self.advance()
 
-        # token_type = self.RESERVED_KEYWORDS.get(result, TokenType.ID)
-        # token_value = result if token_type is TokenType.ID else token_type.value
         return Token(TokenType.ID, result, line_no, column)
 
     def skip_whitespace(self) -> None:
@@ -223,6 +240,44 @@ class Lexer:
             self.advance()
         self.advance()
 
+    def skip_block_comment(self) -> None:
+        self.advance()
+        self.advance()
+
+        line_no = self.line_no
+        column = self.column
+
+        while True:
+            if self.current_char == '|':
+                next_char = self.peek()
+                if next_char == '#':
+                    self.advance()
+                    self.advance()
+                    break
+                elif next_char is None:
+                    raise LexerError(
+                        error_code=ErrorCode.RS_EOF_IN_BLOCK_COMMENT,
+                        token=Token(
+                            type=TokenType.INVALID,
+                            value=None,
+                            line_no=line_no,
+                            column=column
+                        )
+                    )
+
+            elif self.current_char is None:
+                raise LexerError(
+                    error_code=ErrorCode.RS_EOF_IN_BLOCK_COMMENT,
+                    token=Token(
+                        type=TokenType.INVALID,
+                        value=None,
+                        line_no=line_no,
+                        column=column
+                    )
+                )
+
+            self.advance()
+
     def get_next_token(self) -> Token:
         """ Responsible for breaking apart text into tokens."""
         while self.current_char:
@@ -232,6 +287,10 @@ class Lexer:
 
             if self.current_char == ';':
                 self.skip_line_comment()
+                continue
+
+            if self.current_char == '#' and self.peek() == '|':
+                self.skip_block_comment()
                 continue
 
             if self.current_char.isdigit() or self.current_char == '.' \
@@ -271,40 +330,6 @@ class Lexer:
                 self.advance()
                 return token
 
-            try:
-                # get enum member by value
-                token_type = TokenType(self.current_char)
-            except ValueError:
-                # no enum member with value equal to self.current_char
-                self.error()
-            else:
-                # create a token with a single-char lexeme as its value
-                token = Token(
-                    type=token_type,
-                    value=token_type.value,
-                    line_no=self.line_no,
-                    column=self.column
-                )
-                self.advance()
-                return token
+            raise IllegalStateError
 
         return Token(TokenType.EOF, None, self.line_no, self.column)
-
-    def peek_next_token(self, pos_ahead: int = 1) -> Token:
-        current_pos = self.pos
-        current_char = self.current_char
-        current_line_no = self.line_no
-        current_column = self.column
-
-        next_token = self.get_next_token()
-        for _ in range(pos_ahead - 1):
-            next_token = self.get_next_token()
-            if next_token.type is TokenType.EOF:
-                return Token(TokenType.EOF, None, self.line_no, self.column)
-
-        self.pos = current_pos
-        self.current_char = current_char
-        self.line_no = current_line_no
-        self.column = current_column
-
-        return next_token

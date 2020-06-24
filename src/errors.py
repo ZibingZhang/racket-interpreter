@@ -42,6 +42,7 @@ class ErrorCode(Enum):
     FC_EXPECTED_A_FUNCTION = Template('function-call: expected a function after the open parenthesis, but $found')
 
     RS_BAD_SYNTAX = Template('read-syntax: bad syntax `$text`')
+    RS_EOF_IN_BLOCK_COMMENT = Template('read-syntax: end of file in `#|` comment')
     RS_EXPECTED_DOUBLE_QUOTE = Template('read-syntax: expected a closing `"`')
     RS_EXPECTED_RIGHT_PARENTHESIS = Template('read-syntax: expected a `$right_paren` to close `$left_paren`')
     RS_INCORRECT_RIGHT_PARENTHESIS = Template('read-syntax: expected `$correct_right_paren` to close preceding `$left_paren`, found instead `$incorrect_right_paren`')
@@ -341,6 +342,9 @@ class Error(Exception):
         elif error_code is ErrorCode.RS_BAD_SYNTAX:
             text = kwargs.get('text')
             error_message = template.safe_substitute(text=text)
+
+        elif error_code is ErrorCode.RS_EOF_IN_BLOCK_COMMENT:
+            error_message = template.safe_substitute()
 
         elif error_code is ErrorCode.RS_EXPECTED_DOUBLE_QUOTE:
             error_message = template.safe_substitute()
