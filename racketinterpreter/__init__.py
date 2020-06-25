@@ -1,7 +1,7 @@
 from racketinterpreter.exports import interpret
 
 if __name__ == '__main__':
-    text = \
+    code = \
         """
         #| Code written for an assignment at Northeastern. It has been slightly modified as some of the original
         code made use of Lists which are not yet implemented in the interpreter. Another change is the removal
@@ -91,7 +91,7 @@ if __name__ == '__main__':
         (boolean=? (set=? S1 S4) #f)
         """
 
-    result = interpret(text)
+    result = interpret(code)
 
     print('Output:')
     for line in result.output:
