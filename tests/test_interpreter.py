@@ -15,14 +15,14 @@ class TestInterpreter(unittest.TestCase):
 
         result_len = len(result)
         expected_len = len(expected)
-        self.assertEqual(result_len, expected_len)
+        self.assertEqual(expected_len, result_len)
 
         for output, expected in zip(result, expected):
-            self.assertEqual(type(output), type(expected))
+            self.assertEqual(type(expected), type(output))
             if issubclass(type(expected), InexactNumber):
                 self.assertTrue(abs(output.value - expected.value) < 0.01)
             else:
-                self.assertEqual(output, expected)
+                self.assertEqual(expected, output)
 
     def test_boolean(self) -> None:
         text = \
