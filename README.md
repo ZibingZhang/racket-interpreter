@@ -26,7 +26,7 @@ That being said, here are the steps to set up and get the interpreter running.
 The only prerequisite is to have Python 3.7+.
 
 ### Installing
-The package can be installed by using pip.
+The package can be installed using pip.
 ```shell
 $ pip install racketinterpreter
 ```
