@@ -21,15 +21,16 @@ class ErrorCode(Enum):
 
     D_DUPLICATE_VARIABLE = Template('define: found a variable that is used more than once: $name')
     D_EXPECTED_A_NAME = Template("define: expected a variable name, or a function name and its variables (in parentheses), but $found")
+    D_EXPECTED_OPEN_PARENTHESIS = Template('define: expected an open parenthesis before define, but found none')
     D_NOT_TOP_LEVEL = Template('define: found a definition that is not at the top level')
     D_P_EXPECTED_A_VARIABLE = Template('define: expected a variable, but $found')
     D_P_EXPECTED_FUNCTION_NAME = Template('define: expected the name of the function, but $found')
     D_P_EXPECTED_ONE_EXPRESSION = Template('define: expected only one expression for the function body, but $found')
     D_P_MISSING_AN_EXPRESSION = Template("define: expected an expression for the function body, but nothing's there")
     D_V_EXPECTED_ONE_EXPRESSION = Template("define: expected only one expression after the variable name $name, but $found")
-    D_V_EXPECTED_OPEN_PARENTHESIS = Template('define: expected an open parenthesis before define, but found none')
     D_V_MISSING_AN_EXPRESSION = Template("define: expected an expression after the variable name $name, but nothing's there")
 
+    # TODO: duplicate field identifier
     DS_EXPECTED_A_FIELD = Template('define-struct: expected a field name, but $found')
     DS_EXPECTED_FIELD_NAMES = Template('define-struct: expected at least one field name (in parentheses) after the structure name, but $found')
     DS_EXPECTED_OPEN_PARENTHESIS = Template('define-struct: expected an open parenthesis before define-struct, but found none')
@@ -160,6 +161,8 @@ class Error(Exception):
                 found = "nothing's there"
             elif proc_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
                 found = 'found a number'
+            elif proc_token.type is TokenType.BOOLEAN:
+                found = 'found a boolean'
             elif proc_token.type is TokenType.STRING:
                 found = 'found a string'
             elif proc_token.value in KEYWORDS:
@@ -168,6 +171,9 @@ class Error(Exception):
                 raise IllegalStateError
 
             error_message = template.safe_substitute(found=found)
+
+        elif error_code is ErrorCode.D_EXPECTED_OPEN_PARENTHESIS:
+            error_message = template.safe_substitute()
 
         elif error_code is ErrorCode.D_NOT_TOP_LEVEL:
             error_message = template.safe_substitute()
@@ -226,9 +232,6 @@ class Error(Exception):
             found = f'found {extra_count} extra part{"s" if plural else ""}'
 
             error_message = template.safe_substitute(name=name, found=found)
-
-        elif error_code is ErrorCode.D_V_EXPECTED_OPEN_PARENTHESIS:
-            error_message = template.safe_substitute()
 
         elif error_code is ErrorCode.D_V_MISSING_AN_EXPRESSION:
             name = kwargs.get('name')

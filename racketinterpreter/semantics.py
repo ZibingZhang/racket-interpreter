@@ -156,7 +156,7 @@ class SemanticAnalyzer(ASTVisitor):
                 )
             elif keyword == Keyword.DEFINE.value:
                 raise SemanticError(
-                    error_code=ErrorCode.D_V_EXPECTED_OPEN_PARENTHESIS,
+                    error_code=ErrorCode.D_EXPECTED_OPEN_PARENTHESIS,
                     token=token
                 )
             elif keyword == Keyword.DEFINE_STRUCT.value:
