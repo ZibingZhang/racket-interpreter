@@ -53,7 +53,3 @@ This project is licensed under the MIT license.
 This initially started as an adaptation of Ruslan Spivak's [tutorial](https://ruslanspivak.com/lsbasi-part1/) for writing an interpreter.
 Most of the structure of this codebase come from the tutorial, but as I've begun to understand his design decisions better I've been able to change and adapt them to fit this project.
 This [template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2) has also been helpful in understanding how to format a README and what I should include.
-
-## Documentation
-
-I've decided to keep the documentation in the same README for the time being.
