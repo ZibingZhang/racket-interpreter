@@ -1,7 +1,7 @@
 from enum import Enum
 from string import Template
 from racketinterpreter.data import Boolean, Number, String, StructDataType
-from racketinterpreter.token import KEYWORDS, TokenType
+from racketinterpreter.tokens import KEYWORDS, TokenType
 
 
 class ErrorCode(Enum):

@@ -9,7 +9,7 @@ from racketinterpreter.errors import BuiltinProcedureError, ErrorCode
 if TYPE_CHECKING:
     from racketinterpreter.ast import AST
     from racketinterpreter.interpreter import Interpreter
-    from racketinterpreter.token import Token
+    from racketinterpreter.tokens import Token
 
 
 class BuiltInProc(abc.ABC):

@@ -10,7 +10,7 @@ from racketinterpreter.errors import ErrorCode, IllegalStateError, InterpreterEr
 from racketinterpreter.semantics import SemanticAnalyzer
 from racketinterpreter.stack import ActivationRecord, ARType, CallStack
 from racketinterpreter.symbol import AmbiguousSymbol
-from racketinterpreter.token import Token
+from racketinterpreter.tokens import Token
 
 if TYPE_CHECKING:
     from data import Data, Number

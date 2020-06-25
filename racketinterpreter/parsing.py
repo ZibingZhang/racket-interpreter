@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Union
 from racketinterpreter import ast
 from racketinterpreter.errors import ErrorCode, ParserError
-from racketinterpreter.token import Keyword, Token, TokenType
+from racketinterpreter.tokens import Keyword, Token, TokenType
 
 if TYPE_CHECKING:
     from lexer import Lexer

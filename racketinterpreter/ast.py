@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, List, Optional
 
 if TYPE_CHECKING:
     from racketinterpreter.data import DataType
-    from racketinterpreter.token import Token
+    from racketinterpreter.tokens import Token
 
 
 class AST(abc.ABC):

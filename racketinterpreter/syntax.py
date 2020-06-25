@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from racketinterpreter.errors import ErrorCode, PreLexerError
-from racketinterpreter.token import TokenType
+from racketinterpreter.tokens import TokenType
 
 if TYPE_CHECKING:
     from racketinterpreter.lexer import Lexer

@@ -1,6 +1,6 @@
 from typing import Optional
 from racketinterpreter.errors import ErrorCode, IllegalStateError, LexerError
-from racketinterpreter.token import Token, TokenType
+from racketinterpreter.tokens import Token, TokenType
 
 
 class Lexer:

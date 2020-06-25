@@ -1,7 +1,10 @@
+# PyCharm
 .idea/
 venv/
 
+# bytecode
 **/__pycache__/
 
+# distribution
 dist/
 racketinterpreter.egg-info

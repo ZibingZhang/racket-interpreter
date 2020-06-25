@@ -7,7 +7,7 @@ from racketinterpreter.constants import C
 from racketinterpreter.data import Procedure, StructDataFactory
 from racketinterpreter.errors import ErrorCode, IllegalStateError, SemanticError
 from racketinterpreter.symbol import AmbiguousSymbol, ProcSymbol, ScopedSymbolTable
-from racketinterpreter.token import KEYWORDS, Keyword, Token, TokenType
+from racketinterpreter.tokens import KEYWORDS, Keyword, Token, TokenType
 
 if TYPE_CHECKING:
     from data import DataType
