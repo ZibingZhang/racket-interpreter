@@ -7,7 +7,7 @@ class Result:
 
     def __init__(self,
                  output: Optional[List[str]] = None,
-                 error: Optional[bool] = False,
+                 error: bool = False,
                  error_message: Optional[str] = None):
         self.output = output
         self.error = error
@@ -16,7 +16,7 @@ class Result:
 
 def interpret(code: str) -> Result:
     try:
-        output = list(map(str, Util.text_to_result(code)))
+        output = list(map(str, Util.text_to_interpreter_result(code)))
         return Result(
             output=output
         )

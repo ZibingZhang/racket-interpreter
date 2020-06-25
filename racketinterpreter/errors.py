@@ -1,7 +1,7 @@
 from enum import Enum
 from string import Template
-from racketinterpreter.data import Boolean, Number, String, StructDataType
-from racketinterpreter.tokens import KEYWORDS, TokenType
+from racketinterpreter.classes import data as d
+from racketinterpreter.classes import tokens as t
 
 
 class ErrorCode(Enum):
@@ -129,15 +129,15 @@ class Error(Exception):
                     found = f'found a clause with {part_count} parts'
 
             else:
-                if expr_token is None or expr_token.type is TokenType.RPAREN:
+                if expr_token is None or expr_token.type is t.TokenType.RPAREN:
                     found = "nothing's there"
-                elif expr_token.type is TokenType.BOOLEAN:
+                elif expr_token.type is t.TokenType.BOOLEAN:
                     found = 'found a boolean'
-                elif expr_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+                elif expr_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                     found = 'found a number'
-                elif expr_token.type is TokenType.STRING:
+                elif expr_token.type is t.TokenType.STRING:
                     found = 'found a string'
-                elif expr_token.type is TokenType.ID:
+                elif expr_token.type is t.TokenType.ID:
                     found = 'found something else'
                 else:
                     raise IllegalStateError
@@ -157,15 +157,15 @@ class Error(Exception):
         elif error_code is ErrorCode.D_EXPECTED_A_NAME:
             proc_token = kwargs.get('next_token')
 
-            if proc_token is None or proc_token.type is TokenType.RPAREN:
+            if proc_token is None or proc_token.type is t.TokenType.RPAREN:
                 found = "nothing's there"
-            elif proc_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+            elif proc_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
-            elif proc_token.type is TokenType.BOOLEAN:
+            elif proc_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif proc_token.type is TokenType.STRING:
+            elif proc_token.type is t.TokenType.STRING:
                 found = 'found a string'
-            elif proc_token.value in KEYWORDS:
+            elif proc_token.value in t.KEYWORDS:
                 found = 'found a keyword'
             else:
                 raise IllegalStateError
@@ -179,15 +179,15 @@ class Error(Exception):
             error_message = template.safe_substitute()
 
         elif error_code is ErrorCode.D_P_EXPECTED_A_VARIABLE:
-            if token.type is TokenType.BOOLEAN:
+            if token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+            elif token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
-            elif token.type is TokenType.STRING:
+            elif token.type is t.TokenType.STRING:
                 found = 'found a string'
-            elif token.type is TokenType.LPAREN:
+            elif token.type is t.TokenType.LPAREN:
                 found = 'found a part'
-            elif token.value in KEYWORDS:
+            elif token.value in t.KEYWORDS:
                 found = 'found a keyword'
             else:
                 raise IllegalStateError
@@ -199,15 +199,15 @@ class Error(Exception):
 
             if name_token is None:
                 found = "nothing's there"
-            elif name_token.type is TokenType.BOOLEAN:
+            elif name_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif name_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+            elif name_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
-            elif name_token.type is TokenType.STRING:
+            elif name_token.type is t.TokenType.STRING:
                 found = 'found a string'
-            elif name_token.type is TokenType.LPAREN:
+            elif name_token.type is t.TokenType.LPAREN:
                 found = 'found a part'
-            elif name_token.value in KEYWORDS:
+            elif name_token.value in t.KEYWORDS:
                 found = 'found a keyword'
             else:
                 raise IllegalStateError
@@ -239,15 +239,15 @@ class Error(Exception):
             error_message = template.safe_substitute(name=name)
 
         elif error_code is ErrorCode.DS_EXPECTED_A_FIELD:
-            if token.type is TokenType.BOOLEAN:
+            if token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+            elif token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
-            elif token.type is TokenType.STRING:
+            elif token.type is t.TokenType.STRING:
                 found = 'found a string'
-            elif token.type is TokenType.LPAREN:
+            elif token.type is t.TokenType.LPAREN:
                 found = 'found a part'
-            elif token.value in KEYWORDS:
+            elif token.value in t.KEYWORDS:
                 found = 'found a keyword'
             else:
                 raise IllegalStateError
@@ -259,13 +259,13 @@ class Error(Exception):
 
             if found_token is None:
                 found = "nothing's there"
-            elif found_token.type is TokenType.BOOLEAN:
+            elif found_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif found_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+            elif found_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
-            elif found_token.type is TokenType.STRING:
+            elif found_token.type is t.TokenType.STRING:
                 found = 'found a string'
-            elif found_token.value in KEYWORDS:
+            elif found_token.value in t.KEYWORDS:
                 found = 'found a keyword'
             else:
                 raise IllegalStateError
@@ -279,15 +279,15 @@ class Error(Exception):
             name_token = kwargs.get('name_token')
             if name_token is None:
                 found = "nothing's there"
-            elif name_token.type is TokenType.BOOLEAN:
+            elif name_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif name_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+            elif name_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
-            elif name_token.type is TokenType.STRING:
+            elif name_token.type is t.TokenType.STRING:
                 found = 'found a string'
-            elif name_token.type is TokenType.LPAREN:
+            elif name_token.type is t.TokenType.LPAREN:
                 found = 'found a part'
-            elif name_token.value in KEYWORDS:
+            elif name_token.value in t.KEYWORDS:
                 found = 'found a keyword'
             else:
                 raise IllegalStateError
@@ -309,16 +309,16 @@ class Error(Exception):
 
         elif error_code is ErrorCode.FC_EXPECTED_A_FUNCTION:
             proc_token = kwargs.get('proc_token')
-            if proc_token.type is TokenType.ID:
+            if proc_token.type is t.TokenType.ID:
                 found_data = kwargs.get('found_data')
                 found_data_class = type(found_data)
-                if issubclass(found_data_class, Boolean):
+                if issubclass(found_data_class, d.Boolean):
                     found_type = 'string'
-                elif issubclass(found_data_class, Number):
+                elif issubclass(found_data_class, d.Number):
                     found_type = 'number'
-                elif issubclass(found_data_class, String):
+                elif issubclass(found_data_class, d.String):
                     found_type = 'boolean'
-                elif issubclass(type(found_data_class), StructDataType):
+                elif issubclass(type(found_data_class), d.StructDataType):
                     struct_name = found_data_class.__name__
                     fields = found_data.fields
                     found_type = f'(make-{struct_name} {" ".join(map(str, fields))})'
@@ -327,13 +327,13 @@ class Error(Exception):
             else:
                 if proc_token is None:
                     found_type = None
-                elif proc_token.type is TokenType.BOOLEAN:
+                elif proc_token.type is t.TokenType.BOOLEAN:
                     found_type = 'boolean'
-                elif proc_token.type in [TokenType.DECIMAL, TokenType.INTEGER, TokenType.RATIONAL]:
+                elif proc_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                     found_type = 'number'
-                elif proc_token.type is TokenType.STRING:
+                elif proc_token.type is t.TokenType.STRING:
                     found_type = 'string'
-                elif proc_token.type is TokenType.LPAREN:
+                elif proc_token.type is t.TokenType.LPAREN:
                     found_type = 'part'
                 else:
                     raise IllegalStateError

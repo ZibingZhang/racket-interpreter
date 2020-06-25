@@ -1,6 +1,6 @@
 from typing import Optional
-from racketinterpreter.errors import ErrorCode, IllegalStateError, LexerError
-from racketinterpreter.tokens import Token, TokenType
+from racketinterpreter import errors as err
+from racketinterpreter.classes import tokens as t
 
 
 class Lexer:
@@ -34,7 +34,7 @@ class Lexer:
         else:
             return self.text[pos]
 
-    def peek_next_token(self, pos_ahead: int = 1) -> Token:
+    def peek_next_token(self, pos_ahead: int = 1) -> t.Token:
         current_pos = self.pos
         current_char = self.current_char
         current_line_no = self.line_no
@@ -43,8 +43,8 @@ class Lexer:
         next_token = self.get_next_token()
         for _ in range(pos_ahead - 1):
             next_token = self.get_next_token()
-            if next_token.type is TokenType.EOF:
-                return Token(TokenType.EOF, None, self.line_no, self.column)
+            if next_token.type is t.TokenType.EOF:
+                return t.Token(t.TokenType.EOF, None, self.line_no, self.column)
 
         self.pos = current_pos
         self.current_char = current_char
@@ -53,7 +53,7 @@ class Lexer:
 
         return next_token
 
-    def get_next_token(self) -> Token:
+    def get_next_token(self) -> t.Token:
         """ Responsible for breaking apart text into tokens."""
         while self.current_char:
             if self.current_char.isspace():
@@ -82,9 +82,9 @@ class Lexer:
                 return self.string()
 
             if self.current_char in ['(', '{', '[']:
-                token_type = TokenType.LPAREN
+                token_type = t.TokenType.LPAREN
                 value = self.current_char
-                token = Token(
+                token = t.Token(
                     type=token_type,
                     value=value,
                     line_no=self.line_no,
@@ -94,9 +94,9 @@ class Lexer:
                 return token
 
             if self.current_char in [')', '}', ']']:
-                token_type = TokenType.RPAREN
+                token_type = t.TokenType.RPAREN
                 value = self.current_char
-                token = Token(
+                token = t.Token(
                     type=token_type,
                     value=value,
                     line_no=self.line_no,
@@ -105,11 +105,11 @@ class Lexer:
                 self.advance()
                 return token
 
-            raise IllegalStateError
+            raise err.IllegalStateError
 
-        return Token(TokenType.EOF, None, self.line_no, self.column)
+        return t.Token(t.TokenType.EOF, None, self.line_no, self.column)
 
-    def boolean(self) -> Token:
+    def boolean(self) -> t.Token:
         line_no = self.line_no
         column = self.column
 
@@ -131,10 +131,10 @@ class Lexer:
                 break
 
         if self.current_char is None or boolean not in ['#T', '#t', '#true', '#F', '#f', '#false']:
-            raise LexerError(
-                error_code=ErrorCode.RS_BAD_SYNTAX,
-                token=Token(
-                    type=TokenType.INVALID,
+            raise err.LexerError(
+                error_code=err.ErrorCode.RS_BAD_SYNTAX,
+                token=t.Token(
+                    type=t.TokenType.INVALID,
                     value=boolean,
                     line_no=line_no,
                     column=column
@@ -143,21 +143,21 @@ class Lexer:
             )
 
         if boolean in ['#T', '#t', '#true']:
-            return Token(
-                type=TokenType.BOOLEAN,
+            return t.Token(
+                type=t.TokenType.BOOLEAN,
                 value=True,
                 line_no=line_no,
                 column=column
             )
         elif boolean in ['#F', '#f', '#false']:
-            return Token(
-                type=TokenType.BOOLEAN,
+            return t.Token(
+                type=t.TokenType.BOOLEAN,
                 value=False,
                 line_no=line_no,
                 column=column
             )
 
-    def number(self) -> Token:
+    def number(self) -> t.Token:
         """Return a number token from a number consumed from the input (or an ID if not a valid number)."""
         line_no = self.line_no
         column = self.column
@@ -192,15 +192,15 @@ class Lexer:
                 numerator = int(numerator)
                 denominator = int(denominator)
             except ValueError:
-                return Token(
-                    type=TokenType.ID,
+                return t.Token(
+                    type=t.TokenType.ID,
                     value=number,
                     line_no=line_no,
                     column=column
                 )
             else:
-                return Token(
-                    type=TokenType.RATIONAL,
+                return t.Token(
+                    type=t.TokenType.RATIONAL,
                     value=(numerator, denominator),
                     line_no=line_no,
                     column=column
@@ -212,28 +212,28 @@ class Lexer:
                 try:
                     number = float(number)
                 except ValueError:
-                    return Token(
-                        type=TokenType.ID,
+                    return t.Token(
+                        type=t.TokenType.ID,
                         value=number,
                         line_no=line_no,
                         column=column
                     )
                 else:
-                    return Token(
-                        type=TokenType.DECIMAL,
+                    return t.Token(
+                        type=t.TokenType.DECIMAL,
                         value=number,
                         line_no=line_no,
                         column=column
                     )
             else:
-                return Token(
-                    type=TokenType.INTEGER,
+                return t.Token(
+                    type=t.TokenType.INTEGER,
                     value=number,
                     line_no=line_no,
                     column=column
                 )
 
-    def string(self) -> Token:
+    def string(self) -> t.Token:
         """Handles strings."""
         line_no = self.line_no
         column = self.column
@@ -246,10 +246,10 @@ class Lexer:
             self.advance()
 
         if self.current_char is None:
-            raise LexerError(
-                error_code=ErrorCode.RS_EXPECTED_DOUBLE_QUOTE,
-                token=Token(
-                    type=TokenType.INVALID,
+            raise err.LexerError(
+                error_code=err.ErrorCode.RS_EXPECTED_DOUBLE_QUOTE,
+                token=t.Token(
+                    type=t.TokenType.INVALID,
                     value=string,
                     line_no=line_no,
                     column=column
@@ -258,14 +258,14 @@ class Lexer:
 
         self.advance()
 
-        return Token(
-            type=TokenType.STRING,
+        return t.Token(
+            type=t.TokenType.STRING,
             value=string,
             line_no=line_no,
             column=column
         )
 
-    def identifier(self, initial: str = '') -> Token:
+    def identifier(self, initial: str = '') -> t.Token:
         """Handles identifiers (including builtin functions)."""
         line_no = self.line_no
         column = self.column
@@ -276,7 +276,7 @@ class Lexer:
             result += self.current_char
             self.advance()
 
-        return Token(TokenType.ID, result, line_no, column)
+        return t.Token(t.TokenType.ID, result, line_no, column)
 
     def skip_whitespace(self) -> None:
         """Consume whitespace until next non-whitespace character."""
@@ -304,10 +304,10 @@ class Lexer:
                     self.advance()
                     break
                 elif next_char is None:
-                    raise LexerError(
-                        error_code=ErrorCode.RS_EOF_IN_BLOCK_COMMENT,
-                        token=Token(
-                            type=TokenType.INVALID,
+                    raise err.LexerError(
+                        error_code=err.ErrorCode.RS_EOF_IN_BLOCK_COMMENT,
+                        token=t.Token(
+                            type=t.TokenType.INVALID,
                             value=None,
                             line_no=line_no,
                             column=column
@@ -315,10 +315,10 @@ class Lexer:
                     )
 
             elif self.current_char is None:
-                raise LexerError(
-                    error_code=ErrorCode.RS_EOF_IN_BLOCK_COMMENT,
-                    token=Token(
-                        type=TokenType.INVALID,
+                raise err.LexerError(
+                    error_code=err.ErrorCode.RS_EOF_IN_BLOCK_COMMENT,
+                    token=t.Token(
+                        type=t.TokenType.INVALID,
                         value=None,
                         line_no=line_no,
                         column=column

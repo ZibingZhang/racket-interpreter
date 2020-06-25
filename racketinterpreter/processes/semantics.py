@@ -1,25 +1,24 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Tuple, List, Any
-from racketinterpreter import ast
-from racketinterpreter.ast import ASTVisitor, AST
-from racketinterpreter.predefined import BUILT_IN_PROCS
+from racketinterpreter import errors as err
+from racketinterpreter.classes import ast
+from racketinterpreter.classes import data as d
+from racketinterpreter.classes import symbol as sym
+from racketinterpreter.classes import tokens as t
 from racketinterpreter.constants import C
-from racketinterpreter.data import Procedure, StructDataFactory
-from racketinterpreter.errors import ErrorCode, IllegalStateError, SemanticError
-from racketinterpreter.symbol import AmbiguousSymbol, ProcSymbol, ScopedSymbolTable
-from racketinterpreter.tokens import KEYWORDS, Keyword, Token, TokenType
+from racketinterpreter.functions.predefined import BUILT_IN_PROCS
 
 if TYPE_CHECKING:
-    from data import DataType
+    from classes.data import DataType
 
 
-class SemanticAnalyzer(ASTVisitor):
+class SemanticAnalyzer(ast.ASTVisitor):
 
     def __init__(self):
         self.current_scope = None
         self.interpreter = None
 
-    def visit(self, node: AST) -> Any:
+    def visit(self, node: ast.AST) -> Any:
         if node.passed_semantic_analysis:
             return
         else:
@@ -42,8 +41,8 @@ class SemanticAnalyzer(ASTVisitor):
         var_symbol = self.current_scope.lookup(var_name)
 
         if var_symbol is None:
-            raise SemanticError(
-                error_code=ErrorCode.USED_BEFORE_DEFINITION,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.USED_BEFORE_DEFINITION,
                 token=node.token,
                 name=var_name
             )
@@ -62,15 +61,15 @@ class SemanticAnalyzer(ASTVisitor):
         else_branch = node.else_branch
 
         if branches_len == 0 and else_branch is None:
-            raise SemanticError(
-                error_code=ErrorCode.C_EXPECTED_A_CLAUSE,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.C_EXPECTED_A_CLAUSE,
                 token=node.token
             )
 
         for branch in node.branches:
             if type(branch) is not ast.CondBranch:
-                raise SemanticError(
-                    error_code=ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
                     token=node.token,
                     expr_token=branch.token
                 )
@@ -83,8 +82,8 @@ class SemanticAnalyzer(ASTVisitor):
         exprs = node.exprs
         exprs_len = len(exprs)
         if exprs_len != 2:
-            raise SemanticError(
-                error_code=ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
                 token=node.token,
                 part_count=exprs_len
             )
@@ -93,9 +92,9 @@ class SemanticAnalyzer(ASTVisitor):
         node.expr = exprs[1]
 
         predicate_token = node.predicate.token
-        if predicate_token.type is TokenType.ID and predicate_token.value == Keyword.ELSE.value:
-            raise SemanticError(
-                error_code=ErrorCode.C_ELSE_NOT_LAST_CLAUSE,
+        if predicate_token.type is t.TokenType.ID and predicate_token.value == t.Keyword.ELSE.value:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.C_ELSE_NOT_Last.AST_CLAUSE,
                 token=node.token
             )
 
@@ -106,8 +105,8 @@ class SemanticAnalyzer(ASTVisitor):
         exprs = node.exprs
         exprs_len = len(exprs)
         if exprs_len != 1:
-            raise SemanticError(
-                error_code=ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
                 token=node.token,
                 part_count=exprs_len + 1
             )
@@ -122,10 +121,10 @@ class SemanticAnalyzer(ASTVisitor):
         actual_params_len = len(actual_params)
 
         if actual_params_len == 0 or type(actual_params[0]) is not ast.Id \
-                or actual_params[0].value in KEYWORDS:
+                or actual_params[0].value in t.KEYWORDS:
             next_token = actual_params[0].token if actual_params_len > 0 else None
-            raise SemanticError(
-                error_code=ErrorCode.D_EXPECTED_A_NAME,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.D_EXPECTED_A_NAME,
                 token=token,
                 next_token=next_token
             )
@@ -133,58 +132,58 @@ class SemanticAnalyzer(ASTVisitor):
         const_token = actual_params[0].token
         const_name = const_token.value
         if actual_params_len == 1:
-            raise SemanticError(
-                error_code=ErrorCode.D_V_MISSING_AN_EXPRESSION,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.D_V_MISSING_AN_EXPRESSION,
                 token=token,
                 name=const_name
             )
         elif actual_params_len > 2:
             extra_count = actual_params_len - 2
-            raise SemanticError(
-                error_code=ErrorCode.D_V_EXPECTED_ONE_EXPRESSION,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.D_V_EXPECTED_ONE_EXPRESSION,
                 token=token,
                 extra_count=extra_count,
                 name=const_name
             )
-        elif type(actual_params[1]) is ast.Id and actual_params[1].value in KEYWORDS:
+        elif type(actual_params[1]) is ast.Id and actual_params[1].value in t.KEYWORDS:
             keyword = actual_params[1].value
             token = actual_params[1].token
-            if keyword == Keyword.COND.value:
-                raise SemanticError(
-                    error_code=ErrorCode.C_EXPECTED_OPEN_PARENTHESIS,
+            if keyword == t.Keyword.COND.value:
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.C_EXPECTED_OPEN_PARENTHESIS,
                     token=token
                 )
-            elif keyword == Keyword.DEFINE.value:
-                raise SemanticError(
-                    error_code=ErrorCode.D_EXPECTED_OPEN_PARENTHESIS,
+            elif keyword == t.Keyword.DEFINE.value:
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.D_EXPECTED_OPEN_PARENTHESIS,
                     token=token
                 )
-            elif keyword == Keyword.DEFINE_STRUCT.value:
-                raise SemanticError(
-                    error_code=ErrorCode.DS_EXPECTED_OPEN_PARENTHESIS,
+            elif keyword == t.Keyword.DEFINE_STRUCT.value:
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.DS_EXPECTED_OPEN_PARENTHESIS,
                     token=token
                 )
-            elif keyword == Keyword.ELSE.value:
-                raise SemanticError(
-                    error_code=ErrorCode.E_NOT_ALLOWED,
+            elif keyword == t.Keyword.ELSE.value:
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.E_NOT_ALLOWED,
                     token=token
                 )
             else:
-                raise IllegalStateError
+                raise err.IllegalStateError
 
         node.identifier = node.actual_params[0].value
         node.expr = node.actual_params[1]
 
         var_name = node.identifier
-        var_symbol = AmbiguousSymbol(var_name)
+        var_symbol = sym.AmbiguousSymbol(var_name)
 
         if self.current_scope.lookup(var_name, current_scope_only=True) is not None:
             if var_name in BUILT_IN_PROCS:
-                error_code = ErrorCode.BUILTIN_OR_IMPORTED_NAME
+                error_code = err.ErrorCode.BUILTIN_OR_IMPORTED_NAME
             else:
-                error_code = ErrorCode.PREVIOUSLY_DEFINED_NAME
+                error_code = err.ErrorCode.PREVIOUSLY_DEFINED_NAME
 
-            raise SemanticError(
+            raise err.SemanticError(
                 error_code=error_code,
                 token=const_token
             )
@@ -196,15 +195,15 @@ class SemanticAnalyzer(ASTVisitor):
     def visit_FormalParam(self, node: ast.FormalParam) -> None:
         token = node.token
 
-        if token.type is not TokenType.ID or token.value in KEYWORDS:
+        if token.type is not t.TokenType.ID or token.value in t.KEYWORDS:
             if node.param_for is ast.FormalParam.ParamFor.PROC_ASSIGN:
-                error_code = ErrorCode.D_P_EXPECTED_A_VARIABLE
+                error_code = err.ErrorCode.D_P_EXPECTED_A_VARIABLE
             elif node.param_for is ast.FormalParam.ParamFor.STRUCT_ASSIGN:
-                error_code = ErrorCode.DS_EXPECTED_A_FIELD
+                error_code = err.ErrorCode.DS_EXPECTED_A_FIELD
             else:
-                raise IllegalStateError
+                raise err.IllegalStateError
 
-            raise SemanticError(
+            raise err.SemanticError(
                 error_code=error_code,
                 token=token
             )
@@ -214,10 +213,10 @@ class SemanticAnalyzer(ASTVisitor):
     def visit_ProcAssign(self, node: ast.ProcAssign) -> None:
         proc_name_expr = node.name_expr
         proc_name_token = proc_name_expr.token if proc_name_expr else None
-        if proc_name_token is None or proc_name_token.type is not TokenType.ID \
-                or proc_name_token.value in KEYWORDS:
-            raise SemanticError(
-                error_code=ErrorCode.D_P_EXPECTED_FUNCTION_NAME,
+        if proc_name_token is None or proc_name_token.type is not t.TokenType.ID \
+                or proc_name_token.value in t.KEYWORDS:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.D_P_EXPECTED_FUNCTION_NAME,
                 token=node.token,
                 name_token=proc_name_token
             )
@@ -225,13 +224,13 @@ class SemanticAnalyzer(ASTVisitor):
         exprs = node.exprs
         exprs_len = len(exprs)
         if exprs_len == 0:
-            raise SemanticError(
-                error_code=ErrorCode.D_P_MISSING_AN_EXPRESSION,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.D_P_MISSING_AN_EXPRESSION,
                 token=node.token
             )
         elif exprs_len > 1:
-            raise SemanticError(
-                error_code=ErrorCode.D_P_EXPECTED_ONE_EXPRESSION,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.D_P_EXPECTED_ONE_EXPRESSION,
                 token=node.token,
                 part_count=exprs_len-1
             )
@@ -243,15 +242,15 @@ class SemanticAnalyzer(ASTVisitor):
         for param in node.formal_params:
             self.visit(param)
 
-        proc_symbol = ProcSymbol(proc_name)
+        proc_symbol = sym.ProcSymbol(proc_name)
 
         if self.current_scope.lookup(proc_name, current_scope_only=True) is not None:
             if proc_name in BUILT_IN_PROCS:
-                error_code = ErrorCode.BUILTIN_OR_IMPORTED_NAME
+                error_code = err.ErrorCode.BUILTIN_OR_IMPORTED_NAME
             else:
-                error_code = ErrorCode.PREVIOUSLY_DEFINED_NAME
+                error_code = err.ErrorCode.PREVIOUSLY_DEFINED_NAME
 
-            raise SemanticError(
+            raise err.SemanticError(
                 error_code=error_code,
                 token=proc_name_token
             )
@@ -261,7 +260,7 @@ class SemanticAnalyzer(ASTVisitor):
         self.log_scope('')
         self.log_scope(f'ENTER SCOPE: {proc_name}')
         # scope for parameters
-        proc_scope = ScopedSymbolTable(
+        proc_scope = sym.ScopedSymbolTable(
             scope_name=proc_name,
             scope_level=self.current_scope.scope_level + 1,
             enclosing_scope=self.current_scope
@@ -275,13 +274,13 @@ class SemanticAnalyzer(ASTVisitor):
             param_name = param_node.name
 
             if param_name in param_names:
-                raise SemanticError(
-                    error_code=ErrorCode.D_DUPLICATE_VARIABLE,
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.D_DUPLICATE_VARIABLE,
                     token=node.token,
                     name=param_name
                 )
 
-            var_symbol = AmbiguousSymbol(param_name)
+            var_symbol = sym.AmbiguousSymbol(param_name)
             self.current_scope.define(var_symbol)
             proc_symbol.formal_params.append(var_symbol)
             param_names.add(param_name)
@@ -306,9 +305,9 @@ class SemanticAnalyzer(ASTVisitor):
             op = exprs[0]
             proc_token = op.token
 
-        if proc_token is None or proc_token.type != TokenType.ID:
-            raise SemanticError(
-                error_code=ErrorCode.FC_EXPECTED_A_FUNCTION,
+        if proc_token is None or proc_token.type != t.TokenType.ID:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.FC_EXPECTED_A_FUNCTION,
                 token=node.token,
                 proc_token=proc_token
             )
@@ -322,27 +321,27 @@ class SemanticAnalyzer(ASTVisitor):
         proc_token = node.proc_token
         proc_name = proc_token.value
 
-        if proc_name in KEYWORDS:
-            if proc_name == Keyword.DEFINE.value:
-                raise SemanticError(
-                    error_code=ErrorCode.D_NOT_TOP_LEVEL,
+        if proc_name in t.KEYWORDS:
+            if proc_name == t.Keyword.DEFINE.value:
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.D_NOT_TOP_LEVEL,
                     token=proc_token
                 )
-            elif proc_name == Keyword.DEFINE_STRUCT.value:
-                raise SemanticError(
-                    error_code=ErrorCode.DS_NOT_TOP_LEVEL,
+            elif proc_name == t.Keyword.DEFINE_STRUCT.value:
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.DS_NOT_TOP_LEVEL,
                     token=proc_token
                 )
-            elif proc_name == Keyword.ELSE.value:
-                raise SemanticError(
-                    error_code=ErrorCode.E_NOT_ALLOWED,
+            elif proc_name == t.Keyword.ELSE.value:
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.E_NOT_ALLOWED,
                     token=proc_token
                 )
 
         defined_proc = self.current_scope.lookup(proc_name)
         if defined_proc is None:
-            raise SemanticError(
-                error_code=ErrorCode.USED_BEFORE_DEFINITION,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.USED_BEFORE_DEFINITION,
                 token=node.token,
                 name=proc_name
             )
@@ -354,18 +353,18 @@ class SemanticAnalyzer(ASTVisitor):
         struct_name_ast = node.struct_name_ast
         if struct_name_ast is None:
             struct_name_token = None
-            raise SemanticError(
-                error_code=ErrorCode.DS_EXPECTED_STRUCTURE_NAME,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.DS_EXPECTED_STRUCTURE_NAME,
                 token=node.token,
                 name_token=struct_name_token
             )
 
         struct_name_token = struct_name_ast.token
 
-        if struct_name_token.type is not TokenType.ID \
-                or struct_name_token.value in KEYWORDS:
-            raise SemanticError(
-                error_code=ErrorCode.DS_EXPECTED_STRUCTURE_NAME,
+        if struct_name_token.type is not t.TokenType.ID \
+                or struct_name_token.value in t.KEYWORDS:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.DS_EXPECTED_STRUCTURE_NAME,
                 token=node.token,
                 name_token=struct_name_token
             )
@@ -374,11 +373,11 @@ class SemanticAnalyzer(ASTVisitor):
 
         if self.current_scope.lookup(struct_name, current_scope_only=True) is not None:
             if struct_name in BUILT_IN_PROCS:
-                error_code = ErrorCode.BUILTIN_OR_IMPORTED_NAME
+                error_code = err.ErrorCode.BUILTIN_OR_IMPORTED_NAME
             else:
-                error_code = ErrorCode.PREVIOUSLY_DEFINED_NAME
+                error_code = err.ErrorCode.PREVIOUSLY_DEFINED_NAME
 
-            raise SemanticError(
+            raise err.SemanticError(
                 error_code=error_code,
                 token=struct_name_token
             )
@@ -387,8 +386,8 @@ class SemanticAnalyzer(ASTVisitor):
 
         if type(node.field_asts) != list:
             found_token = node.field_asts.token if node.field_asts is not None else None
-            raise SemanticError(
-                error_code=ErrorCode.DS_EXPECTED_FIELD_NAMES,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.DS_EXPECTED_FIELD_NAMES,
                 token=node.token,
                 found_token=found_token
             )
@@ -404,21 +403,21 @@ class SemanticAnalyzer(ASTVisitor):
 
         extra_part_conut = len(node.extra_asts)
         if extra_part_conut > 0:
-            raise SemanticError(
-                error_code=ErrorCode.DS_POST_FIELD_NAMES,
+            raise err.SemanticError(
+                error_code=err.ErrorCode.DS_POST_FIELD_NAMES,
                 token=node.token,
                 part_count=extra_part_conut
             )
 
-        struct_class = StructDataFactory.create(struct_name, field_names)
+        struct_class = d.StructDataFactory.create(struct_name, field_names)
 
         new_procs = [f'make-{struct_name}', f'{struct_name}?'] + [f'{struct_name}-{field}' for field in field_names]
 
         for idx, proc_name in enumerate(new_procs + [struct_name]):
             if idx == 0:
-                proc_symbol = ProcSymbol(proc_name, [AmbiguousSymbol(field) for field in field_names])
+                proc_symbol = sym.ProcSymbol(proc_name, [sym.AmbiguousSymbol(field) for field in field_names])
             else:
-                proc_symbol = ProcSymbol(proc_name, [AmbiguousSymbol('_')])
+                proc_symbol = sym.ProcSymbol(proc_name, [sym.AmbiguousSymbol('_')])
 
             if idx == 0:
                 proc_symbol.expr = ast.StructMake(struct_class)
@@ -429,11 +428,11 @@ class SemanticAnalyzer(ASTVisitor):
 
             if self.current_scope.lookup(proc_name, current_scope_only=True) is not None:
                 if proc_name in BUILT_IN_PROCS:
-                    error_code = ErrorCode.BUILTIN_OR_IMPORTED_NAME
+                    error_code = err.ErrorCode.BUILTIN_OR_IMPORTED_NAME
                 else:
-                    error_code = ErrorCode.PREVIOUSLY_DEFINED_NAME
+                    error_code = err.ErrorCode.PREVIOUSLY_DEFINED_NAME
 
-                raise SemanticError(
+                raise err.SemanticError(
                     error_code=error_code,
                     token=node.token
                 )
@@ -443,20 +442,20 @@ class SemanticAnalyzer(ASTVisitor):
         return struct_class
 
     def visit_StructMake(self, node: ast.StructMake):
-        raise IllegalStateError('Semantic analyzer should never have to visit a struct make.')
+        raise err.IllegalStateError('Semantic analyzer should never have to visit a struct make.')
 
     def visit_StructHuh(self, node: ast.StructMake):
-        raise IllegalStateError('Semantic analyzer should never have to visit a struct huh.')
+        raise err.IllegalStateError('Semantic analyzer should never have to visit a struct huh.')
 
     def visit_StructGet(self, node: ast.StructMake):
-        raise IllegalStateError('Semantic analyzer should never have to visit a struct get.')
+        raise err.IllegalStateError('Semantic analyzer should never have to visit a struct get.')
 
     def visit_Program(self, node: ast.Program) -> None:
-        raise IllegalStateError('Semantic analyzer should never have to visit a program.')
+        raise err.IllegalStateError('Semantic analyzer should never have to visit a program.')
 
     def enter_program(self) -> None:
         self.log_scope('ENTER SCOPE: global')
-        global_scope = ScopedSymbolTable(
+        global_scope = sym.ScopedSymbolTable(
             scope_name='global',
             scope_level=1,
             enclosing_scope=self.current_scope
@@ -466,7 +465,7 @@ class SemanticAnalyzer(ASTVisitor):
     def leave_program(self) -> None:
         global_scope = self.current_scope
         if global_scope is None or global_scope.scope_name != 'global':
-            raise IllegalStateError
+            raise err.IllegalStateError
 
         self.log_scope('')
         self.log_scope(str(global_scope))
@@ -475,7 +474,7 @@ class SemanticAnalyzer(ASTVisitor):
         self.log_scope('LEAVE SCOPE: global')
 
     def get_proc_symbol_and_actual_params(self, node: ast.ProcCall) \
-            -> Tuple[ProcSymbol, List[ast.Expr]]:
+            -> Tuple[sym.ProcSymbol, List[ast.Expr]]:
         proc_name = node.proc_name
         proc_symbol = self.current_scope.lookup(proc_name)
 
@@ -490,9 +489,9 @@ class SemanticAnalyzer(ASTVisitor):
             proc_name = proc.value
             proc_symbol = scope.lookup(proc_name)
 
-            if type(proc) is not Procedure:
-                raise SemanticError(
-                    error_code=ErrorCode.FC_EXPECTED_A_FUNCTION,
+            if type(proc) is not d.Procedure:
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.FC_EXPECTED_A_FUNCTION,
                     token=node.token,
                     proc_token=node.proc_token,
                     found_data=proc
@@ -507,7 +506,7 @@ class SemanticAnalyzer(ASTVisitor):
 
         return proc_symbol, actual_params
 
-    def assert_actual_param_len(self, node_token: Token, proc_name: str,
+    def assert_actual_param_len(self, node_token: t.Token, proc_name: str,
                                 formal_params_len: int, actual_params_len: int) -> None:
         received = actual_params_len
         if proc_name in BUILT_IN_PROCS.keys():
@@ -527,8 +526,8 @@ class SemanticAnalyzer(ASTVisitor):
             if formal_params_len == received:
                 return
 
-        raise SemanticError(
-            error_code=ErrorCode.INCORRECT_ARGUMENT_COUNT,
+        raise err.SemanticError(
+            error_code=err.ErrorCode.INCORRECT_ARGUMENT_COUNT,
             token=node_token,
             proc_name=proc_name,
             lower=lower,
@@ -540,7 +539,7 @@ class SemanticAnalyzer(ASTVisitor):
         self.log_scope('')
         self.log_scope(f'ENTER SCOPE: {proc_name}')
         # scope for parameters
-        proc_scope = ScopedSymbolTable(
+        proc_scope = sym.ScopedSymbolTable(
             scope_name=proc_name,
             scope_level=self.current_scope.scope_level + 1,
             enclosing_scope=self.current_scope

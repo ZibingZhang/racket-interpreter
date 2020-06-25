@@ -4,8 +4,8 @@ from enum import Enum
 from typing import TYPE_CHECKING, Any, List, Optional
 
 if TYPE_CHECKING:
-    from racketinterpreter.data import DataType
-    from racketinterpreter.tokens import Token
+    from classes.data import DataType
+    from classes.tokens import Token
 
 
 class AST(abc.ABC):

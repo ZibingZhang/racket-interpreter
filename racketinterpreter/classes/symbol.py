@@ -1,8 +1,8 @@
 from __future__ import annotations
 from collections import OrderedDict
 from typing import Any, List, Optional
-from racketinterpreter.predefined import BUILT_IN_PROCS
 from racketinterpreter.constants import C
+from racketinterpreter.functions.predefined import BUILT_IN_PROCS
 
 
 class Symbol:

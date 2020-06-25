@@ -3,15 +3,16 @@ import abc
 import math
 import time
 from typing import TYPE_CHECKING, List, Optional
-from racketinterpreter.data import Boolean, Data, ExactNumber, InexactNumber, Integer, Number, Rational, RealNumber, String
-from racketinterpreter.errors import BuiltinProcedureError, ErrorCode
+from racketinterpreter import errors as err
+from racketinterpreter.classes import data as d
 
 if TYPE_CHECKING:
-    from racketinterpreter.ast import AST
-    from racketinterpreter.interpreter import Interpreter
-    from racketinterpreter.tokens import Token
+    from racketinterpreter.classes.ast import AST
+    from processes.interpreter import Interpreter
+    from classes.tokens import Token
 
 
+# TODO: fix all these errors oops
 class BuiltInProc(abc.ABC):
 
     @staticmethod
@@ -28,7 +29,7 @@ class BuiltInProc(abc.ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Data:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Data:
         pass
 
 
@@ -43,7 +44,7 @@ class If(BuiltInProc):
         return 3
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Data:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Data:
         boolean = interpreter.visit(actual_params[0])
         if bool(boolean):
             result = interpreter.visit(actual_params[1])
@@ -63,12 +64,12 @@ class SymbolPlus(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Number):
+            if not issubclass(type(param_value), d.Number):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Number',
@@ -78,7 +79,7 @@ class SymbolPlus(BuiltInProc):
 
             evaluated_params.append(param_value)
 
-        result = Integer(0)
+        result = d.Integer(0)
         for param_value in evaluated_params:
             result += param_value
 
@@ -96,12 +97,12 @@ class SymbolMinus(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Number):
+            if not issubclass(type(param_value), d.Number):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Number',
@@ -132,12 +133,12 @@ class SymbolMultiply(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Number):
+            if not issubclass(type(param_value), d.Number):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Number',
@@ -147,10 +148,10 @@ class SymbolMultiply(BuiltInProc):
 
             evaluated_params.append(param_value)
 
-        result = Integer(1)
+        result = d.Integer(1)
         for param_value in evaluated_params:
-            if param_value == Integer(0):
-                result = Integer(0)
+            if param_value == d.Integer(0):
+                result = d.Integer(0)
                 break
 
             result *= param_value
@@ -169,12 +170,12 @@ class SymbolDivide(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Number):
+            if not issubclass(type(param_value), d.Number):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Number',
@@ -182,16 +183,16 @@ class SymbolDivide(BuiltInProc):
                     idx=idx
                 )
 
-            if idx == 0 and len(actual_params) == 1 and param_value == Integer(0):
-                raise BuiltinProcedureError(
-                    error_code=ErrorCode.DIVISION_BY_ZERO,
+            if idx == 0 and len(actual_params) == 1 and param_value == d.Integer(0):
+                raise err.BuiltinProcedureError(
+                    error_code=err.ErrorCode.DIVISION_BY_ZERO,
                     token=proc_token
                 )
 
             evaluated_params.append(param_value)
 
         if len(actual_params) == 1:
-            result = Integer(1)/evaluated_params[0]
+            result = d.Integer(1)/evaluated_params[0]
         else:
             result = evaluated_params[0]
             for param_value in evaluated_params[1:]:
@@ -211,12 +212,12 @@ class SymbolEqual(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Number):
+            if not issubclass(type(param_value), d.Number):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Number',
@@ -228,11 +229,11 @@ class SymbolEqual(BuiltInProc):
 
         first_param_value = evaluated_params[0]
 
-        result = Boolean(True)
+        result = d.Boolean(True)
 
         for param_value in evaluated_params:
             if first_param_value != param_value:
-                result = Boolean(False)
+                result = d.Boolean(False)
                 break
 
         return result
@@ -249,12 +250,12 @@ class SymbolLessThan(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Number):
+            if not issubclass(type(param_value), d.Number):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Number',
@@ -264,13 +265,13 @@ class SymbolLessThan(BuiltInProc):
 
             evaluated_params.append(param_value)
 
-        result = Boolean(True)
+        result = d.Boolean(True)
         prev_value = evaluated_params[0]
 
         for param_value in evaluated_params[1:]:
             current_value = param_value
             if not prev_value < current_value:
-                result = Boolean(False)
+                result = d.Boolean(False)
                 break
 
             prev_value = current_value
@@ -289,12 +290,12 @@ class SymbolGreaterThan(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Number):
+            if not issubclass(type(param_value), d.Number):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Number',
@@ -304,13 +305,13 @@ class SymbolGreaterThan(BuiltInProc):
 
             evaluated_params.append(param_value)
 
-        result = Boolean(True)
+        result = d.Boolean(True)
         prev_value = evaluated_params[0]
 
         for param_value in evaluated_params[1:]:
             current_value = param_value
             if not prev_value > current_value:
-                result = Boolean(False)
+                result = d.Boolean(False)
                 break
 
             prev_value = current_value
@@ -329,12 +330,12 @@ class SymbolLessEqualThan(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Number):
+            if not issubclass(type(param_value), d.Number):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Number',
@@ -344,13 +345,13 @@ class SymbolLessEqualThan(BuiltInProc):
 
             evaluated_params.append(param_value)
 
-        result = Boolean(True)
+        result = d.Boolean(True)
         prev_value = evaluated_params[0]
 
         for param_value in evaluated_params[1:]:
             current_value = param_value
             if not prev_value <= current_value:
-                result = Boolean(False)
+                result = d.Boolean(False)
                 break
 
             prev_value = current_value
@@ -369,12 +370,12 @@ class SymbolGreaterEqualThan(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Number):
+            if not issubclass(type(param_value), d.Number):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Number',
@@ -384,13 +385,13 @@ class SymbolGreaterEqualThan(BuiltInProc):
 
             evaluated_params.append(param_value)
 
-        result = Boolean(True)
+        result = d.Boolean(True)
         prev_value = evaluated_params[0]
 
         for param_value in evaluated_params[1:]:
             current_value = param_value
             if not prev_value >= current_value:
-                result = Boolean(False)
+                result = d.Boolean(False)
                 break
 
             prev_value = current_value
@@ -409,10 +410,10 @@ class Abs(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), RealNumber):
+        if not issubclass(type(param_value), d.RealNumber):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Real Number',
@@ -435,10 +436,10 @@ class Add1(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Number):
+        if not issubclass(type(param_value), d.Number):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Number',
@@ -446,7 +447,7 @@ class Add1(BuiltInProc):
                 idx=0
             )
 
-        result = param_value + Integer(1)
+        result = param_value + d.Integer(1)
         return result
 
 
@@ -461,10 +462,10 @@ class Ceiling(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), RealNumber):
+        if not issubclass(type(param_value), d.RealNumber):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Real Number',
@@ -472,7 +473,7 @@ class Ceiling(BuiltInProc):
                 idx=0
             )
 
-        result = Integer(math.ceil(param_value.value))
+        result = d.Integer(math.ceil(param_value.value))
         return result
 
 
@@ -487,8 +488,8 @@ class CurrentSeconds(BuiltInProc):
         return 0
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
-        result = Integer(math.floor(time.time()))
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
+        result = d.Integer(math.floor(time.time()))
         return result
 
 
@@ -503,10 +504,10 @@ class EvenHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Integer):
+        if not issubclass(type(param_value), d.Integer):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Integer',
@@ -514,7 +515,7 @@ class EvenHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(param_value.value % 2 == 0)
+        result = d.Boolean(param_value.value % 2 == 0)
         return result
 
 
@@ -529,10 +530,10 @@ class ExactToInexact(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Number):
+        if not issubclass(type(param_value), d.Number):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Number',
@@ -540,7 +541,7 @@ class ExactToInexact(BuiltInProc):
                 idx=0
             )
 
-        result = InexactNumber(param_value.value)
+        result = d.InexactNumber(param_value.value)
         return result
 
 
@@ -555,10 +556,10 @@ class ExactHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Number):
+        if not issubclass(type(param_value), d.Number):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Number',
@@ -566,7 +567,7 @@ class ExactHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(issubclass(type(param_value), ExactNumber))
+        result = d.Boolean(issubclass(type(param_value), d.ExactNumber))
         return result
 
 
@@ -581,10 +582,10 @@ class Exp(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Number):
+        if not issubclass(type(param_value), d.Number):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Number',
@@ -592,7 +593,7 @@ class Exp(BuiltInProc):
                 idx=0
             )
 
-        result = InexactNumber(math.exp(param_value.value))
+        result = d.InexactNumber(math.exp(param_value.value))
         return result
 
 
@@ -607,10 +608,10 @@ class Floor(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), RealNumber):
+        if not issubclass(type(param_value), d.RealNumber):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Real Number',
@@ -618,7 +619,7 @@ class Floor(BuiltInProc):
                 idx=0
             )
 
-        result = Integer(math.floor(param_value.value))
+        result = d.Integer(math.floor(param_value.value))
         return result
 
 
@@ -633,12 +634,12 @@ class Gcd(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Integer:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Integer:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Integer):
+            if not issubclass(type(param_value), d.Integer):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Integer',
@@ -653,7 +654,7 @@ class Gcd(BuiltInProc):
         for param_value in evaluated_params:
             gcd = math.gcd(gcd, int(param_value))
 
-        result = Integer(gcd)
+        result = d.Integer(gcd)
 
         return result
 
@@ -669,10 +670,10 @@ class IntegerHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        result = Boolean(issubclass(type(param_value), Integer))
+        result = d.Boolean(issubclass(type(param_value), d.Integer))
         return result
 
 
@@ -687,12 +688,12 @@ class Lcm(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Integer:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Integer:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Integer):
+            if not issubclass(type(param_value), d.Integer):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Integer',
@@ -707,7 +708,7 @@ class Lcm(BuiltInProc):
         for param_value in evaluated_params:
             lcm = abs(lcm * int(param_value)) // math.gcd(lcm, int(param_value))
 
-        result = Integer(lcm)
+        result = d.Integer(lcm)
 
         return result
 
@@ -723,10 +724,10 @@ class Log(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Number):
+        if not issubclass(type(param_value), d.Number):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Number',
@@ -734,7 +735,7 @@ class Log(BuiltInProc):
                 idx=0
             )
 
-        result = InexactNumber(math.log(param_value.value))
+        result = d.InexactNumber(math.log(param_value.value))
         return result
 
 
@@ -749,12 +750,12 @@ class Max(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> RealNumber:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.RealNumber:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), RealNumber):
+            if not issubclass(type(param_value), d.RealNumber):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Real Number',
@@ -784,12 +785,12 @@ class Min(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> RealNumber:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.RealNumber:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), RealNumber):
+            if not issubclass(type(param_value), d.RealNumber):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Real Number',
@@ -819,12 +820,12 @@ class Modulo(BuiltInProc):
         return 2
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Integer:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Integer:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Integer):
+            if not issubclass(type(param_value), d.Integer):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Integer',
@@ -837,7 +838,7 @@ class Modulo(BuiltInProc):
         number = int(evaluated_params[0])
         modulus = int(evaluated_params[1])
         remainder = number % modulus
-        result = Integer(remainder)
+        result = d.Integer(remainder)
 
         return result
 
@@ -853,10 +854,10 @@ class NegativeHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), RealNumber):
+        if not issubclass(type(param_value), d.RealNumber):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Real Number',
@@ -864,7 +865,7 @@ class NegativeHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(param_value < Integer(0))
+        result = d.Boolean(param_value < d.Integer(0))
         return result
 
 
@@ -879,10 +880,10 @@ class NumberToString(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> String:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.String:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Number):
+        if not issubclass(type(param_value), d.Number):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Number',
@@ -890,7 +891,7 @@ class NumberToString(BuiltInProc):
                 idx=0
             )
 
-        result = String(str(param_value))
+        result = d.String(str(param_value))
         return result
 
 
@@ -905,10 +906,10 @@ class NumberHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Data):
+        if not issubclass(type(param_value), d.Data):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Any',
@@ -916,7 +917,7 @@ class NumberHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(issubclass(type(param_value), Number))
+        result = d.Boolean(issubclass(type(param_value), d.Number))
         return result
 
 
@@ -931,10 +932,10 @@ class OddHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Integer):
+        if not issubclass(type(param_value), d.Integer):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Integer',
@@ -942,7 +943,7 @@ class OddHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(param_value.value % 2 == 1)
+        result = d.Boolean(param_value.value % 2 == 1)
         return result
 
 
@@ -957,10 +958,10 @@ class PositiveHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), RealNumber):
+        if not issubclass(type(param_value), d.RealNumber):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Real Number',
@@ -968,7 +969,7 @@ class PositiveHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(param_value > Integer(0))
+        result = d.Boolean(param_value > d.Integer(0))
         return result
 
 
@@ -983,10 +984,10 @@ class RationalHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Data):
+        if not issubclass(type(param_value), d.Data):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Any',
@@ -994,7 +995,7 @@ class RationalHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(issubclass(type(param_value), Rational))
+        result = d.Boolean(issubclass(type(param_value), d.Rational))
         return result
 
 
@@ -1009,10 +1010,10 @@ class RealHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Data):
+        if not issubclass(type(param_value), d.Data):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Any',
@@ -1020,7 +1021,7 @@ class RealHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(issubclass(type(param_value), RealNumber))
+        result = d.Boolean(issubclass(type(param_value), d.RealNumber))
         return result
 
 
@@ -1035,10 +1036,10 @@ class Round(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Integer:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Integer:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), RealNumber):
+        if not issubclass(type(param_value), d.RealNumber):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Real Number',
@@ -1046,7 +1047,7 @@ class Round(BuiltInProc):
                 idx=0
             )
 
-        result = Integer(round(param_value.value))
+        result = d.Integer(round(param_value.value))
         return result
 
 
@@ -1061,10 +1062,10 @@ class Sgn(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Integer:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Integer:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), RealNumber):
+        if not issubclass(type(param_value), d.RealNumber):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Real Number',
@@ -1072,12 +1073,12 @@ class Sgn(BuiltInProc):
                 idx=0
             )
 
-        if param_value > Integer(0):
-            result = Integer(1)
-        elif param_value < Integer(0):
-            result = Integer(-1)
+        if param_value > d.Integer(0):
+            result = d.Integer(1)
+        elif param_value < d.Integer(0):
+            result = d.Integer(-1)
         else:
-            result = Integer(0)
+            result = d.Integer(0)
 
         return result
 
@@ -1093,10 +1094,10 @@ class Sqr(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Number):
+        if not issubclass(type(param_value), d.Number):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Number',
@@ -1120,10 +1121,10 @@ class Sqrt(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Number):
+        if not issubclass(type(param_value), d.Number):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Number',
@@ -1131,11 +1132,11 @@ class Sqrt(BuiltInProc):
                 idx=0
             )
 
-        if param_value < Integer(0):
+        if param_value < d.Integer(0):
             raise NotImplementedError('Complex numbers not supported yet.')
 
         number = math.sqrt(param_value.value)
-        result = InexactNumber(number)
+        result = d.InexactNumber(number)
 
         return result
 
@@ -1151,10 +1152,10 @@ class Sub1(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Number:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Number):
+        if not issubclass(type(param_value), d.Number):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Number',
@@ -1162,7 +1163,7 @@ class Sub1(BuiltInProc):
                 idx=0
             )
 
-        result = param_value - Integer(1)
+        result = param_value - d.Integer(1)
         return result
 
 
@@ -1177,10 +1178,10 @@ class ZeroHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Number):
+        if not issubclass(type(param_value), d.Number):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Number',
@@ -1188,7 +1189,7 @@ class ZeroHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(param_value == Integer(0))
+        result = d.Boolean(param_value == d.Integer(0))
         return result
 
 
@@ -1203,13 +1204,13 @@ class And(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
-        result = Boolean(True)
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
+        result = d.Boolean(True)
 
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Boolean):
+            if not issubclass(type(param_value), d.Boolean):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Boolean',
@@ -1217,7 +1218,7 @@ class And(BuiltInProc):
                     idx=idx
                 )
 
-            if param_value == Boolean(False):
+            if param_value == d.Boolean(False):
                 result = param_value
                 break
 
@@ -1235,10 +1236,10 @@ class BooleanToString(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> String:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.String:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Boolean):
+        if not issubclass(type(param_value), d.Boolean):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Boolean',
@@ -1246,7 +1247,7 @@ class BooleanToString(BuiltInProc):
                 idx=0
             )
 
-        result = String(str(param_value))
+        result = d.String(str(param_value))
         return result
 
 
@@ -1261,12 +1262,12 @@ class BooleanSymbolEqualHuh(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Boolean):
+            if not issubclass(type(param_value), d.Boolean):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Boolean',
@@ -1278,11 +1279,11 @@ class BooleanSymbolEqualHuh(BuiltInProc):
 
         first_param_value = evaluated_params[0]
 
-        result = Boolean(True)
+        result = d.Boolean(True)
 
         for param_value in evaluated_params:
             if first_param_value != param_value:
-                result = Boolean(False)
+                result = d.Boolean(False)
                 break
 
         return result
@@ -1299,10 +1300,10 @@ class BooleanHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Data):
+        if not issubclass(type(param_value), d.Data):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Any',
@@ -1310,7 +1311,7 @@ class BooleanHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(issubclass(type(param_value), Boolean))
+        result = d.Boolean(issubclass(type(param_value), d.Boolean))
         return result
 
 
@@ -1325,10 +1326,10 @@ class FalseHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Data):
+        if not issubclass(type(param_value), d.Data):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Any',
@@ -1336,7 +1337,7 @@ class FalseHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(issubclass(type(param_value), Boolean) and param_value == Boolean(False))
+        result = d.Boolean(issubclass(type(param_value), d.Boolean) and param_value == d.Boolean(False))
         return result
 
 
@@ -1351,10 +1352,10 @@ class Not(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Boolean):
+        if not issubclass(type(param_value), d.Boolean):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Boolean',
@@ -1362,7 +1363,7 @@ class Not(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(not param_value.value)
+        result = d.Boolean(not param_value.value)
         return result
 
 
@@ -1377,13 +1378,13 @@ class Or(BuiltInProc):
         return None
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
-        result = Boolean(False)
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
+        result = d.Boolean(False)
 
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
 
-            if not issubclass(type(param_value), Boolean):
+            if not issubclass(type(param_value), d.Boolean):
                 interpreter.builtin_proc_type_error(
                     proc_token=proc_token,
                     expected_type='Boolean',
@@ -1391,7 +1392,7 @@ class Or(BuiltInProc):
                     idx=idx
                 )
 
-            if param_value == Boolean(True):
+            if param_value == d.Boolean(True):
                 result = param_value
                 break
 
@@ -1409,10 +1410,10 @@ class StringHuh(BuiltInProc):
         return 1
 
     @staticmethod
-    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> Boolean:
+    def interpret(interpreter: Interpreter, actual_params: List[AST], proc_token: Token) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
 
-        if not issubclass(type(param_value), Data):
+        if not issubclass(type(param_value), d.Data):
             interpreter.builtin_proc_type_error(
                 proc_token=proc_token,
                 expected_type='Any',
@@ -1420,7 +1421,7 @@ class StringHuh(BuiltInProc):
                 idx=0
             )
 
-        result = Boolean(issubclass(type(param_value), String))
+        result = d.Boolean(issubclass(type(param_value), d.String))
         return result
 
 

@@ -1,17 +1,17 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List
 import unittest
-from racketinterpreter.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
+from racketinterpreter.classes.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
 from racketinterpreter.util import Util
 
 if TYPE_CHECKING:
-    from racketinterpreter.data import Data
+    from classes.data import Data
 
 
 class TestInterpreter(unittest.TestCase):
 
     def interpret_text(self, text: str, expected: List[Data]) -> None:
-        result = Util.text_to_result(text)
+        result = Util.text_to_interpreter_result(text)
 
         result_len = len(result)
         expected_len = len(expected)

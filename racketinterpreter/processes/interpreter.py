@@ -1,26 +1,25 @@
 from __future__ import annotations
 import fractions as f
 from typing import TYPE_CHECKING, Any, List, Tuple, Union
-from racketinterpreter import ast
-from racketinterpreter.ast import AST, ASTVisitor
-from racketinterpreter.predefined import BUILT_IN_PROCS
+from racketinterpreter import errors as err
+from racketinterpreter.classes import ast
+from racketinterpreter.classes import data as d
+from racketinterpreter.classes import stack as stack
+from racketinterpreter.classes import tokens as t
 from racketinterpreter.constants import C
-from racketinterpreter.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
-from racketinterpreter.errors import ErrorCode, IllegalStateError, InterpreterError
-from racketinterpreter.semantics import SemanticAnalyzer
-from racketinterpreter.stack import ActivationRecord, ARType, CallStack
-from racketinterpreter.symbol import AmbiguousSymbol
-from racketinterpreter.tokens import Token
+from racketinterpreter.functions.predefined import BUILT_IN_PROCS
+from racketinterpreter.processes.semantics import SemanticAnalyzer
 
 if TYPE_CHECKING:
-    from data import Data, Number
+    import racketinterpreter.classes.symbol as sym
+    from classes.data import Data, Number
 
 
-class Interpreter(ASTVisitor):
+class Interpreter(ast.ASTVisitor):
 
     def __init__(self, tree: ast.AST) -> None:
         self.tree = tree
-        self.call_stack = CallStack()
+        self.call_stack = stack.CallStack()
 
         self.semantic_analyzer = SemanticAnalyzer()
         self.semantic_analyzer.interpreter = self
@@ -33,11 +32,11 @@ class Interpreter(ASTVisitor):
         if C.SHOULD_LOG_STACK:
             print(msg)
 
-    def visit_Bool(self, node: ast.Bool) -> Boolean:
-        return Boolean(node.value)
+    def visit_Bool(self, node: ast.Bool) -> d.Boolean:
+        return d.Boolean(node.value)
 
-    def visit_Dec(self, node: ast.Dec) -> InexactNumber:
-        return InexactNumber(node.value)
+    def visit_Dec(self, node: ast.Dec) -> d.InexactNumber:
+        return d.InexactNumber(node.value)
 
     def visit_Id(self, node: ast.Id) -> Data:
         self.semantic_analyzer.visit(node)
@@ -48,8 +47,8 @@ class Interpreter(ASTVisitor):
 
         if issubclass(type(var_value), type):
             struct_name = var_name
-            raise InterpreterError(
-                error_code=ErrorCode.USING_STRUCTURE_TYPE,
+            raise err.InterpreterError(
+                error_code=err.ErrorCode.USING_STRUCTURE_TYPE,
                 token=node.token,
                 name=struct_name
             )
@@ -57,19 +56,19 @@ class Interpreter(ASTVisitor):
         return var_value
 
     def visit_Int(self, node: ast.Int) -> Number:
-        return Integer(node.value)
+        return d.Integer(node.value)
 
-    def visit_Rat(self, node: ast.Rat) -> Union[Integer, Rational]:
+    def visit_Rat(self, node: ast.Rat) -> Union[d.Integer, d.Rational]:
         numerator = node.value[0]
         denominator = node.value[1]
         fraction = f.Fraction(numerator, denominator)
         if fraction.denominator == 1:
-            return Integer(fraction.numerator)
+            return d.Integer(fraction.numerator)
         else:
-            return Rational(fraction.numerator, fraction.denominator)
+            return d.Rational(fraction.numerator, fraction.denominator)
 
-    def visit_Str(self, node: ast.Str) -> String:
-        return String(node.value)
+    def visit_Str(self, node: ast.Str) -> d.String:
+        return d.String(node.value)
 
     def visit_Cond(self, node: ast.Cond) -> Data:
         self.semantic_analyzer.visit(node)
@@ -77,9 +76,9 @@ class Interpreter(ASTVisitor):
         for idx, branch in enumerate(node.branches):
             predicate_result = self.visit(branch.predicate)
 
-            if not issubclass(type(predicate_result), Boolean):
-                raise InterpreterError(
-                    error_code=ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN,
+            if not issubclass(type(predicate_result), d.Boolean):
+                raise err.InterpreterError(
+                    error_code=err.ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN,
                     token=node.token,
                     result=predicate_result
                 )
@@ -92,16 +91,16 @@ class Interpreter(ASTVisitor):
             else_expr = else_branch.expr
             return self.visit(else_expr)
         else:
-            raise InterpreterError(
-                error_code=ErrorCode.C_ALL_QUESTION_RESULTS_FALSE,
+            raise err.InterpreterError(
+                error_code=err.ErrorCode.C_ALL_QUESTION_RESULTS_FALSE,
                 token=node.token
             )
 
     def visit_CondBranch(self, node: ast.CondBranch) -> None:
-        raise IllegalStateError('Interpreter should never have to visit a cond branch.')
+        raise err.IllegalStateError('Interpreter should never have to visit a cond branch.')
 
     def visit_CondElse(self, node: ast.CondElse) -> None:
-        raise IllegalStateError('Interpreter should never have to visit a cond else.')
+        raise err.IllegalStateError('Interpreter should never have to visit a cond else.')
 
     def visit_IdAssign(self, node: ast.IdAssign) -> None:
         self.semantic_analyzer.visit(node)
@@ -113,13 +112,13 @@ class Interpreter(ASTVisitor):
         ar[var_name] = var_value
 
     def visit_FormalParam(self, node: ast.FormalParam) -> None:
-        raise IllegalStateError('Interpreter should never have to visit a formal parameter.')
+        raise err.IllegalStateError('Interpreter should never have to visit a formal parameter.')
 
     def visit_ProcAssign(self, node: ast.ProcAssign) -> None:
         self.semantic_analyzer.visit(node)
 
         proc_name = node.proc_name
-        proc_value = Procedure(proc_name)
+        proc_value = d.Procedure(proc_name)
 
         ar = self.call_stack.peek()
         ar[proc_name] = proc_value
@@ -145,13 +144,13 @@ class Interpreter(ASTVisitor):
             old_token = node.token
             line_no = old_token.line_no
             column = old_token.column
-            node.token = Token.create_proc(proc_name, line_no, column)
+            node.token = t.Token.create_proc(proc_name, line_no, column)
 
             try:
                 result = self._visit_builtin_ProcCall(node)
             except ZeroDivisionError as e:
-                raise InterpreterError(
-                    error_code=ErrorCode.DIVISION_BY_ZERO,
+                raise err.InterpreterError(
+                    error_code=err.ErrorCode.DIVISION_BY_ZERO,
                     token=node.token
                 )
 
@@ -164,7 +163,7 @@ class Interpreter(ASTVisitor):
                 data.fields = evaluated_params
                 return data
             elif type(expr) is ast.StructHuh:
-                result = Boolean(type(evaluated_params[0]) == expr.data_class)
+                result = d.Boolean(type(evaluated_params[0]) == expr.data_class)
                 return result
             elif type(expr) is ast.StructGet:
                 # TODO: change data_class to datatype
@@ -173,7 +172,7 @@ class Interpreter(ASTVisitor):
                 result = evaluated_params[0].fields[evaluated_params[0].field_names.index(field)]
                 return result
             else:
-                raise IllegalStateError
+                raise err.IllegalStateError
         else:
             return self._visit_user_defined_ProcCall(proc_name, expr, formal_params, actual_params)
 
@@ -190,25 +189,25 @@ class Interpreter(ASTVisitor):
 
         new_procs = ['make-' + struct_name, struct_name + '?'] + [f'{struct_name}-{field}' for field in fields]
         for proc_name in new_procs:
-            ar[proc_name] = Procedure(proc_name)
+            ar[proc_name] = d.Procedure(proc_name)
 
     def visit_StructMake(self, node: ast.StructMake):
-        raise IllegalStateError('Interpreter should never have to visit a struct make.')
+        raise err.IllegalStateError('Interpreter should never have to visit a struct make.')
 
     def visit_StructHuh(self, node: ast.StructMake):
-        raise IllegalStateError('Interpreter should never have to visit a struct huh.')
+        raise err.IllegalStateError('Interpreter should never have to visit a struct huh.')
 
     def visit_StructGet(self, node: ast.StructMake):
-        raise IllegalStateError('Interpreter should never have to visit a struct get.')
+        raise err.IllegalStateError('Interpreter should never have to visit a struct get.')
 
     def visit_Program(self, node: ast.Program) -> List[Data]:
         if C.SHOULD_LOG_SCOPE:
             print('')
         self.log_stack(f'ENTER: PROGRAM')
 
-        ar = ActivationRecord(
+        ar = stack.ActivationRecord(
             name='global',
-            type=ARType.PROGRAM,
+            type=stack.ARType.PROGRAM,
             nesting_level=1
         )
         self.call_stack.push(ar)
@@ -235,7 +234,7 @@ class Interpreter(ASTVisitor):
 
         return results
 
-    def _sort_program_statements(self, statements) -> Tuple[List[AST], List[AST]]:
+    def _sort_program_statements(self, statements) -> Tuple[List[ast.AST], List[ast.AST]]:
         definitions = []
         expressions = []
 
@@ -250,7 +249,7 @@ class Interpreter(ASTVisitor):
     def _define_builtin_procs(self):
         ar = self.call_stack.peek()
         for proc in BUILT_IN_PROCS:
-            ar[proc] = Procedure(proc)
+            ar[proc] = d.Procedure(proc)
 
     def _visit_builtin_ProcCall(self, node: ast.ProcCall) -> Data:
         proc_token = node.token
@@ -260,13 +259,13 @@ class Interpreter(ASTVisitor):
         return BUILT_IN_PROCS[proc_name].interpret(self, actual_params, proc_token)
 
     def _visit_user_defined_ProcCall(self, proc_name: str, expr: ast.Expr,
-                                     formal_params: List[AmbiguousSymbol], actual_params: List[ast.Expr]) -> Data:
+                                     formal_params: List[sym.AmbiguousSymbol], actual_params: List[ast.Expr]) -> Data:
         self.semantic_analyzer.enter_proc(proc_name, formal_params)
 
         current_ar = self.call_stack.peek()
-        ar = ActivationRecord(
+        ar = stack.ActivationRecord(
             name=proc_name,
-            type=ARType.PROCEDURE,
+            type=stack.ARType.PROCEDURE,
             nesting_level=current_ar.nesting_level + 1,
         )
 

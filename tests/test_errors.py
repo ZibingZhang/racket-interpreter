@@ -8,7 +8,7 @@ class TestErrors(unittest.TestCase):
 
     def expect_error(self, text: str, error_code: ErrorCode) -> None:
         try:
-            Util.text_to_result(text)
+            Util.text_to_interpreter_result(text)
         except Error as e:
             self.assertEqual(error_code, e.error_code)
         else:

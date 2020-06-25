@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional
 from racketinterpreter.errors import IllegalStateError
 
 if TYPE_CHECKING:
-    from racketinterpreter.data import Data
+    from classes.data import Data
 
 
 class ARType(Enum):
