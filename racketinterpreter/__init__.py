@@ -1,4 +1,4 @@
-from exports import interpret
+from racketinterpreter.exports import interpret
 
 if __name__ == '__main__':
     text = \
@@ -91,8 +91,8 @@ if __name__ == '__main__':
         (boolean=? (set=? S1 S4) #f)
         """
 
-    results, = interpret(text)
+    result = interpret(text)
 
     print('Output:')
-    for output in results:
-        print(f'     {output}')
+    for line in result.output:
+        print(f'     {line}')
