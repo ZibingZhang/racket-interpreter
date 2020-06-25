@@ -1,16 +1,16 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Tuple, List, Any
-from src import ast
-from src.ast import ASTVisitor, AST
-from src.builtins import BUILT_IN_PROCS
-from src.constants import C
-from src.data import Procedure, StructDataFactory
-from src.errors import ErrorCode, IllegalStateError, SemanticError
-from src.symbol import AmbiguousSymbol, ProcSymbol, ScopedSymbolTable
-from src.token import KEYWORDS, Keyword, Token, TokenType
+from racketinterpreter import ast
+from racketinterpreter.ast import ASTVisitor, AST
+from racketinterpreter.predefined import BUILT_IN_PROCS
+from racketinterpreter.constants import C
+from racketinterpreter.data import Procedure, StructDataFactory
+from racketinterpreter.errors import ErrorCode, IllegalStateError, SemanticError
+from racketinterpreter.symbol import AmbiguousSymbol, ProcSymbol, ScopedSymbolTable
+from racketinterpreter.token import KEYWORDS, Keyword, Token, TokenType
 
 if TYPE_CHECKING:
-    from src.data import DataType
+    from data import DataType
 
 
 class SemanticAnalyzer(ASTVisitor):

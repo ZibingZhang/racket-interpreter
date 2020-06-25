@@ -32,10 +32,10 @@ Clone the repository locally and execute the source module as a script.
 ```
 git clone https://github.com/ZibingZhang/racket-interpreter.git
 cd racket-interpreter
-python -m src
+python racketinterpreter/__init__.py
 ```
 
-To change the code that is being interpreted, change the value of `text` in `__main__.py`.
+To change the code that is being interpreted, change the value of `text` in `racketinterpreter/__init__.py`.
 
 ### Testing
 

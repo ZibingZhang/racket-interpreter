@@ -1,10 +1,10 @@
 from __future__ import annotations
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
-from src.errors import IllegalStateError
+from racketinterpreter.errors import IllegalStateError
 
 if TYPE_CHECKING:
-    from src.data import Data
+    from racketinterpreter.data import Data
 
 
 class ARType(Enum):

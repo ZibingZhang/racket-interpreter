@@ -1,15 +1,10 @@
 from __future__ import annotations
 import unittest
-from src import constants
-from src.errors import Error, ErrorCode
-from src.util import Util
+from racketinterpreter.errors import Error, ErrorCode
+from racketinterpreter.util import Util
 
 
 class TestInterpreter(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        constants.init(should_log_scope=False, should_log_stack=False)
 
     def expect_error(self, text: str, error_code: ErrorCode) -> None:
         try:

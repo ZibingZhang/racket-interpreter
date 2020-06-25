@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from src.errors import ErrorCode, PreLexerError
-from src.token import TokenType
+from racketinterpreter.errors import ErrorCode, PreLexerError
+from racketinterpreter.token import TokenType
 
 if TYPE_CHECKING:
-    from src.lexer import Lexer
+    from racketinterpreter.lexer import Lexer
 
 
 # TODO: add analyzer for double quotes

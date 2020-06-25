@@ -3,13 +3,13 @@ import abc
 import math
 import time
 from typing import TYPE_CHECKING, List, Optional
-from src.data import Boolean, Data, ExactNumber, InexactNumber, Integer, Number, Rational, RealNumber, String
-from src.errors import BuiltinProcedureError, ErrorCode
+from racketinterpreter.data import Boolean, Data, ExactNumber, InexactNumber, Integer, Number, Rational, RealNumber, String
+from racketinterpreter.errors import BuiltinProcedureError, ErrorCode
 
 if TYPE_CHECKING:
-    from src.ast import AST
-    from src.interpreter import Interpreter
-    from src.token import Token
+    from racketinterpreter.ast import AST
+    from racketinterpreter.interpreter import Interpreter
+    from racketinterpreter.token import Token
 
 
 class BuiltInProc(abc.ABC):

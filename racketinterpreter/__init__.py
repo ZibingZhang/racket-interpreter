@@ -1,11 +1,13 @@
-from src import constants
-from src.constants import C
-from src.errors import BuiltinProcedureError, InterpreterError, LexerError, ParserError, SemanticError, PreLexerError
-from src.util import Util
+def interpret(code: str):
+    from util import Util
+    outputs = list(map(str, Util.text_to_result(code)))
+    return outputs,
 
 
-def main():
-    constants.init(should_log_scope=False, should_log_stack=False)
+if __name__ == '__main__':
+    from constants import C
+    from errors import BuiltinProcedureError, InterpreterError, LexerError, ParserError, SemanticError, PreLexerError
+    from util import Util
 
     try:
         text = \
@@ -14,13 +16,13 @@ def main():
             code made use of Lists which are not yet implemented in the interpreter. Another change is the removal
             of check-expect statements, which are replaced with either an = or boolean=?, depending on the output
             of the procedure being tested. |#
-            
+
             (define-struct plist [frst rst])
             ; A PseudoLON is one of :
             ; - "empty"
             ; - (make-plist Number PseudoLON)
             ; and represents a list of numbers
-            
+
             ; examples of PseudoLONs
             (define PLON1 "empty")
             (define PLON2 (make-plist 13 "empty"))
@@ -29,7 +31,7 @@ def main():
             (define PLON5 (make-plist -3 PLON4))
             (define PLON6 (make-plist 0 PLON5))
             (define PLON7 (make-plist 4 PLON6))
-            
+
             ; add-up-all : PseudoLON -> Number
             ; Adds up all the numbers
             (define (add-up-all plon)
@@ -44,7 +46,7 @@ def main():
             (= (add-up-all PLON4) 22.5)
             (= (add-up-all PLON5) 19.5)
             (= (add-up-all PLON6) 19.5)
-            
+
             ; in? : Number PseudoLON -> Bool
             ; Is the number in the list?
             (define (in? n l)
@@ -61,7 +63,7 @@ def main():
             (boolean=? (in? 5.5 PLON4) #t)
             (boolean=? (in? 5.5 PLON5) #t)
             (boolean=? (in? 5.5 PLON6) #t)
-            
+
             ; all-in? : List List -> Bool
             ; Are all the elements of the first list in the second?
             (define (all-in? s1 s2)
@@ -77,7 +79,7 @@ def main():
             (boolean=? (all-in? PLON1 PLON2) #t)
             (boolean=? (all-in? PLON7 PLON6) #t)
             (boolean=? (all-in? PLON6 PLON7) #t)
-            
+
             ; examples of sets
             (define S0 "empty")
             (define S1 (make-plist 1 (make-plist 2 (make-plist 3 "empty"))))
@@ -108,8 +110,3 @@ def main():
 
     except (PreLexerError, LexerError, ParserError, SemanticError, InterpreterError, BuiltinProcedureError) as e:
         print(e.message)
-        return
-
-
-if __name__ == '__main__':
-    main()

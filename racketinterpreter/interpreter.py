@@ -1,19 +1,19 @@
 from __future__ import annotations
 import fractions as f
 from typing import TYPE_CHECKING, Any, List, Tuple, Union
-from src import ast
-from src.ast import AST, ASTVisitor
-from src.builtins import BUILT_IN_PROCS
-from src.constants import C
-from src.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
-from src.errors import ErrorCode, IllegalStateError, InterpreterError
-from src.semantics import SemanticAnalyzer
-from src.stack import ActivationRecord, ARType, CallStack
-from src.symbol import AmbiguousSymbol
-from src.token import Token
+from racketinterpreter import ast
+from racketinterpreter.ast import AST, ASTVisitor
+from racketinterpreter.predefined import BUILT_IN_PROCS
+from racketinterpreter.constants import C
+from racketinterpreter.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
+from racketinterpreter.errors import ErrorCode, IllegalStateError, InterpreterError
+from racketinterpreter.semantics import SemanticAnalyzer
+from racketinterpreter.stack import ActivationRecord, ARType, CallStack
+from racketinterpreter.symbol import AmbiguousSymbol
+from racketinterpreter.token import Token
 
 if TYPE_CHECKING:
-    from src.data import Data, Number
+    from data import Data, Number
 
 
 class Interpreter(ASTVisitor):

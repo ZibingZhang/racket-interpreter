@@ -1,19 +1,14 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List
 import unittest
-from src import constants
-from src.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
-from src.util import Util
+from racketinterpreter.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
+from racketinterpreter.util import Util
 
 if TYPE_CHECKING:
-    from src.data import Data
+    from racketinterpreter.data import Data
 
 
 class TestInterpreter(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        constants.init(should_log_scope=False, should_log_stack=False)
 
     def interpret_text(self, text: str, expected: List[Data]) -> None:
         result = Util.text_to_result(text)

@@ -1,11 +1,11 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Union
-from src import ast
-from src.errors import ErrorCode, ParserError
-from src.token import Keyword, Token, TokenType
+from racketinterpreter import ast
+from racketinterpreter.errors import ErrorCode, ParserError
+from racketinterpreter.token import Keyword, Token, TokenType
 
 if TYPE_CHECKING:
-    from src.lexer import Lexer
+    from lexer import Lexer
 
 
 class Parser:
