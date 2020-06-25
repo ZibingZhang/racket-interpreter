@@ -28,6 +28,8 @@ assignment_statement: constant_assignment
                     | function_assignment
                     | structure_assignment
 
+check_expect: LPAREN CHECK_EXPECT expr* RPAREN
+
 statement: assignment_statement
          | expr
 

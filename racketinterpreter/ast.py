@@ -290,6 +290,12 @@ class StructGet(StructProc):
     pass
 
 
+class CheckExpect(AST):
+    """A test."""
+
+    pass
+
+
 class Program(AST):
     """A list of statements."""
 
