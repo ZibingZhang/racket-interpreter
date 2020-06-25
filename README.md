@@ -4,8 +4,8 @@ An interpreter written for Racket, more specifically the student languages which
 These student languages are what first-semester, computer-science students at Northeastern learn to program in.
 The end goal of this project is to successfully interpret the code I wrote for a homework assignment regarding graphs.
 
-[![PyPI version](https://badge.fury.io/py/racketinterpreter.svg)](https://badge.fury.io/py/racketinterpreter)
 [![Build Status](https://travis-ci.org/ZibingZhang/racket-interpreter.svg?branch=master)](https://travis-ci.org/ZibingZhang/racket-interpreter)
+[![PyPI version](https://badge.fury.io/py/racketinterpreter.svg)](https://badge.fury.io/py/racketinterpreter)
 <img src="https://img.shields.io/badge/license-MIT-brightgreen"></img>
 <img src="https://img.shields.io/badge/python-3.7%2B-blue"></img>
 
@@ -14,6 +14,7 @@ The end goal of this project is to successfully interpret the code I wrote for a
   * [Getting Started](#getting-started)
     * [Prerequisites](#prerequisites)
     * [Installing & Running](#installing--running)
+    * [Testing](#testing)
   * [Licence](#licence)
   * [Acknowledgments](#acknowledgments)
   * [Documentation](#documentation)
