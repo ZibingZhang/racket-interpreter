@@ -1,6 +1,7 @@
 from typing import Optional
 from racketinterpreter import errors as err
 from racketinterpreter.classes import tokens as t
+from racketinterpreter.processes.syntax import ParenthesesAnalyzer
 
 
 class Lexer:
@@ -19,11 +20,16 @@ class Lexer:
         self.token_idx = -1
 
     def process(self) -> None:
+        paren_analyzer = ParenthesesAnalyzer()
+
         while True:
             token = self._get_next_token()
             self.tokens.append(token)
 
-            if token.type is t.TokenType.EOF:
+            if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
+                paren_analyzer.received_paren(token)
+            elif token.type is t.TokenType.EOF:
+                paren_analyzer.reached_eof(token)
                 break
 
     def get_next_token(self) -> Optional[t.Token]:

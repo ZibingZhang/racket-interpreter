@@ -4,7 +4,6 @@ import racketinterpreter.classes.data as d
 import racketinterpreter.classes.tokens as t
 from racketinterpreter.processes.interpreter import Interpreter
 from racketinterpreter.processes.lexer import Lexer
-from racketinterpreter.processes.syntax import ParenthesesAnalyzer
 from racketinterpreter.processes.parse import Parser
 
 
@@ -14,11 +13,6 @@ class Util:
     def text_to_interpreter_result(text: str, should_log_scope: bool = False, should_log_stack: bool = False) \
             -> Tuple[List[d.Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
         constants.set_globals(should_log_scope=should_log_scope, should_log_stack=should_log_stack)
-
-        lexer = Lexer(text)
-        lexer.process()
-        paren_analyzer = ParenthesesAnalyzer(lexer)
-        paren_analyzer.analyze()
 
         lexer = Lexer(text)
         lexer.process()

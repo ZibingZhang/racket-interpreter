@@ -6,7 +6,7 @@ if __name__ == '__main__':
     from racketinterpreter import interpret
 
     code = \
-        """       
+        """
         #| Code written for an assignment at Northeastern. It has been slightly modified as some of the original
         code made use of Lists which are not yet implemented in the interpreter. Another change is the removal
         of check-expect statements, which are replaced with either an = or boolean=?, depending on the output
