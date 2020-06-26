@@ -60,6 +60,7 @@ class Keyword(Enum):
     DEFINE = 'define'
     DEFINE_STRUCT = 'define-struct'
     ELSE = 'else'
+    CHECK_EXPECT = 'check-expect'
 
 
 KEYWORDS = list(map(lambda keyword: keyword.value, Keyword))

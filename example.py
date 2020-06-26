@@ -35,12 +35,12 @@ if __name__ == '__main__':
                 [(plist? plon)
                  (+ (plist-frst plon)
                     (add-up-all (plist-rst plon)))]))
-        (= (add-up-all PLON1) 0)
-        (= (add-up-all PLON2) 13)
-        (= (add-up-all PLON3) 17)
-        (= (add-up-all PLON4) 22.5)
-        (= (add-up-all PLON5) 19.5)
-        (= (add-up-all PLON6) 19.5)
+        (check-expect (add-up-all PLON1) 0)
+        (check-expect (add-up-all PLON2) 13)
+        (check-expect (add-up-all PLON3) 17)
+        (check-expect (add-up-all PLON4) 22.5)
+        (check-expect (add-up-all PLON5) 19.5)
+        (check-expect (add-up-all PLON6) 19.5)
 
         ; in? : Number PseudoLON -> Bool
         ; Is the number in the list?
@@ -52,12 +52,12 @@ if __name__ == '__main__':
              (if (= n (plist-frst l))
                  #t
                  (in? n (plist-rst l)))]))
-        (boolean=? (in? 5.5 PLON1) #f)
-        (boolean=? (in? 5.5 PLON2) #f)
-        (boolean=? (in? 5.5 PLON3) #f)
-        (boolean=? (in? 5.5 PLON4) #t)
-        (boolean=? (in? 5.5 PLON5) #t)
-        (boolean=? (in? 5.5 PLON6) #t)
+        (check-expect (in? 5.5 PLON1) #f)
+        (check-expect (in? 5.5 PLON2) #f)
+        (check-expect (in? 5.5 PLON3) #f)
+        (check-expect (in? 5.5 PLON4) #t)
+        (check-expect (in? 5.5 PLON5) #t)
+        (check-expect (in? 5.5 PLON6) #t)
 
         ; all-in? : List List -> Bool
         ; Are all the elements of the first list in the second?
@@ -69,11 +69,11 @@ if __name__ == '__main__':
              (if (in? (plist-frst s1) s2)
                  (all-in? (plist-rst s1) s2)
                  #f)]))
-        (boolean=? (all-in? PLON1 PLON1) #t)
-        (boolean=? (all-in? PLON2 PLON1) #f)
-        (boolean=? (all-in? PLON1 PLON2) #t)
-        (boolean=? (all-in? PLON7 PLON6) #t)
-        (boolean=? (all-in? PLON6 PLON7) #t)
+        (check-expect (all-in? PLON1 PLON1) #t)
+        (check-expect (all-in? PLON2 PLON1) #f)
+        (check-expect (all-in? PLON1 PLON2) #t)
+        (check-expect (all-in? PLON7 PLON6) #t)
+        (check-expect (all-in? PLON6 PLON7) #t)
 
         ; examples of sets
         (define S0 "empty")
@@ -87,16 +87,14 @@ if __name__ == '__main__':
         (define (set=? s1 s2)
           (and (all-in? s1 s2)
                (all-in? s2 s1)))
-        (boolean=? (set=? S0 S1) #f)
-        (boolean=? (set=? S1 S0) #f)
-        (boolean=? (set=? S1 S2) #t)
-        (boolean=? (set=? S2 S1) #t)
-        (boolean=? (set=? S1 S3) #t)
-        (boolean=? (set=? S1 S4) #f)
+        (check-expect (set=? S0 S1) #f)
+        (check-expect (set=? S1 S0) #f)
+        (check-expect (set=? S1 S2) #t)
+        (check-expect (set=? S2 S1) #t)
+        (check-expect (set=? S1 S3) #t)
+        (check-expect (set=? S1 S4) #f)
         """
 
     result = interpret(code)
 
-    print('Output:')
-    for line in result.output:
-        print(f'     {line}')
+    print(result)

@@ -254,7 +254,7 @@ class Parser:
         # return ast.StructAssign(identifier, fields)
         return node
 
-    def assignment_statement(self) -> ast.AST:
+    def assignment_statement(self) -> Union[ast.IdAssign, ast.ProcAssign, ast.StructAssign]:
         """
         assignment_statement: constant_assignment
                             | function_assignment
@@ -270,6 +270,23 @@ class Parser:
         else:
             return self.constant_assignment()
 
+    def check_expect(self) -> ast.CheckExpect:
+        # opening left bracket
+        left_paren_token = self.eat(t.TokenType.LPAREN)
+
+        self.eat(t.TokenType.ID)
+
+        exprs = []
+        while self.current_token.type is not t.TokenType.RPAREN:
+            expr = self.expr()
+            exprs.append(expr)
+
+        # closing right bracket
+        self.eat(t.TokenType.RPAREN)
+
+        node = ast.CheckExpect(left_paren_token, exprs)
+        return node
+
     def statement(self) -> ast.AST:
         """
         statement: assignment_statement
@@ -284,6 +301,10 @@ class Parser:
             if next_token.type is t.TokenType.ID \
                     and next_token.value in [t.Keyword.DEFINE.value, t.Keyword.DEFINE_STRUCT.value]:
                 node = self.assignment_statement()
+                return node
+            elif next_token.type is t.TokenType.ID \
+                    and next_token.value == t.Keyword.CHECK_EXPECT.value:
+                node = self.check_expect()
                 return node
             else:
                 node = self.expr()

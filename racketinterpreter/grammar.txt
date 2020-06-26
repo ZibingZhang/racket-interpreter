@@ -32,6 +32,7 @@ check_expect: LPAREN CHECK_EXPECT expr* RPAREN
 
 statement: assignment_statement
          | expr
+         | check_expect
 
 program : statement
         | statement program

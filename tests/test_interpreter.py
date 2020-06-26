@@ -11,18 +11,18 @@ if TYPE_CHECKING:
 class TestInterpreter(unittest.TestCase):
 
     def interpret_text(self, text: str, expected: List[Data]) -> None:
-        result = Util.text_to_interpreter_result(text)
+        output, _ = Util.text_to_interpreter_result(text)
 
-        result_len = len(result)
+        output_len = len(output)
         expected_len = len(expected)
-        self.assertEqual(expected_len, result_len)
+        self.assertEqual(output_len, expected_len)
 
-        for output, expected in zip(result, expected):
-            self.assertEqual(type(expected), type(output))
-            if issubclass(type(expected), InexactNumber):
-                self.assertTrue(abs(output.value - expected.value) < 0.01)
+        for actual_data, expected_data in zip(output, expected):
+            self.assertEqual(type(actual_data), type(expected_data))
+            if issubclass(type(expected_data), InexactNumber):
+                self.assertTrue(abs(actual_data.value - expected_data.value) < 0.01)
             else:
-                self.assertEqual(expected, output)
+                self.assertEqual(actual_data, expected_data)
 
     def test_boolean(self) -> None:
         text = \

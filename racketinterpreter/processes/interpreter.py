@@ -17,14 +17,14 @@ if TYPE_CHECKING:
 
 class Interpreter(ast.ASTVisitor):
 
-    def __init__(self, tree: ast.AST) -> None:
+    def __init__(self, tree: ast.Program) -> None:
         self.tree = tree
         self.call_stack = stack.CallStack()
 
         self.semantic_analyzer = SemanticAnalyzer()
         self.semantic_analyzer.interpreter = self
 
-    def interpret(self) -> Any:
+    def interpret(self) -> Tuple[List[Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
         tree = self.tree
         return self.visit(tree)
 
@@ -191,16 +191,27 @@ class Interpreter(ast.ASTVisitor):
         for proc_name in new_procs:
             ar[proc_name] = d.Procedure(proc_name)
 
-    def visit_StructMake(self, node: ast.StructMake):
+    def visit_StructMake(self, node: ast.StructMake) -> None:
         raise err.IllegalStateError('Interpreter should never have to visit a struct make.')
 
-    def visit_StructHuh(self, node: ast.StructMake):
+    def visit_StructHuh(self, node: ast.StructMake) -> None:
         raise err.IllegalStateError('Interpreter should never have to visit a struct huh.')
 
-    def visit_StructGet(self, node: ast.StructMake):
+    def visit_StructGet(self, node: ast.StructMake) -> None:
         raise err.IllegalStateError('Interpreter should never have to visit a struct get.')
 
-    def visit_Program(self, node: ast.Program) -> List[Data]:
+    def visit_CheckExpect(self, node: ast.CheckExpect) -> Tuple[bool, t.Token, d.Data, d.Data]:
+        self.semantic_analyzer.visit(node)
+
+        token = node.token
+        actual = self.visit(node.actual)
+        expected = self.visit(node.expected)
+
+        error = actual != expected
+
+        return error, token, actual, expected
+
+    def visit_Program(self, node: ast.Program) -> Tuple[List[Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
         if C.SHOULD_LOG_SCOPE:
             print('')
         self.log_stack(f'ENTER: PROGRAM')
@@ -215,7 +226,7 @@ class Interpreter(ast.ASTVisitor):
 
         self.semantic_analyzer.enter_program()
 
-        definitions, expressions = self._sort_program_statements(node.statements)
+        definitions, expressions, tests = self._sort_program_statements(node.statements)
 
         for statement in definitions:
             self.visit(statement)
@@ -225,6 +236,11 @@ class Interpreter(ast.ASTVisitor):
             result = self.visit(statement)
             results.append(result)
 
+        test_results = []
+        for statement in tests:
+            test_result = self.visit(statement)
+            test_results.append(test_result)
+
         self.semantic_analyzer.leave_program()
 
         self.call_stack.pop()
@@ -232,19 +248,23 @@ class Interpreter(ast.ASTVisitor):
         self.log_stack(f'LEAVE: PROGRAM')
         self.log_stack(str(self.call_stack))
 
-        return results
+        return results, test_results
 
-    def _sort_program_statements(self, statements) -> Tuple[List[ast.AST], List[ast.AST]]:
+    def _sort_program_statements(self, statements) -> Tuple[List[ast.AST], List[ast.AST], List[ast.AST]]:
         definitions = []
         expressions = []
+        tests = []
 
         for statement in statements:
-            if type(statement) in [ast.IdAssign, ast.ProcAssign, ast.StructAssign]:
+            statement_type = type(statement)
+            if statement_type in [ast.IdAssign, ast.ProcAssign, ast.StructAssign]:
                 definitions.append(statement)
+            elif statement_type is ast.CheckExpect:
+                tests.append(statement)
             else:
                 expressions.append(statement)
 
-        return definitions, expressions
+        return definitions, expressions, tests
 
     def _define_builtin_procs(self):
         ar = self.call_stack.peek()

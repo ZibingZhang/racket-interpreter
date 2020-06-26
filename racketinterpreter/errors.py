@@ -19,6 +19,8 @@ class ErrorCode(Enum):
     C_EXPECTED_QUESTION_ANSWER_CLAUSE = Template('cond: expected a clause with a question and an answer, but $found')
     C_QUESTION_RESULT_NOT_BOOLEAN = Template('cond: question result is not true or false: $result')
 
+    CE_INCORRECT_ARGUMENT_COUNT = Template('check-expect: $expects, but $found')
+
     D_DUPLICATE_VARIABLE = Template('define: found a variable that is used more than once: $name')
     D_EXPECTED_A_NAME = Template("define: expected a variable name, or a function name and its variables (in parentheses), but $found")
     D_EXPECTED_OPEN_PARENTHESIS = Template('define: expected an open parenthesis before define, but found none')
@@ -148,6 +150,17 @@ class Error(Exception):
             result = kwargs.get('result')
 
             error_message = template.safe_substitute(result=result)
+
+        elif error_code is ErrorCode.CE_INCORRECT_ARGUMENT_COUNT:
+            received = kwargs.get('received')
+
+            if received == 0:
+                received = 'none'
+
+            expects = f'expects {"only" if received > 2 else ""} 2 arguments'
+            found = f'but found {"only" if received == 1 else ""} 1'
+
+            error_message = template.safe_substitute(expects=expects, found=found)
 
         elif error_code is ErrorCode.D_DUPLICATE_VARIABLE:
             name = kwargs.get('name')

@@ -441,14 +441,28 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
         return struct_class
 
-    def visit_StructMake(self, node: ast.StructMake):
+    def visit_StructMake(self, node: ast.StructMake) -> None:
         raise err.IllegalStateError('Semantic analyzer should never have to visit a struct make.')
 
-    def visit_StructHuh(self, node: ast.StructMake):
+    def visit_StructHuh(self, node: ast.StructMake) -> None:
         raise err.IllegalStateError('Semantic analyzer should never have to visit a struct huh.')
 
-    def visit_StructGet(self, node: ast.StructMake):
+    def visit_StructGet(self, node: ast.StructMake) -> None:
         raise err.IllegalStateError('Semantic analyzer should never have to visit a struct get.')
+
+    def visit_CheckExpect(self, node: ast.CheckExpect) -> None:
+        exprs = node.exprs
+        exprs_len = len(exprs)
+
+        if exprs_len != 2:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.CE_INCORRECT_ARGUMENT_COUNT,
+                token=node.token,
+                received=exprs_len
+            )
+
+        node.actual = exprs[0]
+        node.expected = exprs[1]
 
     def visit_Program(self, node: ast.Program) -> None:
         raise err.IllegalStateError('Semantic analyzer should never have to visit a program.')
