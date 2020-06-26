@@ -17,16 +17,17 @@ if TYPE_CHECKING:
 
 class Interpreter(ast.ASTVisitor):
 
-    def __init__(self, tree: ast.Program) -> None:
-        self.tree = tree
+    def __init__(self) -> None:
         self.call_stack = stack.CallStack()
 
-        self.semantic_analyzer = SemanticAnalyzer()
-        self.semantic_analyzer.interpreter = self
+        self.preprocessor = _Preprocessor(self)
+        self.semantic_analyzer = SemanticAnalyzer(self)
 
-    def interpret(self) -> Tuple[List[Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
-        tree = self.tree
+    def interpret(self, tree: ast.Program) -> Tuple[List[Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
         return self.visit(tree)
+
+    def preprocess(self, node: ast.AST) -> None:
+        self.preprocessor.visit(node)
 
     def log_stack(self, msg) -> None:
         if C.SHOULD_LOG_STACK:
@@ -229,6 +230,11 @@ class Interpreter(ast.ASTVisitor):
         definitions, expressions, tests = self._sort_program_statements(node.statements)
 
         for statement in definitions:
+            statement_type = type(statement)
+            if statement_type is ast.ProcAssign:
+                self.preprocess(statement)
+
+        for statement in definitions:
             self.visit(statement)
 
         results = []
@@ -308,3 +314,21 @@ class Interpreter(ast.ASTVisitor):
         self.call_stack.pop()
 
         return result
+
+
+# TODO: add custom error if try to visit other ast types
+class _Preprocessor(ast.ASTVisitor):
+
+    def __init__(self, interpreter: Interpreter):
+        self.interpreter = interpreter
+
+    def visit_ProcAssign(self, node: ast.ProcAssign):
+        interpreter = self.interpreter
+
+        interpreter.semantic_analyzer.preprocess(node)
+
+        proc_name = node.proc_name
+        proc_value = d.Procedure(proc_name)
+
+        ar = interpreter.call_stack.peek()
+        ar[proc_name] = proc_value

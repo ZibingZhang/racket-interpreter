@@ -9,14 +9,16 @@ from racketinterpreter.constants import C
 from racketinterpreter.functions.predefined import BUILT_IN_PROCS
 
 if TYPE_CHECKING:
-    from classes.data import DataType
+    from racketinterpreter.classes.data import DataType
+    from racketinterpreter.processes.interpreter import Interpreter
 
 
 class SemanticAnalyzer(ast.ASTVisitor):
 
-    def __init__(self):
+    def __init__(self, interpreter: Interpreter):
         self.current_scope = None
-        self.interpreter = None
+        self.preprocessor = _Preprocessor(self)
+        self.interpreter = interpreter
 
     def visit(self, node: ast.AST) -> Any:
         if node.passed_semantic_analysis:
@@ -25,6 +27,9 @@ class SemanticAnalyzer(ast.ASTVisitor):
             result = super().visit(node)
             node.passed_semantic_analysis = True
             return result
+
+    def preprocess(self, node: ast.AST) -> None:
+        self.preprocessor.visit(node)
 
     def log_scope(self, msg: str) -> None:
         if C.SHOULD_LOG_SCOPE:
@@ -212,50 +217,9 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
     def visit_ProcAssign(self, node: ast.ProcAssign) -> None:
         proc_name_expr = node.name_expr
-        proc_name_token = proc_name_expr.token if proc_name_expr else None
-        if proc_name_token is None or proc_name_token.type is not t.TokenType.ID \
-                or proc_name_token.value in t.KEYWORDS:
-            raise err.SemanticError(
-                error_code=err.ErrorCode.D_P_EXPECTED_FUNCTION_NAME,
-                token=node.token,
-                name_token=proc_name_token
-            )
-
-        exprs = node.exprs
-        exprs_len = len(exprs)
-        if exprs_len == 0:
-            raise err.SemanticError(
-                error_code=err.ErrorCode.D_P_MISSING_AN_EXPRESSION,
-                token=node.token
-            )
-        elif exprs_len > 1:
-            raise err.SemanticError(
-                error_code=err.ErrorCode.D_P_EXPECTED_ONE_EXPRESSION,
-                token=node.token,
-                part_count=exprs_len-1
-            )
-
+        proc_name_token = proc_name_expr.token
         proc_name = proc_name_token.value
-        node.proc_name = proc_name
-        node.expr = exprs[0]
-
-        for param in node.formal_params:
-            self.visit(param)
-
-        proc_symbol = sym.ProcSymbol(proc_name)
-
-        if self.current_scope.lookup(proc_name, current_scope_only=True) is not None:
-            if proc_name in BUILT_IN_PROCS:
-                error_code = err.ErrorCode.BUILTIN_OR_IMPORTED_NAME
-            else:
-                error_code = err.ErrorCode.PREVIOUSLY_DEFINED_NAME
-
-            raise err.SemanticError(
-                error_code=error_code,
-                token=proc_name_token
-            )
-
-        self.current_scope.define(proc_symbol)
+        proc_symbol = self.current_scope.lookup(proc_name, True)
 
         self.log_scope('')
         self.log_scope(f'ENTER SCOPE: {proc_name}')
@@ -267,23 +231,8 @@ class SemanticAnalyzer(ast.ASTVisitor):
         )
         self.current_scope = proc_scope
 
-        # TODO: put this in the visit loop, make visit return the symbol?
-        # insert parameters into the procedure scope
-        param_names = set()
-        for param_node in node.formal_params:
-            param_name = param_node.name
-
-            if param_name in param_names:
-                raise err.SemanticError(
-                    error_code=err.ErrorCode.D_DUPLICATE_VARIABLE,
-                    token=node.token,
-                    name=param_name
-                )
-
-            var_symbol = sym.AmbiguousSymbol(param_name)
+        for var_symbol in proc_symbol.formal_params:
             self.current_scope.define(var_symbol)
-            proc_symbol.formal_params.append(var_symbol)
-            param_names.add(param_name)
 
         self.visit(node.expr)
 
@@ -572,3 +521,73 @@ class SemanticAnalyzer(ast.ASTVisitor):
         self.current_scope = proc_scope.enclosing_scope
         self.log_scope(f'LEAVE SCOPE: {proc_name}')
         self.log_scope('')
+
+
+# TODO: add custom error if try to visit other ast types
+class _Preprocessor(ast.ASTVisitor):
+
+    def __init__(self, semantic_analyzer: SemanticAnalyzer):
+        self.semantic_analyzer = semantic_analyzer
+
+    def visit_ProcAssign(self, node: ast.ProcAssign):
+        semantic_analyzer = self.semantic_analyzer
+
+        proc_name_expr = node.name_expr
+        proc_name_token = proc_name_expr.token if proc_name_expr else None
+        if proc_name_token is None or proc_name_token.type is not t.TokenType.ID \
+                or proc_name_token.value in t.KEYWORDS:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.D_P_EXPECTED_FUNCTION_NAME,
+                token=node.token,
+                name_token=proc_name_token
+            )
+
+        exprs = node.exprs
+        exprs_len = len(exprs)
+        if exprs_len == 0:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.D_P_MISSING_AN_EXPRESSION,
+                token=node.token
+            )
+        elif exprs_len > 1:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.D_P_EXPECTED_ONE_EXPRESSION,
+                token=node.token,
+                part_count=exprs_len - 1
+            )
+
+        proc_name = proc_name_token.value
+        node.proc_name = proc_name
+        node.expr = exprs[0]
+
+        if semantic_analyzer.current_scope.lookup(proc_name, current_scope_only=True) is not None:
+            if proc_name in BUILT_IN_PROCS:
+                error_code = err.ErrorCode.BUILTIN_OR_IMPORTED_NAME
+            else:
+                error_code = err.ErrorCode.PREVIOUSLY_DEFINED_NAME
+
+            raise err.SemanticError(
+                error_code=error_code,
+                token=proc_name_token
+            )
+
+        proc_symbol = sym.ProcSymbol(proc_name)
+
+        semantic_analyzer.current_scope.define(proc_symbol)
+
+        param_names = set()
+        for param_node in node.formal_params:
+            semantic_analyzer.visit(param_node)
+
+            param_name = param_node.name
+
+            if param_name in param_names:
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.D_DUPLICATE_VARIABLE,
+                    token=node.token,
+                    name=param_name
+                )
+
+            var_symbol = sym.AmbiguousSymbol(param_name)
+            proc_symbol.formal_params.append(var_symbol)
+            param_names.add(param_name)

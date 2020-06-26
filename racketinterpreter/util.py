@@ -23,7 +23,7 @@ class Util:
         parser = Parser(lexer)
         tree = parser.parse()
 
-        interpreter = Interpreter(tree)
-        output, test_output = interpreter.interpret()
+        interpreter = Interpreter()
+        output, test_output = interpreter.interpret(tree)
 
         return output, test_output
