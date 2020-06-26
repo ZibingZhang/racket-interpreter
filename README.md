@@ -48,9 +48,9 @@ Clone the repository locally.
 $ git clone https://github.com/ZibingZhang/racket-interpreter.git
 ```
 
-There is an example of the interpreter in the `__init__.py` file which can be run.
+There is an example of the interpreter in the `example.py` file which can be run.
 ```shell
-$ python racketinterpreter/__init__.py
+$ python example.py
 ```
 
 To change the code that is being interpreted, change the value of `code`.
