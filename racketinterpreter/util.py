@@ -16,10 +16,12 @@ class Util:
         constants.set_globals(should_log_scope=should_log_scope, should_log_stack=should_log_stack)
 
         lexer = Lexer(text)
+        lexer.process()
         paren_analyzer = ParenthesesAnalyzer(lexer)
         paren_analyzer.analyze()
 
         lexer = Lexer(text)
+        lexer.process()
         parser = Parser(lexer)
         tree = parser.parse()
 
