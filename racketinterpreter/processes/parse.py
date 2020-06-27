@@ -50,31 +50,34 @@ class Parser:
             current_token = self.current_token
             self.error_unexpected_token(token=current_token)
 
-    def data(self) -> Union[ast.Int, ast.Bool, ast.Str, ast.Rat, ast.Dec]:
+    def data(self) -> Union[ast.Bool, ast.Dec, ast.Int, ast.Rat, ast.Str, ast.Sym]:
         """
         data: INTEGER
             | BOOLEAN
             | STRING
         """
-        current_token = self.current_token
+        token = self.current_token
 
-        if current_token.type is t.TokenType.INTEGER:
-            self.eat(t.TokenType.INTEGER)
-            return ast.Int(current_token)
-        elif current_token.type is t.TokenType.BOOLEAN:
+        if token.type is t.TokenType.BOOLEAN:
             self.eat(t.TokenType.BOOLEAN)
-            return ast.Bool(current_token)
-        elif current_token.type is t.TokenType.STRING:
-            self.eat(t.TokenType.STRING)
-            return ast.Str(current_token)
-        elif current_token.type is t.TokenType.RATIONAL:
-            self.eat(t.TokenType.RATIONAL)
-            return ast.Rat(current_token)
-        elif current_token.type is t.TokenType.DECIMAL:
+            return ast.Bool(token)
+        elif token.type is t.TokenType.DECIMAL:
             self.eat(t.TokenType.DECIMAL)
-            return ast.Dec(current_token)
+            return ast.Dec(token)
+        elif token.type is t.TokenType.INTEGER:
+            self.eat(t.TokenType.INTEGER)
+            return ast.Int(token)
+        elif token.type is t.TokenType.RATIONAL:
+            self.eat(t.TokenType.RATIONAL)
+            return ast.Rat(token)
+        elif token.type is t.TokenType.STRING:
+            self.eat(t.TokenType.STRING)
+            return ast.Str(token)
+        elif token.type is t.TokenType.SYMBOL:
+            self.eat(t.TokenType.SYMBOL)
+            return ast.Sym(token)
         else:
-            self.error_unexpected_token(token=current_token)
+            self.error_unexpected_token(token=token)
 
     def p_expr(self) -> ast.ProcCall:
         """p-expr: LPAREN expr* RPAREN"""
@@ -145,7 +148,7 @@ class Parser:
         return node
 
     def expr(self) -> Union[ast.Bool, ast.Cond, ast.Dec, ast.Int,
-                            ast.Id, ast.ProcCall, ast.Rat, ast.Str]:
+                            ast.Id, ast.ProcCall, ast.Rat, ast.Str, ast.Sym]:
         """
         expr: data
             | p-expr
@@ -294,7 +297,7 @@ class Parser:
         """
         current_token = self.current_token
         if current_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER,
-                                  t.TokenType.RATIONAL, t.TokenType.STRING, t.TokenType.ID]:
+                                  t.TokenType.RATIONAL, t.TokenType.STRING, t.TokenType.ID, t.TokenType.SYMBOL]:
             return self.expr()
         elif current_token.type is t.TokenType.LPAREN:
             next_token = self.lexer.peek_next_token()

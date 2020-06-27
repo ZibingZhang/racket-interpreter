@@ -61,6 +61,9 @@ class SemanticAnalyzer(ast.ASTVisitor):
     def visit_Str(self, node: ast.Str) -> None:
         pass
 
+    def visit_Sym(self, node: ast.Str) -> None:
+        pass
+
     def visit_Cond(self, node: ast.Cond) -> None:
         branches_len = len(node.branches)
         else_branch = node.else_branch
@@ -124,6 +127,18 @@ class SemanticAnalyzer(ast.ASTVisitor):
         token = node.token
         actual_params = node.actual_params
         actual_params_len = len(actual_params)
+
+        if actual_params_len != 0 and type(actual_params[0]) is ast.Sym:
+            # a little bit hacky...
+            raise err.SemanticError(
+                error_code=err.ErrorCode.BUILTIN_OR_IMPORTED_NAME,
+                token=t.Token(
+                    type=t.TokenType.INVALID,
+                    value='quote',
+                    line_no=token.line_no,
+                    column=token.column
+                )
+            )
 
         if actual_params_len == 0 or type(actual_params[0]) is not ast.Id \
                 or actual_params[0].value in t.KEYWORDS:

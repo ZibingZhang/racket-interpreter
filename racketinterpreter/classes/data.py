@@ -94,6 +94,21 @@ class String(Data):
         return self.__str__()
 
 
+class Symbol(Data):
+
+    def __init__(self, value: str) -> None:
+        super().__init__(value)
+
+    def __eq__(self, other):
+        return issubclass(type(other), Symbol) and self.value == other.value
+
+    def __str__(self) -> str:
+        return f'{self.value}'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
 # Numbers
 class RealNumber(Number):
 

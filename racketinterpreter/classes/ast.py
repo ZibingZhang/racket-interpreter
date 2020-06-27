@@ -126,6 +126,20 @@ class Str(Expr):
         return self.__str__()
 
 
+class Sym(Expr):
+    """A symbol."""
+
+    def __init__(self, token: t.Token) -> None:
+        super().__init__(token)
+        self.value = token.value
+
+    def __str__(self) -> str:
+        return f'<Sym value:{self.value}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
 class Cond(Expr):
     """A cond statement."""
 

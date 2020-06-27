@@ -75,6 +75,9 @@ class Lexer:
             if self.current_char == '"':
                 return self._string()
 
+            if self.current_char == "'":
+                return self._symbol()
+
             if self.current_char in ['(', '{', '[']:
                 token_type = t.TokenType.LPAREN
                 value = self.current_char
@@ -278,6 +281,73 @@ class Lexer:
             line_no=line_no,
             column=column
         )
+
+    def _symbol(self) -> t.Token:
+        """Handles symbols."""
+        line_no = self.line_no
+        column = self.column
+
+        self._advance()
+
+        while True:
+            if self.current_char is None:
+                raise err.LexerError(
+                    error_code=err.ErrorCode.RS_SYMBOL_FOUND_EOF,
+                    token=t.Token(
+                        type=t.TokenType.INVALID,
+                        value="'",
+                        line_no=line_no,
+                        column=column
+                    )
+                )
+            elif self.current_char.isspace():
+                self._skip_whitespace()
+            elif self.current_char == ';':
+                self._skip_line_comment()
+            elif self.current_char == '#' and self._peek() == '|':
+                self._skip_block_comment()
+            else:
+                break
+
+        current_char = self.current_char
+        if current_char.isdigit() or current_char == '.' \
+                or (self.current_char == '-' and (self._peek().isdigit() or self._peek() == '.')):
+            return self._number()
+        elif current_char not in self.NON_ID_CHARS:
+            token = self._identifier()
+            return t.Token(
+                type=t.TokenType.SYMBOL,
+                value=f"'{token.value}",
+                line_no=line_no,
+                column=column
+            )
+        elif current_char == '#':
+            return self._boolean()
+        elif current_char == '"':
+            return self._string()
+        elif current_char in [')', '}', ']', '(', '{', '[']:
+            raise err.LexerError(
+                error_code=err.ErrorCode.RS_UNEXPECTED,
+                token=t.Token(
+                    type=t.TokenType.INVALID,
+                    value=f"'{current_char}",
+                    line_no=line_no,
+                    column=column
+                ),
+                value=current_char
+            )
+        elif current_char == "'":
+            raise err.LexerError(
+                error_code=err.ErrorCode.FEATURE_NOT_IMPLEMENTED,
+                token=t.Token(
+                    type=t.TokenType.INVALID,
+                    value="''",
+                    line_no=line_no,
+                    column=column
+                )
+            )
+        else:
+            raise err.IllegalStateError
 
     def _identifier(self, initial: str = '') -> t.Token:
         """Handles identifiers (including builtin functions)."""

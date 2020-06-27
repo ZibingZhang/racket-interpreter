@@ -4,6 +4,7 @@ PARSER
 data: NUMBER
     | BOOLEAN
     | STRING
+    | SYMBOL
 
 p-expr: LPAREN expr* RPAREN
 

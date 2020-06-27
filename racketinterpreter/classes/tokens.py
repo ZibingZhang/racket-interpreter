@@ -13,6 +13,7 @@ class TokenType(Enum):
     DECIMAL = 'DECIMAL'
     BOOLEAN = 'BOOLEAN'
     STRING = 'STRING'
+    SYMBOL = 'SYMBOL'
     # misc
     ID = 'ID'
     EOF = 'EOF'

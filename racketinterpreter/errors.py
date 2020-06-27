@@ -5,6 +5,9 @@ from racketinterpreter.classes import tokens as t
 
 
 class ErrorCode(Enum):
+
+    FEATURE_NOT_IMPLEMENTED = Template('what you are trying to do is valid, it is just not supported yet')
+
     BUILTIN_OR_IMPORTED_NAME = Template('$name: this name was defined in the language or a required library and cannot be re-defined')
     DIVISION_BY_ZERO = Template('/: division by zero')
     INCORRECT_ARGUMENT_COUNT = Template('$name: $expects, but $found')
@@ -32,7 +35,7 @@ class ErrorCode(Enum):
     D_V_EXPECTED_ONE_EXPRESSION = Template("define: expected only one expression after the variable name $name, but $found")
     D_V_MISSING_AN_EXPRESSION = Template("define: expected an expression after the variable name $name, but nothing's there")
 
-    # TODO: duplicate field identifier
+    # define-struct: found a field name that is used more than once: a
     DS_EXPECTED_A_FIELD = Template('define-struct: expected a field name, but $found')
     DS_EXPECTED_FIELD_NAMES = Template('define-struct: expected at least one field name (in parentheses) after the structure name, but $found')
     DS_EXPECTED_OPEN_PARENTHESIS = Template('define-struct: expected an open parenthesis before define-struct, but found none')
@@ -49,6 +52,8 @@ class ErrorCode(Enum):
     RS_EXPECTED_DOUBLE_QUOTE = Template('read-syntax: expected a closing `"`')
     RS_EXPECTED_RIGHT_PARENTHESIS = Template('read-syntax: expected a `$right_paren` to close `$left_paren`')
     RS_INCORRECT_RIGHT_PARENTHESIS = Template('read-syntax: expected `$correct_right_paren` to close preceding `$left_paren`, found instead `$incorrect_right_paren`')
+    RS_SYMBOL_FOUND_EOF = Template('read-syntax: expected an element for quoting "\'", found end-of-file')
+    RS_UNEXPECTED = Template('read-syntax: unexpected `$value`')
     RS_UNEXPECTED_EOF = Template('read-syntax: unexpected EOF')  # should hopefully never be raised
     RS_UNEXPECTED_RIGHT_PARENTHESIS = Template('read-syntax: unexpected `)`')
     RS_UNEXPECTED_TOKEN = Template('read-syntax: unexpected token `$token_value`')  # should hopefully never be raised
@@ -66,7 +71,10 @@ class Error(Exception):
 
         template = error_code.value
 
-        if error_code is ErrorCode.BUILTIN_OR_IMPORTED_NAME:
+        if error_code is ErrorCode.FEATURE_NOT_IMPLEMENTED:
+            error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.BUILTIN_OR_IMPORTED_NAME:
             name = token.value
 
             error_message = template.safe_substitute(name=name)
@@ -198,7 +206,7 @@ class Error(Exception):
                 found = 'found a number'
             elif token.type is t.TokenType.STRING:
                 found = 'found a string'
-            elif token.type is t.TokenType.LPAREN:
+            elif token.type in [t.TokenType.LPAREN, t.TokenType.SYMBOL]:
                 found = 'found a part'
             elif token.value in t.KEYWORDS:
                 found = 'found a keyword'
@@ -218,7 +226,7 @@ class Error(Exception):
                 found = 'found a number'
             elif name_token.type is t.TokenType.STRING:
                 found = 'found a string'
-            elif name_token.type is t.TokenType.LPAREN:
+            elif name_token.type in [t.TokenType.LPAREN, t.TokenType.SYMBOL]:
                 found = 'found a part'
             elif name_token.value in t.KEYWORDS:
                 found = 'found a keyword'
@@ -258,7 +266,7 @@ class Error(Exception):
                 found = 'found a number'
             elif token.type is t.TokenType.STRING:
                 found = 'found a string'
-            elif token.type is t.TokenType.LPAREN:
+            elif token.type in [t.TokenType.LPAREN, t.TokenType.SYMBOL]:
                 found = 'found a part'
             elif token.value in t.KEYWORDS:
                 found = 'found a keyword'
@@ -298,7 +306,7 @@ class Error(Exception):
                 found = 'found a number'
             elif name_token.type is t.TokenType.STRING:
                 found = 'found a string'
-            elif name_token.type is t.TokenType.LPAREN:
+            elif name_token.type in [t.TokenType.LPAREN, t.TokenType.SYMBOL]:
                 found = 'found a part'
             elif name_token.value in t.KEYWORDS:
                 found = 'found a keyword'
@@ -380,12 +388,20 @@ class Error(Exception):
                 incorrect_right_paren=incorrect_right_paren
             )
 
+        elif error_code is ErrorCode.RS_SYMBOL_FOUND_EOF:
+            error_message = template.safe_substitute()
+
         elif error_code is ErrorCode.RS_UNEXPECTED_RIGHT_PARENTHESIS:
             error_message = template.safe_substitute()
 
         elif error_code is ErrorCode.RS_UNEXPECTED_TOKEN:
             token_value = token.value
             error_message = template.safe_substitute(token_value=token_value)
+
+        elif error_code is ErrorCode.RS_UNEXPECTED:
+            value = kwargs.get('value')
+
+            error_message = template.safe_substitute(value=value)
 
         elif error_code is ErrorCode.RS_UNEXPECTED_EOF:
             error_message = template.safe_substitute()

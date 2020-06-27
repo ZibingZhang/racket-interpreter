@@ -71,6 +71,9 @@ class Interpreter(ast.ASTVisitor):
     def visit_Str(self, node: ast.Str) -> d.String:
         return d.String(node.value)
 
+    def visit_Sym(self, node: ast.Sym) -> d.Symbol:
+        return d.Symbol(node.value)
+
     def visit_Cond(self, node: ast.Cond) -> Data:
         self.semantic_analyzer.visit(node)
 
