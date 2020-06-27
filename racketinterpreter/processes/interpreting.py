@@ -12,7 +12,7 @@ from racketinterpreter.processes.semantics import SemanticAnalyzer
 
 if TYPE_CHECKING:
     import racketinterpreter.classes.symbol as sym
-    from classes.data import Data, Number
+    from racketinterpreter.classes.data import Data, Number
 
 
 class Interpreter(ast.ASTVisitor):

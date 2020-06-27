@@ -6,7 +6,7 @@ from racketinterpreter.errors import IllegalStateError
 
 if TYPE_CHECKING:
     from racketinterpreter.classes.data import Data
-    from racketinterpreter.processes.interpreter import Interpreter
+    from racketinterpreter.processes import Interpreter
 
 
 class ARType(Enum):

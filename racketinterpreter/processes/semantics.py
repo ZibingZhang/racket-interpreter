@@ -10,7 +10,7 @@ from racketinterpreter.functions.predefined import BUILT_IN_PROCS
 
 if TYPE_CHECKING:
     from racketinterpreter.classes.data import DataType
-    from racketinterpreter.processes.interpreter import Interpreter
+    from racketinterpreter.processes import Interpreter
 
 
 class SemanticAnalyzer(ast.ASTVisitor):

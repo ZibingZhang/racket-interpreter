@@ -5,7 +5,7 @@ from racketinterpreter.classes import ast
 from racketinterpreter.classes import tokens as t
 
 if TYPE_CHECKING:
-    from processes.lexer import Lexer
+    from racketinterpreter.processes import Lexer
 
 
 class Parser:

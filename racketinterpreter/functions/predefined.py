@@ -8,7 +8,7 @@ from racketinterpreter.classes import data as d
 
 if TYPE_CHECKING:
     from racketinterpreter.classes.ast import AST
-    from processes.interpreter import Interpreter
+    from processes.interpreting import Interpreter
     from classes.tokens import Token
 
 

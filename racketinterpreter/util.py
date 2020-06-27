@@ -2,9 +2,9 @@ from typing import List, Tuple
 from racketinterpreter import constants
 import racketinterpreter.classes.data as d
 import racketinterpreter.classes.tokens as t
-from racketinterpreter.processes.interpreter import Interpreter
-from racketinterpreter.processes.lexer import Lexer
-from racketinterpreter.processes.parse import Parser
+from racketinterpreter.processes import Interpreter
+from racketinterpreter.processes import Lexer
+from racketinterpreter.processes import Parser
 
 
 class Util:
