@@ -84,6 +84,19 @@ class ScopedSymbolTable:
         return symbol
 
 
+class AmbiguousSymbol(Symbol):
+    """Either a procedure or data."""
+
+    def __init__(self, name: str) -> None:
+        super().__init__(name, 'AMBIGUOUS')
+
+    def __str__(self) -> str:
+        return f'<AmbiguousSymbol name:{self.name}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
 class ProcSymbol(Symbol):
     """A procedure."""
 
@@ -100,14 +113,14 @@ class ProcSymbol(Symbol):
         return self.__str__()
 
 
-class AmbiguousSymbol(Symbol):
-    """Either a procedure or data."""
+class StructTypeSymbol(Symbol):
+    """A structure type."""
 
     def __init__(self, name: str) -> None:
-        super().__init__(name, 'AMBIGUOUS')
+        super().__init__(name, 'STRUCTURE_TYPE')
 
     def __str__(self) -> str:
-        return f'<AmbiguousSymbol name:{self.name}>'
+        return f'<StructTypeSymbol name:{self.name}>'
 
     def __repr__(self) -> str:
         return self.__str__()
