@@ -65,16 +65,14 @@ class TestErrors(unittest.TestCase):
         self.expect_error(text, ErrorCode.USED_BEFORE_DEFINITION)
 
     def test_general_using_structure_type(self):
-        # TODO: fix this bug to make this test pass
-        # text = '(define-struct x []) (x 1)'
-        # self.expect_error(text, ErrorCode.USING_STRUCTURE_TYPE)
+        text = '(define-struct x []) (x 1)'
+        self.expect_error(text, ErrorCode.USING_STRUCTURE_TYPE)
 
         text = '(define-struct x []) x'
         self.expect_error(text, ErrorCode.USING_STRUCTURE_TYPE)
 
-        # TODO: decide if this should raise an exception
-        # text = '(define-struct x []) (define (y) x)'
-        # self.expect_error(text, ErrorCode.USING_STRUCTURE_TYPE)
+        text = '(define-struct x []) (define (y) x)'
+        self.expect_error(text, ErrorCode.USING_STRUCTURE_TYPE)
 
     def test_cond_all_question_results_false(self):
         text = '(cond [#f 1])'

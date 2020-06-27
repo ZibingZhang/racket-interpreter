@@ -11,6 +11,7 @@ class ErrorCode(Enum):
     BUILTIN_OR_IMPORTED_NAME = Template('$name: this name was defined in the language or a required library and cannot be re-defined')
     DIVISION_BY_ZERO = Template('/: division by zero')
     INCORRECT_ARGUMENT_COUNT = Template('$name: $expects, but $found')
+    # INCORRECT_ARGUMENT_TYPE
     PREVIOUSLY_DEFINED_NAME = Template('$name: this name was defined previously and cannot be re-defined')
     USED_BEFORE_DEFINITION = Template('$name is used here before its definition')
     USING_STRUCTURE_TYPE = Template('$name: structure type; do you mean make-$name')
@@ -95,7 +96,7 @@ class Error(Exception):
             if upper is None:
                 expects += f' at least {lower} argument{"s" if lower > 1 else ""}'
             else:
-                expects += f' {"only " if lower == 1 else ""}{lower} argument{"s" if lower > 1 else ""}'
+                expects += f' {"only " if lower == 1 else ""}{lower} argument{"s" if lower != 1 else ""}'
 
             found = f'found {received}'
 

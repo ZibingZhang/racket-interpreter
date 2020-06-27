@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Tuple, List, Any
 from racketinterpreter import errors as err
 from racketinterpreter.classes import ast
 from racketinterpreter.classes import data as d
-from racketinterpreter.classes import symbol as sym
+from racketinterpreter.classes import symbols as sym
 from racketinterpreter.classes import tokens as t
 from racketinterpreter.constants import C
 from racketinterpreter.functions.predefined import BUILT_IN_PROCS
@@ -49,6 +49,13 @@ class SemanticAnalyzer(ast.ASTVisitor):
     def visit_Id(self, node: ast.Id) -> None:
         var_name = node.value
         var_symbol = self.current_scope.lookup(var_name)
+
+        if type(var_symbol) is sym.StructTypeSymbol:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.USING_STRUCTURE_TYPE,
+                token=node.token,
+                name=var_symbol.name
+            )
 
         if var_symbol is None:
             raise err.SemanticError(
@@ -385,6 +392,8 @@ class SemanticAnalyzer(ast.ASTVisitor):
         for idx, proc_name in enumerate(new_procs + [struct_name]):
             if idx == 0:
                 proc_symbol = sym.ProcSymbol(proc_name, [sym.AmbiguousSymbol(field) for field in field_names])
+            elif proc_name == struct_name:
+                proc_symbol = sym.StructTypeSymbol(proc_name)
             else:
                 proc_symbol = sym.ProcSymbol(proc_name, [sym.AmbiguousSymbol('_')])
 
@@ -392,6 +401,8 @@ class SemanticAnalyzer(ast.ASTVisitor):
                 proc_symbol.expr = ast.StructMake(struct_class)
             elif idx == 1:
                 proc_symbol.expr = ast.StructHuh(struct_class)
+            elif proc_name == struct_name:
+                pass
             else:
                 proc_symbol.expr = ast.StructGet(struct_class)
 
@@ -450,6 +461,9 @@ class SemanticAnalyzer(ast.ASTVisitor):
         proc_symbol = self.current_scope.lookup(proc_name)
 
         if proc_symbol.type == 'PROCEDURE':
+            pass
+
+        elif proc_symbol.type == 'STRUCTURE_TYPE':
             pass
 
         else:

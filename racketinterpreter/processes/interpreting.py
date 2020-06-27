@@ -11,7 +11,7 @@ from racketinterpreter.functions.predefined import BUILT_IN_PROCS
 from racketinterpreter.processes.semantics import SemanticAnalyzer
 
 if TYPE_CHECKING:
-    import racketinterpreter.classes.symbol as sym
+    from racketinterpreter.classes import symbols as sym
     from racketinterpreter.classes.data import Data, Number
 
 
@@ -130,6 +130,14 @@ class Interpreter(ast.ASTVisitor):
 
         proc_symbol, actual_params = self.semantic_analyzer.get_proc_symbol_and_actual_params(node)
         proc_name = proc_symbol.name
+
+        if proc_symbol.type == 'STRUCTURE_TYPE':
+            raise err.InterpreterError(
+                error_code=err.ErrorCode.USING_STRUCTURE_TYPE,
+                token=node.token,
+                name=proc_name
+            )
+
         expr = proc_symbol.expr
         formal_params = proc_symbol.formal_params
 
@@ -142,6 +150,7 @@ class Interpreter(ast.ASTVisitor):
             actual_params_len=actual_params_len
         )
 
+        expr_type = type(expr)
         if proc_name in BUILT_IN_PROCS.keys():
             old_token = node.token
             line_no = old_token.line_no
@@ -158,16 +167,16 @@ class Interpreter(ast.ASTVisitor):
 
             node.token = old_token
             return result
-        elif issubclass(type(expr), ast.StructProc):
+        elif issubclass(expr_type, ast.StructProc):
             evaluated_params = list(map(lambda param: self.visit(param), actual_params))
-            if type(expr) is ast.StructMake:
+            if expr_type is ast.StructMake:
                 data = expr.data_type()
                 data.fields = evaluated_params
                 return data
-            elif type(expr) is ast.StructHuh:
+            elif expr_type is ast.StructHuh:
                 result = d.Boolean(type(evaluated_params[0]) == expr.data_type)
                 return result
-            elif type(expr) is ast.StructGet:
+            elif expr_type is ast.StructGet:
                 data_type_name = expr.data_type.__name__
                 field = proc_name[len(data_type_name)+1:]
                 result = evaluated_params[0].fields[evaluated_params[0].field_names.index(field)]
