@@ -178,7 +178,7 @@ class Interpreter(ast.ASTVisitor):
                 return result
             elif expr_type is ast.StructGet:
                 data_type_name = expr.data_type.__name__
-                field = proc_name[len(data_type_name)+1:]
+                field = proc_name[len(data_type_name) + 1:]
                 result = evaluated_params[0].fields[evaluated_params[0].field_names.index(field)]
                 return result
             else:
@@ -213,37 +213,35 @@ class Interpreter(ast.ASTVisitor):
         return error, token, actual, expected
 
     def visit_Program(self, node: ast.Program) -> Tuple[List[Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
-        with stack.ActivationRecord(
-            interpreter=self,
+        ar = stack.ActivationRecord(
             name='global',
             type=stack.ARType.PROGRAM,
             nesting_level=1
-        ):
+        )
+
+        with ar(self):
             self._define_builtin_procs()
 
-            self.semantic_analyzer.enter_program()
+            with self.semantic_analyzer(entering='PROGRAM'):
+                definitions, expressions, tests = self._sort_program_statements(node.statements)
 
-            definitions, expressions, tests = self._sort_program_statements(node.statements)
+                for statement in definitions:
+                    statement_type = type(statement)
+                    if statement_type is ast.ProcAssign:
+                        self.preprocess(statement)
 
-            for statement in definitions:
-                statement_type = type(statement)
-                if statement_type is ast.ProcAssign:
-                    self.preprocess(statement)
+                for statement in definitions:
+                    self.visit(statement)
 
-            for statement in definitions:
-                self.visit(statement)
+                results = []
+                for statement in expressions:
+                    result = self.visit(statement)
+                    results.append(result)
 
-            results = []
-            for statement in expressions:
-                result = self.visit(statement)
-                results.append(result)
-
-            test_results = []
-            for statement in tests:
-                test_result = self.visit(statement)
-                test_results.append(test_result)
-
-            self.semantic_analyzer.leave_program()
+                test_results = []
+                for statement in tests:
+                    test_result = self.visit(statement)
+                    test_results.append(test_result)
 
         return results, test_results
 
@@ -277,24 +275,23 @@ class Interpreter(ast.ASTVisitor):
 
     def _visit_user_defined_ProcCall(self, proc_name: str, expr: ast.Expr,
                                      formal_params: List[sym.AmbiguousSymbol], actual_params: List[ast.Expr]) -> Data:
-        self.semantic_analyzer.enter_proc(proc_name, formal_params)
-
         current_ar = self.call_stack.peek()
-
         ar = stack.ActivationRecord(
-            interpreter=self,
             name=proc_name,
             type=stack.ARType.PROCEDURE,
             nesting_level=current_ar.nesting_level + 1
         )
 
-        for param_symbol, argument_node in zip(formal_params, actual_params):
-            ar[param_symbol.name] = self.visit(argument_node)
+        with self.semantic_analyzer(
+                entering='PROCEDURE',
+                proc_name=proc_name,
+                formal_params=formal_params
+        ):
+            for param_symbol, argument_node in zip(formal_params, actual_params):
+                ar[param_symbol.name] = self.visit(argument_node)
 
-        with ar:
-            result = self.visit(expr)
-
-            self.semantic_analyzer.leave_proc(proc_name)
+            with ar(self):
+                result = self.visit(expr)
 
         return result
 

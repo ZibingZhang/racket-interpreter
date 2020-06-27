@@ -15,12 +15,13 @@ class ARType(Enum):
 
 
 class ActivationRecord:
-    def __init__(self, interpreter: Interpreter, name: str, type: ARType, nesting_level: int) -> None:
-        self.interpreter = interpreter
+    def __init__(self, name: str, type: ARType, nesting_level: int) -> None:
         self.name = name
         self.type = type
         self.nesting_level = nesting_level
         self.members = {}
+
+        self.interpreter = None
 
     def __setitem__(self, key: str, value: Data) -> None:
         self.members[key] = value
@@ -45,6 +46,11 @@ class ActivationRecord:
     def __repr__(self) -> str:
         return self.__str__()
 
+    def __call__(self, interpreter: Interpreter):
+        self.interpreter = interpreter
+
+        return self
+
     def __enter__(self):
         self.interpreter.call_stack.push(self)
 
@@ -54,12 +60,17 @@ class ActivationRecord:
 
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type is not None:
+            return
+
         self.interpreter.call_stack.pop()
 
         self.log_stack(f'LEAVE: {self.type.value}')
         self.log_stack(str(self.interpreter.call_stack))
         self.log_stack('')
+
+        self.interpreter = None
 
     def get(self, key) -> Optional[Data]:
         return self.members.get(key)

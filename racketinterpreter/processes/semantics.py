@@ -25,6 +25,69 @@ class SemanticAnalyzer(ast.ASTVisitor):
         self.preprocessor = _Preprocessor(self)
         self.interpreter = interpreter
 
+        self.call_dict = dict()
+
+    def __call__(self, entering: str, **kwargs):
+        # TODO: make these an enum value?
+        if entering not in ['PROGRAM', 'PROCEDURE']:
+            raise err.IllegalStateError
+
+        self.call_dict.update(entering=entering, **kwargs)
+
+        return self
+
+    def __enter__(self):
+        call_dict = self.call_dict
+        entering = call_dict.get('entering')
+
+        if entering == 'PROGRAM':
+            scope_name = 'global'
+            scope_level = 1
+
+        elif entering == 'PROCEDURE':
+            proc_name = self.call_dict.get('proc_name')
+
+            scope_name = proc_name
+            scope_level = self.current_scope.scope_level + 1
+
+        else:
+            raise err.IllegalStateError
+
+        self.log_scope('')
+        self.log_scope(f'ENTER SCOPE: {scope_name}')
+        scope = sym.ScopedSymbolTable(
+            scope_name=scope_name,
+            scope_level=scope_level,
+            enclosing_scope=self.current_scope
+        )
+        self.current_scope = scope
+
+        if entering == 'PROCEDURE':
+            formal_params = self.call_dict.get('formal_params')
+            for param in formal_params:
+                self.current_scope.define(param)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type is not None:
+            return
+
+        exiting_scope = self.current_scope
+        exiting_scope_name = exiting_scope.scope_name
+        exiting = self.call_dict.get('entering')
+
+        if exiting == 'PROGRAM':
+            if exiting_scope is None or exiting_scope_name != 'global':
+                raise err.IllegalStateError
+
+        self.current_scope = exiting_scope.enclosing_scope
+
+        self.log_scope('')
+        self.log_scope(str(exiting_scope))
+        self.log_scope(f'LEAVE SCOPE: {exiting_scope_name}')
+        self.log_scope('')
+
+        self.call_dict = dict()
+
     def visit(self, node: ast.AST) -> Any:
         if node.passed_semantic_analysis:
             return
@@ -435,26 +498,6 @@ class SemanticAnalyzer(ast.ASTVisitor):
         node.actual = exprs[0]
         node.expected = exprs[1]
 
-    def enter_program(self) -> None:
-        self.log_scope('ENTER SCOPE: global')
-        global_scope = sym.ScopedSymbolTable(
-            scope_name='global',
-            scope_level=1,
-            enclosing_scope=self.current_scope
-        )
-        self.current_scope = global_scope
-
-    def leave_program(self) -> None:
-        global_scope = self.current_scope
-        if global_scope is None or global_scope.scope_name != 'global':
-            raise err.IllegalStateError
-
-        self.log_scope('')
-        self.log_scope(str(global_scope))
-
-        self.current_scope = self.current_scope.enclosing_scope
-        self.log_scope('LEAVE SCOPE: global')
-
     def get_proc_symbol_and_actual_params(self, node: ast.ProcCall) \
             -> Tuple[sym.ProcSymbol, List[ast.Expr]]:
         proc_name = node.proc_name
@@ -491,6 +534,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
         return proc_symbol, actual_params
 
+    # TODO: move to interpreter?
     def assert_actual_param_len(self, node_token: t.Token, proc_name: str,
                                 formal_params_len: int, actual_params_len: int) -> None:
         received = actual_params_len
@@ -519,30 +563,6 @@ class SemanticAnalyzer(ast.ASTVisitor):
             upper=upper,
             received=received
         )
-
-    def enter_proc(self, proc_name, formal_params) -> None:
-        self.log_scope('')
-        self.log_scope(f'ENTER SCOPE: {proc_name}')
-        # scope for parameters
-        proc_scope = sym.ScopedSymbolTable(
-            scope_name=proc_name,
-            scope_level=self.current_scope.scope_level + 1,
-            enclosing_scope=self.current_scope
-        )
-        self.current_scope = proc_scope
-
-        for param in formal_params:
-            self.current_scope.define(param)
-
-    def leave_proc(self, proc_name) -> None:
-        proc_scope = self.current_scope
-
-        self.log_scope('')
-        self.log_scope(str(proc_scope))
-
-        self.current_scope = proc_scope.enclosing_scope
-        self.log_scope(f'LEAVE SCOPE: {proc_name}')
-        self.log_scope('')
 
 
 class _Preprocessor(ast.ASTVisitor):
