@@ -83,13 +83,12 @@ class TestErrors(unittest.TestCase):
         text = '(cond [(= 1 2) 3] [#f 1])'
         self.expect_error(text, ErrorCode.C_ALL_QUESTION_RESULTS_FALSE)
 
-    # TODO: fix order of checks
-    # def test_cond_else_not_last_clause(self):
-    #     text = '(cond [else 1] [#t 1])'
-    #     self.expect_error(text, ErrorCode.C_ALL_QUESTION_RESULTS_FALSE)
-    #
-    #     text = '(cond [else 1] [else 1])'
-    #     self.expect_error(text, ErrorCode.C_ALL_QUESTION_RESULTS_FALSE)
+    def test_cond_else_not_last_clause(self):
+        text = '(cond [else 1] [#t 1])'
+        self.expect_error(text, ErrorCode.C_ELSE_NOT_LAST_CLAUSE)
+
+        text = '(cond [else 1] [else 1])'
+        self.expect_error(text, ErrorCode.C_ELSE_NOT_LAST_CLAUSE)
 
     def test_cond_expected_a_clause(self):
         text = '(cond)'
@@ -258,7 +257,6 @@ class TestErrors(unittest.TestCase):
         text = '#falsey'
         self.expect_error(text, ErrorCode.RS_BAD_SYNTAX)
 
-        # TODO: would've expected this to break
         text = '#ft['
         self.expect_error(text, ErrorCode.RS_BAD_SYNTAX)
 
@@ -290,7 +288,7 @@ class TestErrors(unittest.TestCase):
         text = '(define x 1}'
         self.expect_error(text, ErrorCode.RS_INCORRECT_RIGHT_PARENTHESIS)
 
-    # TODO: ideally should be unable to trigger
+    # ideally should be unable to trigger this error
     # def test_read_syntax_unexpected_eof(self):
     #     pass
 
@@ -301,9 +299,9 @@ class TestErrors(unittest.TestCase):
         text = '(define x 1))'
         self.expect_error(text, ErrorCode.RS_UNEXPECTED_RIGHT_PARENTHESIS)
 
-    # # TODO: ideally should be unable to trigger
-    def test_read_syntax_unexpected_token(self):
-        pass
+    # ideally should be unable to trigger error
+    # def test_read_syntax_unexpected_token(self):
+    #     pass
 
 
 if __name__ == '__main__':

@@ -16,6 +16,13 @@ if TYPE_CHECKING:
 
 
 class Interpreter(ast.ASTVisitor):
+    # Not supported ASTs:
+    # - CondBranch
+    # - CondElse
+    # - FormalParam
+    # - StructMake
+    # - StructHuh
+    # - StructGet
 
     def __init__(self) -> None:
         self.call_stack = stack.CallStack()
@@ -100,12 +107,6 @@ class Interpreter(ast.ASTVisitor):
                 token=node.token
             )
 
-    def visit_CondBranch(self, node: ast.CondBranch) -> None:
-        raise err.IllegalStateError('Interpreter should never have to visit a cond branch.')
-
-    def visit_CondElse(self, node: ast.CondElse) -> None:
-        raise err.IllegalStateError('Interpreter should never have to visit a cond else.')
-
     def visit_IdAssign(self, node: ast.IdAssign) -> None:
         self.semantic_analyzer.visit(node)
 
@@ -114,9 +115,6 @@ class Interpreter(ast.ASTVisitor):
 
         ar = self.call_stack.peek()
         ar[var_name] = var_value
-
-    def visit_FormalParam(self, node: ast.FormalParam) -> None:
-        raise err.IllegalStateError('Interpreter should never have to visit a formal parameter.')
 
     def visit_ProcAssign(self, node: ast.ProcAssign) -> None:
         self.semantic_analyzer.visit(node)
@@ -163,16 +161,15 @@ class Interpreter(ast.ASTVisitor):
         elif issubclass(type(expr), ast.StructProc):
             evaluated_params = list(map(lambda param: self.visit(param), actual_params))
             if type(expr) is ast.StructMake:
-                data = expr.data_class()
+                data = expr.data_type()
                 data.fields = evaluated_params
                 return data
             elif type(expr) is ast.StructHuh:
-                result = d.Boolean(type(evaluated_params[0]) == expr.data_class)
+                result = d.Boolean(type(evaluated_params[0]) == expr.data_type)
                 return result
             elif type(expr) is ast.StructGet:
-                # TODO: change data_class to datatype
-                datatype_name = expr.data_class.__name__
-                field = proc_name[len(datatype_name)+1:]
+                data_type_name = expr.data_type.__name__
+                field = proc_name[len(data_type_name)+1:]
                 result = evaluated_params[0].fields[evaluated_params[0].field_names.index(field)]
                 return result
             else:
@@ -194,15 +191,6 @@ class Interpreter(ast.ASTVisitor):
         new_procs = ['make-' + struct_name, struct_name + '?'] + [f'{struct_name}-{field}' for field in fields]
         for proc_name in new_procs:
             ar[proc_name] = d.Procedure(proc_name)
-
-    def visit_StructMake(self, node: ast.StructMake) -> None:
-        raise err.IllegalStateError('Interpreter should never have to visit a struct make.')
-
-    def visit_StructHuh(self, node: ast.StructMake) -> None:
-        raise err.IllegalStateError('Interpreter should never have to visit a struct huh.')
-
-    def visit_StructGet(self, node: ast.StructMake) -> None:
-        raise err.IllegalStateError('Interpreter should never have to visit a struct get.')
 
     def visit_CheckExpect(self, node: ast.CheckExpect) -> Tuple[bool, t.Token, d.Data, d.Data]:
         self.semantic_analyzer.visit(node)
@@ -302,8 +290,28 @@ class Interpreter(ast.ASTVisitor):
         return result
 
 
-# TODO: add custom error if try to visit other ast types
 class _Preprocessor(ast.ASTVisitor):
+    # Not supported ASTs:
+    # - Bool
+    # - Dec
+    # - Id
+    # - Int
+    # - Rat
+    # - Str
+    # - Sym
+    # - Cond
+    # - CondBranch
+    # - CondElse
+    # - IdAssign
+    # - FormalParam
+    # - ProcAssign
+    # - ProcCall
+    # - StructAssign
+    # - StructMake
+    # - StructHuh
+    # - StructGet
+    # - CheckExpect
+    # - Program
 
     def __init__(self, interpreter: Interpreter):
         self.interpreter = interpreter

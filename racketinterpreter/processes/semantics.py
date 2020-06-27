@@ -14,6 +14,11 @@ if TYPE_CHECKING:
 
 
 class SemanticAnalyzer(ast.ASTVisitor):
+    # Not supported ASTs:
+    # - StructMake
+    # - StructHuh
+    # - StructGet
+    # - Program
 
     def __init__(self, interpreter: Interpreter):
         self.current_scope = None
@@ -102,7 +107,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
         predicate_token = node.predicate.token
         if predicate_token.type is t.TokenType.ID and predicate_token.value == t.Keyword.ELSE.value:
             raise err.SemanticError(
-                error_code=err.ErrorCode.C_ELSE_NOT_Last.AST_CLAUSE,
+                error_code=err.ErrorCode.C_ELSE_NOT_LAST_CLAUSE,
                 token=node.token
             )
 
@@ -405,15 +410,6 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
         return struct_class
 
-    def visit_StructMake(self, node: ast.StructMake) -> None:
-        raise err.IllegalStateError('Semantic analyzer should never have to visit a struct make.')
-
-    def visit_StructHuh(self, node: ast.StructMake) -> None:
-        raise err.IllegalStateError('Semantic analyzer should never have to visit a struct huh.')
-
-    def visit_StructGet(self, node: ast.StructMake) -> None:
-        raise err.IllegalStateError('Semantic analyzer should never have to visit a struct get.')
-
     def visit_CheckExpect(self, node: ast.CheckExpect) -> None:
         exprs = node.exprs
         exprs_len = len(exprs)
@@ -427,9 +423,6 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
         node.actual = exprs[0]
         node.expected = exprs[1]
-
-    def visit_Program(self, node: ast.Program) -> None:
-        raise err.IllegalStateError('Semantic analyzer should never have to visit a program.')
 
     def enter_program(self) -> None:
         self.log_scope('ENTER SCOPE: global')
@@ -538,8 +531,28 @@ class SemanticAnalyzer(ast.ASTVisitor):
         self.log_scope('')
 
 
-# TODO: add custom error if try to visit other ast types
 class _Preprocessor(ast.ASTVisitor):
+    # Not supported ASTs:
+    # - Bool
+    # - Dec
+    # - Id
+    # - Int
+    # - Rat
+    # - Str
+    # - Sym
+    # - Cond
+    # - CondBranch
+    # - CondElse
+    # - IdAssign
+    # - FormalParam
+    # - ProcAssign
+    # - ProcCall
+    # - StructAssign
+    # - StructMake
+    # - StructHuh
+    # - StructGet
+    # - CheckExpect
+    # - Program
 
     def __init__(self, semantic_analyzer: SemanticAnalyzer):
         self.semantic_analyzer = semantic_analyzer

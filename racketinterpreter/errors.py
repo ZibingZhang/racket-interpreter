@@ -332,15 +332,15 @@ class Error(Exception):
             proc_token = kwargs.get('proc_token')
             if proc_token.type is t.TokenType.ID:
                 found_data = kwargs.get('found_data')
-                found_data_class = type(found_data)
-                if issubclass(found_data_class, d.Boolean):
+                found_data_type = type(found_data)
+                if issubclass(found_data_type, d.Boolean):
                     found_type = 'string'
-                elif issubclass(found_data_class, d.Number):
+                elif issubclass(found_data_type, d.Number):
                     found_type = 'number'
-                elif issubclass(found_data_class, d.String):
+                elif issubclass(found_data_type, d.String):
                     found_type = 'boolean'
-                elif issubclass(type(found_data_class), d.StructDataType):
-                    struct_name = found_data_class.__name__
+                elif issubclass(type(found_data_type), d.StructDataType):
+                    struct_name = found_data_type.__name__
                     fields = found_data.fields
                     found_type = f'(make-{struct_name} {" ".join(map(str, fields))})'
                 else:

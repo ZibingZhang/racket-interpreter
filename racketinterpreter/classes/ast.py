@@ -2,6 +2,7 @@ from __future__ import annotations
 import abc
 from enum import Enum
 from typing import TYPE_CHECKING, Any, List, Optional
+from racketinterpreter import errors as err
 
 if TYPE_CHECKING:
     import racketinterpreter.classes.data as d
@@ -26,9 +27,9 @@ class Expr(AST):
 class StructProc(AST):
     """A proc related to a struct."""
 
-    def __init__(self, data_class: d.DataType):
+    def __init__(self, data_type: d.DataType):
         super().__init__(None)
-        self.data_class = data_class
+        self.data_type = data_type
 
 
 class ASTVisitor(abc.ABC):
@@ -39,7 +40,9 @@ class ASTVisitor(abc.ABC):
         return visit_func(node)
 
     def visit_error(self, node) -> None:
-        raise Exception(f'No visit_{type(node).__name__} method.')
+        raise err.IllegalStateError(
+            f'{self.__class__.__name__} should never have to visit a {node.__class__.__name__}.'
+        )
 
 
 class Bool(Expr):

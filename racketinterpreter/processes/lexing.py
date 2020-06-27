@@ -16,8 +16,7 @@ class Lexer:
         self.column = 1
 
         self.tokens = []
-        # TODO: maybe change indexing
-        self.token_idx = -1
+        self.current_token_idx = -1
 
     def process(self) -> None:
         paren_analyzer = ParenthesesAnalyzer()
@@ -34,15 +33,15 @@ class Lexer:
 
     def get_next_token(self) -> Optional[t.Token]:
         try:
-            self.token_idx += 1
-            token = self.tokens[self.token_idx]
+            self.current_token_idx += 1
+            token = self.tokens[self.current_token_idx]
             return token
         except IndexError as e:
             return None
 
     def peek_next_token(self, pos_ahead: int = 1) -> t.Token:
         try:
-            token = self.tokens[self.token_idx + pos_ahead]
+            token = self.tokens[self.current_token_idx + pos_ahead]
             return token
         except IndexError as e:
             raise err.IllegalStateError
