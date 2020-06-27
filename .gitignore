@@ -8,3 +8,6 @@ venv/
 # distribution
 dist/
 racketinterpreter.egg-info
+
+# local testing file
+test.py
