@@ -11,10 +11,10 @@ class ParenthesesAnalyzer:
         '{': '}'
     }
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.paren_stack = []
 
-    def received_paren(self, token: t.Token):
+    def received_paren(self, token: t.Token) -> None:
         if token.type is t.TokenType.LPAREN:
             self.paren_stack.append(token)
 
@@ -37,7 +37,7 @@ class ParenthesesAnalyzer:
 
             self.paren_stack.pop()
 
-    def reached_eof(self, token: t.Token):
+    def reached_eof(self, token: t.Token) -> None:
         if len(self.paren_stack) != 0:
             left_paren = self.paren_stack[-1].value
             raise err.PreLexerError(

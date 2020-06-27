@@ -89,7 +89,7 @@ class CallStack:
         s = f'CALL STACK\n{s}'
         return s
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
     def get(self, key) -> Data:

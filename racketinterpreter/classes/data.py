@@ -41,7 +41,7 @@ class Boolean(Data):
     def __init__(self, value: bool) -> None:
         super().__init__(value)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return issubclass(type(other), Boolean) and self.value == other.value
 
     def __str__(self) -> str:
@@ -60,7 +60,7 @@ class Number(Data):
         super().__init__(value)
 
     @property
-    def precedence(self):
+    def precedence(self) -> int:
         return 6
 
 
@@ -69,7 +69,7 @@ class Procedure(Data):
     def __init__(self, value: str) -> None:
         super().__init__(value)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return issubclass(type(other), Procedure) and self.value == other.value
 
     def __str__(self) -> str:
@@ -84,7 +84,7 @@ class String(Data):
     def __init__(self, value: str) -> None:
         super().__init__(value)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return issubclass(type(other), String) and self.value == other.value
 
     def __str__(self) -> str:
@@ -99,7 +99,7 @@ class Symbol(Data):
     def __init__(self, value: str) -> None:
         super().__init__(value)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return issubclass(type(other), Symbol) and self.value == other.value
 
     def __str__(self) -> str:
@@ -113,11 +113,12 @@ class Symbol(Data):
 class RealNumber(Number):
 
     @property
-    def precedence(self):
+    def precedence(self) -> int:
         return 5
 
-    def __eq__(self, other):
-        return self.value == other.value
+    def __eq__(self, other) -> bool:
+        # TODO: change this when complex numbers are added
+        return issubclass(type(other), RealNumber) and self.value == other.value
 
     def __str__(self) -> str:
         return str(self.value)
@@ -174,7 +175,7 @@ class InexactNumber(RealNumber):
         super().__init__(value)
 
     @property
-    def precedence(self):
+    def precedence(self) -> int:
         return 4
 
     def __add__(self, other) -> Number:
@@ -211,14 +212,14 @@ class InexactNumber(RealNumber):
 class ExactNumber(RealNumber):
 
     @property
-    def precedence(self):
+    def precedence(self) -> int:
         return 3
 
 
 class Rational(ExactNumber):
 
     @property
-    def precedence(self):
+    def precedence(self) -> int:
         return 2
 
     def __init__(self, numerator: int, denominator: int) -> None:
@@ -226,7 +227,7 @@ class Rational(ExactNumber):
         self.numerator = numerator
         self.denominator = denominator
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.numerator}/{self.denominator}'
 
     def __add__(self, other) -> Number:
@@ -318,16 +319,16 @@ class Rational(ExactNumber):
 class Integer(ExactNumber):
 
     @property
-    def precedence(self):
+    def precedence(self) -> int:
         return 1
 
     def __init__(self, value: int) -> None:
         super().__init__(value)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.value)
 
-    def __int__(self):
+    def __int__(self) -> int:
         return self.value
 
     def __add__(self, other) -> Number:

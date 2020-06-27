@@ -20,14 +20,14 @@ class SemanticAnalyzer(ast.ASTVisitor):
     # - StructGet
     # - Program
 
-    def __init__(self, interpreter: Interpreter):
+    def __init__(self, interpreter: Interpreter) -> None:
         self.current_scope = None
         self.preprocessor = _Preprocessor(self)
         self.interpreter = interpreter
 
         self.call_dict = dict()
 
-    def __call__(self, entering: str, **kwargs):
+    def __call__(self, entering: str, **kwargs) -> SemanticAnalyzer:
         # TODO: make these an enum value?
         if entering not in ['PROGRAM', 'PROCEDURE']:
             raise err.IllegalStateError
@@ -36,7 +36,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
         return self
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         call_dict = self.call_dict
         entering = call_dict.get('entering')
 
@@ -67,7 +67,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
             for param in formal_params:
                 self.current_scope.define(param)
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
         if exc_type is not None:
             return
 
@@ -588,10 +588,10 @@ class _Preprocessor(ast.ASTVisitor):
     # - CheckExpect
     # - Program
 
-    def __init__(self, semantic_analyzer: SemanticAnalyzer):
+    def __init__(self, semantic_analyzer: SemanticAnalyzer) -> None:
         self.semantic_analyzer = semantic_analyzer
 
-    def visit_ProcAssign(self, node: ast.ProcAssign):
+    def visit_ProcAssign(self, node: ast.ProcAssign) -> None:
         semantic_analyzer = self.semantic_analyzer
 
         proc_name_expr = node.name_expr
