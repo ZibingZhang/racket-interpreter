@@ -29,7 +29,7 @@ class Interpreter(ast.ASTVisitor):
     def preprocess(self, node: ast.AST) -> None:
         self.preprocessor.visit(node)
 
-    def log_stack(self, msg) -> None:
+    def log_stack(self, msg: str) -> None:
         if C.SHOULD_LOG_STACK:
             print(msg)
 
@@ -216,46 +216,37 @@ class Interpreter(ast.ASTVisitor):
         return error, token, actual, expected
 
     def visit_Program(self, node: ast.Program) -> Tuple[List[Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
-        if C.SHOULD_LOG_SCOPE:
-            print('')
-        self.log_stack(f'ENTER: PROGRAM')
-
-        ar = stack.ActivationRecord(
+        with stack.ActivationRecord(
+            interpreter=self,
             name='global',
             type=stack.ARType.PROGRAM,
             nesting_level=1
-        )
-        self.call_stack.push(ar)
-        self._define_builtin_procs()
+        ):
+            self._define_builtin_procs()
 
-        self.semantic_analyzer.enter_program()
+            self.semantic_analyzer.enter_program()
 
-        definitions, expressions, tests = self._sort_program_statements(node.statements)
+            definitions, expressions, tests = self._sort_program_statements(node.statements)
 
-        for statement in definitions:
-            statement_type = type(statement)
-            if statement_type is ast.ProcAssign:
-                self.preprocess(statement)
+            for statement in definitions:
+                statement_type = type(statement)
+                if statement_type is ast.ProcAssign:
+                    self.preprocess(statement)
 
-        for statement in definitions:
-            self.visit(statement)
+            for statement in definitions:
+                self.visit(statement)
 
-        results = []
-        for statement in expressions:
-            result = self.visit(statement)
-            results.append(result)
+            results = []
+            for statement in expressions:
+                result = self.visit(statement)
+                results.append(result)
 
-        test_results = []
-        for statement in tests:
-            test_result = self.visit(statement)
-            test_results.append(test_result)
+            test_results = []
+            for statement in tests:
+                test_result = self.visit(statement)
+                test_results.append(test_result)
 
-        self.semantic_analyzer.leave_program()
-
-        self.call_stack.pop()
-
-        self.log_stack(f'LEAVE: PROGRAM')
-        self.log_stack(str(self.call_stack))
+            self.semantic_analyzer.leave_program()
 
         return results, test_results
 
@@ -292,29 +283,21 @@ class Interpreter(ast.ASTVisitor):
         self.semantic_analyzer.enter_proc(proc_name, formal_params)
 
         current_ar = self.call_stack.peek()
+
         ar = stack.ActivationRecord(
+            interpreter=self,
             name=proc_name,
             type=stack.ARType.PROCEDURE,
-            nesting_level=current_ar.nesting_level + 1,
+            nesting_level=current_ar.nesting_level + 1
         )
-
-        self.log_stack('')
-        self.log_stack(f'ENTER: PROCEDURE {proc_name}')
-        self.log_stack(str(self.call_stack))
 
         for param_symbol, argument_node in zip(formal_params, actual_params):
             ar[param_symbol.name] = self.visit(argument_node)
-        self.call_stack.push(ar)
 
-        result = self.visit(expr)
+        with ar:
+            result = self.visit(expr)
 
-        self.semantic_analyzer.leave_proc(proc_name)
-
-        self.log_stack(f'LEAVE: PROCEDURE {proc_name}')
-        self.log_stack(str(self.call_stack))
-        self.log_stack('')
-
-        self.call_stack.pop()
+            self.semantic_analyzer.leave_proc(proc_name)
 
         return result
 

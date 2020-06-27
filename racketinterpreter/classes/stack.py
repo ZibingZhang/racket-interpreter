@@ -1,10 +1,12 @@
 from __future__ import annotations
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
+from racketinterpreter.constants import C
 from racketinterpreter.errors import IllegalStateError
 
 if TYPE_CHECKING:
-    from classes.data import Data
+    from racketinterpreter.classes.data import Data
+    from racketinterpreter.processes.interpreter import Interpreter
 
 
 class ARType(Enum):
@@ -13,7 +15,8 @@ class ARType(Enum):
 
 
 class ActivationRecord:
-    def __init__(self, name: str, type: ARType, nesting_level: int) -> None:
+    def __init__(self, interpreter: Interpreter, name: str, type: ARType, nesting_level: int) -> None:
+        self.interpreter = interpreter
         self.name = name
         self.type = type
         self.nesting_level = nesting_level
@@ -42,8 +45,28 @@ class ActivationRecord:
     def __repr__(self) -> str:
         return self.__str__()
 
+    def __enter__(self):
+        self.interpreter.call_stack.push(self)
+
+        self.log_stack('')
+        self.log_stack(f'ENTER: {self.type.value}')
+        self.log_stack(str(self.interpreter.call_stack))
+
+        return self
+
+    def __exit__(self, *args):
+        self.interpreter.call_stack.pop()
+
+        self.log_stack(f'LEAVE: {self.type.value}')
+        self.log_stack(str(self.interpreter.call_stack))
+        self.log_stack('')
+
     def get(self, key) -> Optional[Data]:
         return self.members.get(key)
+
+    def log_stack(self, msg: str) -> None:
+        if C.SHOULD_LOG_STACK:
+            print(msg)
 
 
 class CallStack:
