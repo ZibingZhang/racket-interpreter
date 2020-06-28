@@ -152,20 +152,14 @@ class Interpreter(ast.ASTVisitor):
 
         expr_type = type(expr)
         if proc_name in BUILT_IN_PROCS.keys():
-            old_token = node.token
-            line_no = old_token.line_no
-            column = old_token.column
-            node.token = t.Token.create_proc(proc_name, line_no, column)
+            token = node.token
+            line_no = token.line_no
+            column = token.column
+            node.proc_token = t.Token.create_proc(proc_name, line_no, column)
 
-            try:
-                result = self._visit_builtin_ProcCall(node)
-            except ZeroDivisionError as e:
-                raise err.InterpreterError(
-                    error_code=err.ErrorCode.DIVISION_BY_ZERO,
-                    token=node.token
-                )
+            result = self._visit_builtin_ProcCall(node)
 
-            node.token = old_token
+            node.proc_token = node.original_proc_token
             return result
         elif issubclass(expr_type, ast.StructProc):
             evaluated_params = list(map(lambda param: self.visit(param), actual_params))
@@ -177,6 +171,7 @@ class Interpreter(ast.ASTVisitor):
                 result = d.Boolean(type(evaluated_params[0]) == expr.data_type)
                 return result
             elif expr_type is ast.StructGet:
+                # TODO: add check for type
                 data_type_name = expr.data_type.__name__
                 field = proc_name[len(data_type_name) + 1:]
                 result = evaluated_params[0].fields[evaluated_params[0].field_names.index(field)]
@@ -267,11 +262,12 @@ class Interpreter(ast.ASTVisitor):
             ar[proc] = d.Procedure(proc)
 
     def _visit_builtin_ProcCall(self, node: ast.ProcCall) -> Data:
-        proc_token = node.token
+        token = node.token
+        proc_token = node.proc_token
         proc_name = proc_token.value
         actual_params = node.actual_params
 
-        return BUILT_IN_PROCS[proc_name].interpret(self, actual_params, proc_token)
+        return BUILT_IN_PROCS[proc_name].interpret(self, token, actual_params)
 
     def _visit_user_defined_ProcCall(self, proc_name: str, expr: ast.Expr,
                                      formal_params: List[sym.AmbiguousSymbol], actual_params: List[ast.Expr]) -> Data:
@@ -319,10 +315,10 @@ class _Preprocessor(ast.ASTVisitor):
     # - CheckExpect
     # - Program
 
-    def __init__(self, interpreter: Interpreter):
+    def __init__(self, interpreter: Interpreter) -> None:
         self.interpreter = interpreter
 
-    def visit_ProcAssign(self, node: ast.ProcAssign):
+    def visit_ProcAssign(self, node: ast.ProcAssign) -> None:
         interpreter = self.interpreter
 
         interpreter.semantic_analyzer.preprocess(node)

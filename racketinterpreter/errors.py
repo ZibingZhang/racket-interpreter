@@ -11,7 +11,7 @@ class ErrorCode(Enum):
     BUILTIN_OR_IMPORTED_NAME = Template('$name: this name was defined in the language or a required library and cannot be re-defined')
     DIVISION_BY_ZERO = Template('/: division by zero')
     INCORRECT_ARGUMENT_COUNT = Template('$name: $expects, but $found')
-    # INCORRECT_ARGUMENT_TYPE
+    INCORRECT_ARGUMENT_TYPE = Template('$name: $expects, $given')
     PREVIOUSLY_DEFINED_NAME = Template('$name: this name was defined previously and cannot be re-defined')
     USED_BEFORE_DEFINITION = Template('$name is used here before its definition')
     USING_STRUCTURE_TYPE = Template('$name: structure type; do you mean make-$name')
@@ -101,6 +101,42 @@ class Error(Exception):
             found = f'found {received}'
 
             error_message = template.safe_substitute(name=proc_name, expects=expects, found=found)
+
+        elif error_code is ErrorCode.INCORRECT_ARGUMENT_TYPE:
+            data_type_to_string = {
+                d.Boolean: 'boolean',
+                d.Number: 'number',
+                # d.Procedure, TODO: procedures will be much more complicated...
+                d.String: 'string',
+                d.Symbol: 'symbol',
+                d.RealNumber: 'real',
+                # d.InexactNumber, no functions should expect this type
+                # d.ExactNumber, no functions should expect this type
+                d.Rational: 'rational',  # no functions should expect this type... but apparently gcd should?
+                d.Integer: 'integer'
+            }
+
+            name = kwargs.get('name')
+            expected = kwargs.get('expected')
+            given = kwargs.get('given')
+            multiple_args = kwargs.get('multiple_args')
+
+            expects = f'expects a {data_type_to_string[expected]}'
+            if multiple_args:
+                def to_ord(n):
+                    return str(n) + {
+                        1: 'st',
+                        2: 'nd',
+                        3: 'rd'
+                    }.get(n if n < 20 else n % 10, 'th')
+
+                idx = kwargs.get('idx') + 1
+
+                expects += f' as {to_ord(idx)} argument'
+
+            given = f'given {given}'
+
+            error_message = template.safe_substitute(name=name, expects=expects, given=given)
 
         elif error_code is ErrorCode.PREVIOUSLY_DEFINED_NAME:
             name = token.value
@@ -441,6 +477,14 @@ class InterpreterError(Error):
 class BuiltinProcedureError(Error):
 
     pass
+
+
+class EvaluateBuiltinProcedureError(TypeError):
+
+    def __init__(self, expected: d.DataType, given: d.Data, idx: int = None):
+        self.expected = expected
+        self.given = given
+        self.idx = idx
 
 
 class IllegalStateError(RuntimeError):
