@@ -1,5 +1,6 @@
 from __future__ import annotations
 import fractions as f
+import functools
 from typing import Any, List, Optional, Union
 
 
@@ -109,7 +110,7 @@ class Symbol(Data):
         return self.__str__()
 
 
-# Numbers
+@functools.total_ordering
 class RealNumber(Number):
 
     @property
@@ -155,18 +156,6 @@ class RealNumber(Number):
 
     def __lt__(self, other) -> bool:
         return self.value < other.value
-
-    def __gt__(self, other) -> bool:
-        return self.value > other.value
-
-    def __le__(self, other) -> bool:
-        return self.value <= other.value
-
-    def __ge__(self, other) -> bool:
-        return self.value >= other.value
-
-    def __abs__(self) -> RealNumber:
-        return RealNumber(abs(self.value))
 
 
 class InexactNumber(RealNumber):

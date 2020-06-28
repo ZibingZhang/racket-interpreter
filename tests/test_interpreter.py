@@ -5,7 +5,7 @@ from racketinterpreter.classes.data import Boolean, InexactNumber, Integer, Proc
 from racketinterpreter.util import Util
 
 if TYPE_CHECKING:
-    from classes.data import Data
+    from racketinterpreter.classes.data import Data
 
 
 class TestInterpreter(unittest.TestCase):
@@ -69,6 +69,22 @@ class TestInterpreter(unittest.TestCase):
             InexactNumber(0.0),
             InexactNumber(0.0),
             InexactNumber(0.01)
+        ]
+        self.interpret_text(text, expected)
+
+    def test_number_order(self):
+        text = \
+            '''
+                (< 2 2) (> 2 2) (<= 2 2) (>= 2 2) (= 2 2)
+                (< 1 2) (> 1 2) (<= 1 2) (>= 1 2) (= 1 2)
+                (= 1 1. 1/1 3/3 1.0)
+                (= 0 0. 0.0 -0 -0. -.0 -0.0 .0 0/1)
+            '''
+        expected = [
+            Boolean(False), Boolean(False), Boolean(True), Boolean(True), Boolean(True),
+            Boolean(True), Boolean(False), Boolean(True), Boolean(False), Boolean(False),
+            Boolean(True),
+            Boolean(True)
         ]
         self.interpret_text(text, expected)
 
