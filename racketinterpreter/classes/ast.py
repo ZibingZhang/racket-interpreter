@@ -81,7 +81,7 @@ class Id(Expr):
         self.value = token.value
 
     def __str__(self) -> str:
-        return f'<Const value:{self.value}>'
+        return f'<Id value:{self.value}>'
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -185,7 +185,7 @@ class CondElse(AST):
         self.expr = None
 
     def __str__(self) -> str:
-        return f'<CondBranch  expr{self.expr}>'
+        return f'<CondElse expr{self.expr}>'
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -215,7 +215,6 @@ class FormalParam(AST):
         PROC_ASSIGN = 'PROC ASSIGN'
         STRUCT_ASSIGN = 'STRUCT ASSIGN'
 
-    """A parameter."""
     def __init__(self, ast: AST, param_for: ParamFor) -> None:
         super().__init__(ast.token)
         self.ast = ast
@@ -224,7 +223,7 @@ class FormalParam(AST):
         self.name = None
 
     def __str__(self) -> str:
-        return f'<Param name:{self.name}  param_for:{self.param_for}>'
+        return f'<FormalParam name:{self.name}  param_for:{self.param_for}>'
 
     def __repr__(self) -> str:
         return self.__str__()
