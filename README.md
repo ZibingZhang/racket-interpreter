@@ -6,8 +6,8 @@ The end goal of this project is to successfully interpret the code I wrote for a
 [![Build Status](https://travis-ci.org/ZibingZhang/racket-interpreter.svg?branch=master)](https://travis-ci.org/ZibingZhang/racket-interpreter)
 [![PyPI version](https://badge.fury.io/py/racketinterpreter.svg)](https://badge.fury.io/py/racketinterpreter)
 <img src="https://img.shields.io/badge/license-MIT-brightgreen"></img>
-<img src="https://img.shields.io/badge/python-3.7-blue"></img>
 <img src="https://img.shields.io/badge/python-3.8-blue"></img>
+<img src="https://img.shields.io/badge/python-3.9-blue"></img>
 
 ## Table of Contents
   * [Getting Started](#getting-started)
