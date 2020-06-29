@@ -367,7 +367,9 @@ class Error(Exception):
 
         elif error_code is ErrorCode.FC_EXPECTED_A_FUNCTION:
             proc_token = kwargs.get('proc_token')
-            if proc_token.type is t.TokenType.ID:
+            if proc_token is None:
+                found_type = None
+            elif proc_token.type is t.TokenType.ID:
                 found_data = kwargs.get('found_data')
                 found_data_type = type(found_data)
                 if issubclass(found_data_type, d.Boolean):
@@ -383,9 +385,7 @@ class Error(Exception):
                 else:
                     raise IllegalStateError
             else:
-                if proc_token is None:
-                    found_type = None
-                elif proc_token.type is t.TokenType.BOOLEAN:
+                if proc_token.type is t.TokenType.BOOLEAN:
                     found_type = 'boolean'
                 elif proc_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                     found_type = 'number'
