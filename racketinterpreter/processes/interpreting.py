@@ -84,28 +84,37 @@ class Interpreter(ast.ASTVisitor):
     def visit_Cond(self, node: ast.Cond) -> Data:
         self.semantic_analyzer.visit(node)
 
-        for idx, branch in enumerate(node.branches):
-            predicate_result = self.visit(branch.predicate)
+        current_ar = self.call_stack.peek()
+        ar = stack.ActivationRecord(
+            name='cond',
+            type=stack.ARType.PROCEDURE,
+            nesting_level=current_ar.nesting_level + 1
+        )
 
-            if not issubclass(type(predicate_result), d.Boolean):
+        # TODO: this is def kinda hacky
+        with ar(self):
+            for idx, branch in enumerate(node.branches):
+                predicate_result = self.visit(branch.predicate)
+
+                if not issubclass(type(predicate_result), d.Boolean):
+                    raise err.InterpreterError(
+                        error_code=err.ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN,
+                        token=node.token,
+                        result=predicate_result
+                    )
+
+                if predicate_result:
+                    return self.visit(branch.expr)
+
+            else_branch = node.else_branch
+            if node.else_branch is not None:
+                else_expr = else_branch.expr
+                return self.visit(else_expr)
+            else:
                 raise err.InterpreterError(
-                    error_code=err.ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN,
-                    token=node.token,
-                    result=predicate_result
+                    error_code=err.ErrorCode.C_ALL_QUESTION_RESULTS_FALSE,
+                    token=node.token
                 )
-
-            if predicate_result:
-                return self.visit(branch.expr)
-
-        else_branch = node.else_branch
-        if node.else_branch is not None:
-            else_expr = else_branch.expr
-            return self.visit(else_expr)
-        else:
-            raise err.InterpreterError(
-                error_code=err.ErrorCode.C_ALL_QUESTION_RESULTS_FALSE,
-                token=node.token
-            )
 
     def visit_IdAssign(self, node: ast.IdAssign) -> None:
         self.semantic_analyzer.visit(node)
@@ -282,7 +291,7 @@ class Interpreter(ast.ASTVisitor):
                                      formal_params: List[sym.AmbiguousSymbol], actual_params: List[ast.Expr]) -> Data:
         current_ar = self.call_stack.peek()
 
-        if current_ar.name == 'if':
+        if current_ar.name in ['if', 'cond']:
             previous_ar = self.call_stack.peek(2)
 
             if previous_ar.name == proc_name:
