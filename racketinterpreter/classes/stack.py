@@ -105,5 +105,5 @@ class CallStack:
     def pop(self) -> ActivationRecord:
         return self._records.pop()
 
-    def peek(self) -> ActivationRecord:
-        return self._records[-1]
+    def peek(self, levels: int = 1) -> ActivationRecord:
+        return self._records[-1 * levels]

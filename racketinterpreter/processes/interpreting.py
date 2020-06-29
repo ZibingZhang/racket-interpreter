@@ -179,7 +179,8 @@ class Interpreter(ast.ASTVisitor):
             else:
                 raise err.IllegalStateError
         else:
-            return self._visit_user_defined_ProcCall(proc_name, expr, formal_params, actual_params)
+            result = self._visit_user_defined_ProcCall(proc_name, expr, formal_params, actual_params)
+            return result
 
     def visit_StructAssign(self, node: ast.StructAssign):
         struct_class = self.semantic_analyzer.visit(node)
@@ -267,11 +268,30 @@ class Interpreter(ast.ASTVisitor):
         proc_name = proc_token.value
         actual_params = node.actual_params
 
-        return BUILT_IN_PROCS[proc_name].interpret(self, token, actual_params)
+        current_ar = self.call_stack.peek()
+        ar = stack.ActivationRecord(
+            name=proc_name,
+            type=stack.ARType.PROCEDURE,
+            nesting_level=current_ar.nesting_level + 1
+        )
+
+        with ar(self):
+            return BUILT_IN_PROCS[proc_name].interpret(self, token, actual_params)
 
     def _visit_user_defined_ProcCall(self, proc_name: str, expr: ast.Expr,
                                      formal_params: List[sym.AmbiguousSymbol], actual_params: List[ast.Expr]) -> Data:
         current_ar = self.call_stack.peek()
+
+        if current_ar.name == 'if':
+            previous_ar = self.call_stack.peek(2)
+
+            if previous_ar.name == proc_name:
+                evaluated_params = list(map(self.visit, actual_params))
+                for param, value in zip(formal_params, evaluated_params):
+                    current_ar[param.name] = value
+
+                raise err.TailEndRecursion
+
         ar = stack.ActivationRecord(
             name=proc_name,
             type=stack.ARType.PROCEDURE,
@@ -287,7 +307,13 @@ class Interpreter(ast.ASTVisitor):
                 ar[param_symbol.name] = self.visit(argument_node)
 
             with ar(self):
-                result = self.visit(expr)
+                while True:
+                    try:
+                        result = self.visit(expr)
+                    except err.TailEndRecursion as e:
+                        pass
+                    else:
+                        break
 
         return result
 

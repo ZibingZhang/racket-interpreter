@@ -490,3 +490,8 @@ class EvaluateBuiltinProcedureError(TypeError):
 class IllegalStateError(RuntimeError):
 
     pass
+
+
+class TailEndRecursion(RuntimeError):
+
+    pass
