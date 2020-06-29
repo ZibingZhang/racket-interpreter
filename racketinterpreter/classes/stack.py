@@ -2,7 +2,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
 from racketinterpreter.constants import C
-from racketinterpreter.errors import IllegalStateError
+from racketinterpreter.errors import IllegalStateError, TailEndRecursion
 
 if TYPE_CHECKING:
     from racketinterpreter.classes.data import Data
@@ -61,7 +61,7 @@ class ActivationRecord:
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if exc_type is not None:
+        if exc_type is not None and exc_type is not TailEndRecursion:
             return
 
         self.interpreter.call_stack.pop()

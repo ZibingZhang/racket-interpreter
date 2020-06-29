@@ -288,7 +288,7 @@ class Interpreter(ast.ASTVisitor):
             if previous_ar.name == proc_name:
                 evaluated_params = list(map(self.visit, actual_params))
                 for param, value in zip(formal_params, evaluated_params):
-                    current_ar[param.name] = value
+                    previous_ar[param.name] = value
 
                 raise err.TailEndRecursion
 
