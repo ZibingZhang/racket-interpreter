@@ -114,6 +114,7 @@ class Parser:
 
         return node
 
+    # TODO: maybe move this logic to semantic analysis...
     def cond(self) -> ast.Cond:
         """cond: LPAREN COND (cond-branch|data|ID|cond)* cond-else? RPAREN"""
         # opening left bracket
@@ -203,15 +204,15 @@ class Parser:
 
         self.eat(t.TokenType.ID)
 
-        actual_params = []
+        exprs = []
         while self.current_token.type is not t.TokenType.RPAREN:
             expr = self.expr()
-            actual_params.append(expr)
+            exprs.append(expr)
 
         # closing right bracket
         self.eat(t.TokenType.RPAREN)
 
-        return ast.IdAssign(left_paren_token, actual_params)
+        return ast.IdAssign(left_paren_token, exprs)
 
     def procedure_assignment(self) -> ast.ProcAssign:
         """procedure_assignment: LPAREN DEFINE LPAREN expr* RPAREN expr* RPAREN"""

@@ -223,9 +223,9 @@ class CondElse(AST):
 class IdAssign(AST):
     """Defining a constant."""
 
-    def __init__(self, token: t.Token, actual_params: List[AST]) -> None:
+    def __init__(self, token: t.Token, exprs: List[AST]) -> None:
         super().__init__(token)
-        self.actual_params = actual_params
+        self.exprs = exprs
         self.identifier = None
         self.expr = None
 
@@ -241,8 +241,8 @@ class FormalParam(AST):
 
     class ParamFor(Enum):
 
-        PROC_ASSIGN = 'PROC ASSIGN'
-        STRUCT_ASSIGN = 'STRUCT ASSIGN'
+        PROC_ASSIGN = 'PROC_ASSIGN'
+        STRUCT_ASSIGN = 'STRUCT_ASSIGN'
 
     def __init__(self, ast: AST, param_for: ParamFor) -> None:
         super().__init__(ast.token)
@@ -345,6 +345,7 @@ class CheckExpect(AST):
     def __init__(self, token: t.Token, exprs: List[AST]):
         super().__init__(token)
         self.exprs = exprs
+
         self.actual = None
         self.expected = None
 

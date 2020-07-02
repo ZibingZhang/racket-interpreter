@@ -207,11 +207,14 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
     def visit_IdAssign(self, node: ast.IdAssign) -> None:
         token = node.token
-        actual_params = node.actual_params
-        actual_params_len = len(actual_params)
+        exprs = node.exprs
+        exprs_len = len(exprs)
 
-        if actual_params_len != 0 and type(actual_params[0]) is ast.Sym:
-            # a little bit hacky...
+        if len(exprs) == 0:
+            raise RuntimeError
+
+        if exprs_len != 0 and type(exprs[0]) is ast.Sym:
+            # a little bit hacky..., not sure why Racket has this behavior
             raise err.SemanticError(
                 error_code=err.ErrorCode.BUILTIN_OR_IMPORTED_NAME,
                 token=t.Token(
@@ -222,34 +225,34 @@ class SemanticAnalyzer(ast.ASTVisitor):
                 )
             )
 
-        if actual_params_len == 0 or type(actual_params[0]) is not ast.Id \
-                or actual_params[0].value in t.KEYWORDS:
-            next_token = actual_params[0].token if actual_params_len > 0 else None
+        if exprs_len == 0 or type(exprs[0]) is not ast.Id \
+                or exprs[0].value in t.KEYWORDS:
+            next_token = exprs[0].token if exprs_len > 0 else None
             raise err.SemanticError(
                 error_code=err.ErrorCode.D_EXPECTED_A_NAME,
                 token=token,
                 next_token=next_token
             )
 
-        const_token = actual_params[0].token
+        const_token = exprs[0].token
         const_name = const_token.value
-        if actual_params_len == 1:
+        if exprs_len == 1:
             raise err.SemanticError(
                 error_code=err.ErrorCode.D_V_MISSING_AN_EXPRESSION,
                 token=token,
                 name=const_name
             )
-        elif actual_params_len > 2:
-            extra_count = actual_params_len - 2
+        elif exprs_len > 2:
+            extra_count = exprs_len - 2
             raise err.SemanticError(
                 error_code=err.ErrorCode.D_V_EXPECTED_ONE_EXPRESSION,
                 token=token,
                 extra_count=extra_count,
                 name=const_name
             )
-        elif type(actual_params[1]) is ast.Id and actual_params[1].value in t.KEYWORDS:
-            keyword = actual_params[1].value
-            token = actual_params[1].token
+        elif type(exprs[1]) is ast.Id and exprs[1].value in t.KEYWORDS:
+            keyword = exprs[1].value
+            token = exprs[1].token
             if keyword == t.Keyword.COND.value:
                 raise err.SemanticError(
                     error_code=err.ErrorCode.C_EXPECTED_OPEN_PARENTHESIS,
@@ -273,8 +276,8 @@ class SemanticAnalyzer(ast.ASTVisitor):
             else:
                 raise err.IllegalStateError
 
-        node.identifier = node.actual_params[0].value
-        node.expr = node.actual_params[1]
+        node.identifier = node.exprs[0].value
+        node.expr = node.exprs[1]
 
         var_name = node.identifier
         var_symbol = sym.AmbiguousSymbol(var_name)
