@@ -84,10 +84,20 @@ class Interpreter(ast.ASTVisitor):
     def visit_Cons(self, node: ast.Cons) -> d.ConsList:
         self.semantic_analyzer.visit(node)
 
-        cons_list = [self.visit(node.first)]
-        rest = self.visit(node.rest).value
+        first = self.visit(node.first)
+        rest = self.visit(node.rest)
 
-        cons_list.extend(rest)
+        if type(rest) is not d.ConsList:
+            raise err.InterpreterError(
+                error_code=err.ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST,
+                token=node.token,
+                arg1=first,
+                arg2=rest
+            )
+
+        cons_list = [first]
+        # TODO: make it cast into iterator instead of rest.value?
+        cons_list.extend(rest.value)
 
         return d.ConsList(cons_list)
 

@@ -23,6 +23,12 @@ class Expr(AST):
     pass
 
 
+class ConsList(AST):
+    """A list."""
+
+    pass
+
+
 class StructProc(Expr):
     """A proc related to a struct."""
 
@@ -142,7 +148,7 @@ class Sym(Expr):
         return self.__str__()
 
 
-class Cons(Expr):
+class Cons(ConsList):
     """A non-empty list."""
 
     def __init__(self, token: t.Token, exprs: List[AST]) -> None:
@@ -159,7 +165,7 @@ class Cons(Expr):
         return self.__str__()
 
 
-class Empty(Expr):
+class Empty(ConsList):
     """An empty list."""
 
     def __init__(self, token: t.Token) -> None:

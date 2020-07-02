@@ -25,6 +25,9 @@ class ErrorCode(Enum):
 
     CE_INCORRECT_ARGUMENT_COUNT = Template('check-expect: $expects, but $found')
 
+    CL_EXPECTED_SECOND_ARGUMENT_LIST = Template('cons: second argument must be a list, but received $arg1 and $arg2')
+    CL_EXPECTED_TWO_ARGUMENTS = Template('cons: $expects, but $found')
+
     D_DUPLICATE_VARIABLE = Template('define: found a variable that is used more than once: $name')
     D_EXPECTED_A_NAME = Template("define: expected a variable name, or a function name and its variables (in parentheses), but $found")
     D_EXPECTED_OPEN_PARENTHESIS = Template('define: expected an open parenthesis before define, but found none')
@@ -202,10 +205,24 @@ class Error(Exception):
             if received == 0:
                 received = 'none'
 
-            expects = f'expects {"only" if received > 2 else ""} 2 arguments'
+            expects = f'expects {"only " if received > 2 else ""}2 arguments'
             found = f'but found {"only" if received == 1 else ""} 1'
 
             error_message = template.safe_substitute(expects=expects, found=found)
+
+        elif error_code is ErrorCode.CL_EXPECTED_TWO_ARGUMENTS:
+            received = kwargs.get('received')
+
+            expects = f'expects {"only " if received > 2 else ""}2 arguments'
+            found = f'found {received}'
+
+            error_message = template.safe_substitute(expects=expects, found=found)
+
+        elif error_code is ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST:
+            arg1 = kwargs.get('arg1')
+            arg2 = kwargs.get('arg2')
+
+            error_message = template.safe_substitute(arg1=str(arg1), arg2=str(arg2))
 
         elif error_code is ErrorCode.D_DUPLICATE_VARIABLE:
             name = kwargs.get('name')

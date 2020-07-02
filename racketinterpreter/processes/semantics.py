@@ -140,8 +140,18 @@ class SemanticAnalyzer(ast.ASTVisitor):
         pass
 
     def visit_Cons(self, node: ast.Cons) -> None:
-        node.first = node.exprs[0]
-        node.rest = node.exprs[1]
+        exprs = node.exprs
+        exprs_len = len(exprs)
+
+        if exprs_len != 2:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.CL_EXPECTED_TWO_ARGUMENTS,
+                token=node.token,
+                received=exprs_len
+            )
+
+        node.first = exprs[0]
+        node.rest = exprs[1]
 
     def visit_Empty(self, node: ast.Cons) -> None:
         pass
