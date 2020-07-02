@@ -41,6 +41,8 @@ class Token:
 
 
 class Keyword(Enum):
+    CONS = 'cons'
+    EMPTY = 'empty'
     COND = 'cond'
     DEFINE = 'define'
     DEFINE_STRUCT = 'define-struct'

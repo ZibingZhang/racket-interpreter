@@ -11,11 +11,10 @@ if TYPE_CHECKING:
 
 class AST(abc.ABC):
     """An abstract syntax tree."""
+
     def __init__(self, token: Optional[t.Token]):
         self.token = token
         self.passed_semantic_analysis = False
-
-    pass
 
 
 class Expr(AST):
@@ -24,7 +23,7 @@ class Expr(AST):
     pass
 
 
-class StructProc(AST):
+class StructProc(Expr):
     """A proc related to a struct."""
 
     def __init__(self, data_type: d.DataType):
@@ -138,6 +137,36 @@ class Sym(Expr):
 
     def __str__(self) -> str:
         return f'<Sym value:{self.value}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Cons(Expr):
+    """A non-empty list."""
+
+    def __init__(self, token: t.Token, exprs: List[AST]) -> None:
+        super().__init__(token)
+        self.exprs = exprs
+
+        self.first = None
+        self.rest = None
+
+    def __str__(self) -> str:
+        return f'<Cons first:{self.first}  rest:{self.rest}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Empty(Expr):
+    """An empty list."""
+
+    def __init__(self, token: t.Token) -> None:
+        super().__init__(token)
+
+    def __str__(self) -> str:
+        return f'<Empty>'
 
     def __repr__(self) -> str:
         return self.__str__()

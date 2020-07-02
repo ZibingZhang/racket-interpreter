@@ -81,6 +81,19 @@ class Interpreter(ast.ASTVisitor):
     def visit_Sym(self, node: ast.Sym) -> d.Symbol:
         return d.Symbol(node.value)
 
+    def visit_Cons(self, node: ast.Cons) -> d.ConsList:
+        self.semantic_analyzer.visit(node)
+
+        cons_list = [self.visit(node.first)]
+        rest = self.visit(node.rest).value
+
+        cons_list.extend(rest)
+
+        return d.ConsList(cons_list)
+
+    def visit_Empty(self, node: ast.Empty) -> d.ConsList:
+        return d.ConsList([])
+
     def visit_Cond(self, node: ast.Cond) -> Data:
         self.semantic_analyzer.visit(node)
 
@@ -336,6 +349,7 @@ class _Preprocessor(ast.ASTVisitor):
     # - Rat
     # - Str
     # - Sym
+    # - Cons
     # - Cond
     # - CondBranch
     # - CondElse

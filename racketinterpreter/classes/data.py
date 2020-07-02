@@ -55,6 +55,22 @@ class Boolean(Data):
         return self.value
 
 
+class ConsList(Data):
+
+    def __init__(self, value: list) -> None:
+        super().__init__(value)
+
+    def __eq__(self, other) -> bool:
+        return issubclass(type(other), Boolean) and self.value == other.value
+
+    def __str__(self) -> str:
+        string = ' '.join(map(str, self.value))
+        return f"'({string})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
 class Number(Data):
 
     def __init__(self, value: Union[float, int]) -> None:
@@ -104,7 +120,8 @@ class Symbol(Data):
         return issubclass(type(other), Symbol) and self.value == other.value
 
     def __str__(self) -> str:
-        return f'{self.value}'
+        # the leading apostrophe is included in self.value
+        return f"{self.value}"
 
     def __repr__(self) -> str:
         return self.__str__()

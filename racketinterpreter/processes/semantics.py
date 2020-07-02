@@ -139,6 +139,13 @@ class SemanticAnalyzer(ast.ASTVisitor):
     def visit_Sym(self, node: ast.Str) -> None:
         pass
 
+    def visit_Cons(self, node: ast.Cons) -> None:
+        node.first = node.exprs[0]
+        node.rest = node.exprs[1]
+
+    def visit_Empty(self, node: ast.Cons) -> None:
+        pass
+
     def visit_Cond(self, node: ast.Cond) -> None:
         branches_len = len(node.branches)
         else_branch = node.else_branch
@@ -574,6 +581,7 @@ class _Preprocessor(ast.ASTVisitor):
     # - Rat
     # - Str
     # - Sym
+    # - Cons
     # - Cond
     # - CondBranch
     # - CondElse

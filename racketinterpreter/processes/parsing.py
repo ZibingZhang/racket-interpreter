@@ -147,25 +147,52 @@ class Parser:
         node = ast.Cond(token, branches, else_branch)
         return node
 
-    def expr(self) -> Union[ast.Bool, ast.Cond, ast.Dec, ast.Int,
+    def cons(self) -> ast.Cons:
+        """LPAREN CONS expr{0,1} expr* RPAREN"""
+        # opening left bracket
+        left_paren_token = self.eat(t.TokenType.LPAREN)
+
+        self.eat(t.TokenType.ID)
+
+        exprs = []
+        while self.current_token.type is not t.TokenType.RPAREN:
+            expr = self.expr()
+            exprs.append(expr)
+
+        node = ast.Cons(left_paren_token, exprs)
+
+        # closing right bracket
+        self.eat(t.TokenType.RPAREN)
+
+        return node
+
+    def expr(self) -> Union[ast.Bool, ast.Cond, ast.Cons, ast.Dec, ast.Empty, ast.Int,
                             ast.Id, ast.ProcCall, ast.Rat, ast.Str, ast.Sym]:
         """
         expr: data
             | p-expr
             | ID
             | cond
+            | list
         """
         if self.current_token.type is t.TokenType.LPAREN:
             next_token = self.lexer.peek_next_token()
             if next_token.value == t.Keyword.COND.value:
                 node = self.cond()
+            elif next_token.value == t.Keyword.CONS.value:
+                node = self.cons()
             else:
                 node = self.p_expr()
             return node
         elif self.current_token.type is t.TokenType.ID:
-            token = self.current_token
-            self.eat(t.TokenType.ID)
-            return ast.Id(token)
+            if self.current_token.value == t.Keyword.EMPTY.value:
+                token = self.current_token
+                self.eat(t.TokenType.ID)
+                return ast.Empty(token)
+            else:
+                token = self.current_token
+                self.eat(t.TokenType.ID)
+                return ast.Id(token)
         else:
             return self.data()
 
