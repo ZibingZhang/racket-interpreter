@@ -234,9 +234,9 @@ class Interpreter(ast.ASTVisitor):
         actual = self.visit(node.actual)
         expected = self.visit(node.expected)
 
-        error = actual != expected
+        passed = actual == expected
 
-        return error, token, actual, expected
+        return passed, token, actual, expected
 
     def visit_Program(self, node: ast.Program) -> Tuple[List[Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
         ar = stack.ActivationRecord(
