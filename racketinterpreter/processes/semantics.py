@@ -6,7 +6,7 @@ from racketinterpreter.classes import data as d
 from racketinterpreter.classes import symbols as sym
 from racketinterpreter.classes import tokens as t
 from racketinterpreter.constants import C
-from racketinterpreter.functions.predefined import BUILT_IN_PROCS
+from racketinterpreter.predefined import BUILT_IN_PROCS
 
 if TYPE_CHECKING:
     from racketinterpreter.classes.data import DataType
