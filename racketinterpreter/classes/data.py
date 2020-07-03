@@ -5,10 +5,13 @@ from typing import Any, List, Optional, Union
 
 
 class DataType(type):
+    """The metaclass of a class representing data."""
+
     pass
 
 
 class StructDataType(DataType):
+
     pass
 
 
@@ -36,12 +39,16 @@ class StructDataFactory:
 
 
 class Boolean(Data):
+    """A boolean."""
 
     def __init__(self, value: bool) -> None:
         super().__init__(value)
 
     def __eq__(self, other) -> bool:
         return issubclass(type(other), Boolean) and self.value == other.value
+
+    def __hash__(self) -> int:
+        return hash(self.value)
 
     def __str__(self) -> str:
         return f'#{"t" if self.value else "f"}'
@@ -52,14 +59,21 @@ class Boolean(Data):
     def __bool__(self) -> bool:
         return self.value
 
+    def __int__(self):
+        return 1 if self.value else 0
+
 
 class ConsList(Data):
+    """A list."""
 
-    def __init__(self, value: list) -> None:
+    def __init__(self, value: List[Data]) -> None:
         super().__init__(value)
 
     def __eq__(self, other) -> bool:
         return issubclass(type(other), ConsList) and self.value == other.value
+
+    def __hash__(self) -> int:
+        return hash(tuple(self.value))
 
     def __str__(self) -> str:
         string = ' '.join(map(str, self.value))
@@ -68,11 +82,18 @@ class ConsList(Data):
     def __repr__(self) -> str:
         return self.__str__()
 
+    def __len__(self) -> int:
+        return len(self.value)
+
+    def __getitem__(self, item) -> Data:
+        return self.value[item]
+
+    def __bool__(self) -> bool:
+        return len(self.value) > 0
+
 
 class Number(Data):
-
-    def __init__(self, value: Union[float, int]) -> None:
-        super().__init__(value)
+    """A number."""
 
     @property
     def precedence(self) -> int:
@@ -108,17 +129,26 @@ class String(Data):
     def __repr__(self) -> str:
         return self.__str__()
 
+    def __len__(self) -> int:
+        return len(self.value)
+
+    def __getitem__(self, item) -> str:
+        return self.value[item]
+
+    def __bool__(self) -> bool:
+        return len(self.value) > 0
+
 
 class Symbol(Data):
 
     def __init__(self, value: str) -> None:
+        # the value includes the leading apostrophe
         super().__init__(value)
 
     def __eq__(self, other) -> bool:
         return issubclass(type(other), Symbol) and self.value == other.value
 
     def __str__(self) -> str:
-        # the leading apostrophe is included in self.value
         return f"{self.value}"
 
     def __repr__(self) -> str:
@@ -127,6 +157,9 @@ class Symbol(Data):
 
 @functools.total_ordering
 class RealNumber(Number):
+
+    def __init__(self, value: Union[float, int]) -> None:
+        super().__init__(value)
 
     @property
     def precedence(self) -> int:
@@ -141,6 +174,9 @@ class RealNumber(Number):
 
     def __repr__(self) -> str:
         return self.__str__()
+
+    def __bool__(self) -> bool:
+        return self.value != 0
 
     def __add__(self, other) -> Number:
         if other.precedence > self.precedence:
