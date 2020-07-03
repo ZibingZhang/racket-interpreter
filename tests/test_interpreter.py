@@ -1,7 +1,9 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List
 import unittest
-from racketinterpreter.classes.data import Boolean, InexactNumber, Integer, Procedure, Rational, String
+from racketinterpreter.classes.data import (
+    Boolean, ConsList, InexactNumber, Integer, Procedure, Rational, String, Symbol
+)
 from racketinterpreter.util import Util
 
 if TYPE_CHECKING:
@@ -10,7 +12,7 @@ if TYPE_CHECKING:
 
 class TestInterpreter(unittest.TestCase):
 
-    def interpret_text(self, text: str, expected: List[Data]) -> None:
+    def interpret_text(self, text: str, expected: List[Data]):
         output, _ = Util.text_to_interpreter_result(text)
 
         output_len = len(output)
@@ -24,7 +26,7 @@ class TestInterpreter(unittest.TestCase):
             else:
                 self.assertEqual(actual_data, expected_data)
 
-    def test_boolean(self) -> None:
+    def test_boolean(self):
         text = \
             '''
                 #true
@@ -44,7 +46,21 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_number(self) -> None:
+    def test_cons_list(self):
+        text = \
+            '''
+                empty
+                (cons 1 empty)
+                (cons 1 (cons 2 (cons 3 empty)))
+            '''
+        expected = [
+            ConsList([]),
+            ConsList([Integer(1)]),
+            ConsList([Integer(1), Integer(2), Integer(3)])
+        ]
+        self.interpret_text(text, expected)
+
+    def test_number(self):
         text = \
             '''
                 123
@@ -88,7 +104,7 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_procedure(self) -> None:
+    def test_procedure(self):
         text = \
             '''
                 +
@@ -104,7 +120,7 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_string(self) -> None:
+    def test_string(self):
         text = \
             '''
                 ""
@@ -122,7 +138,7 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_struct(self) -> None:
+    def test_struct(self):
         # since structs dynamically generate classes,
         # haven't thought of a good way to test some of the functionality of structs
         text = \
@@ -154,7 +170,23 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_scope(self) -> None:
+    def test_symbol(self):
+        text = \
+            '''
+                'a
+                'longer-symbol
+                '"this is a string"
+                '#true
+            '''
+        expected = [
+            Symbol("'a"),
+            Symbol("'longer-symbol"),
+            String('this is a string'),
+            Boolean(True)
+        ]
+        self.interpret_text(text, expected)
+
+    def test_scope(self):
         text = \
             '''
                 (define (s t z) (- t 6))
@@ -180,7 +212,7 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_recursion(self) -> None:
+    def test_recursion(self):
         text = \
             '''
                 (define (factorial n)
@@ -223,7 +255,7 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_builtin_if(self) -> None:
+    def test_builtin_if(self):
         text = \
             '''
                 (if #t 1 2)
@@ -235,7 +267,7 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_builtin_add1(self) -> None:
+    def test_builtin_add1(self):
         text = \
             '''
                 (add1 (- (/ 3 2)))
@@ -247,7 +279,7 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_builtin_and(self) -> None:
+    def test_builtin_and(self):
         text = \
             '''
                 (and)
@@ -265,7 +297,7 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_builtin_symbol_plus(self) -> None:
+    def test_builtin_symbol_plus(self):
         text = \
             '''
                 (+)
@@ -287,7 +319,7 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_builtin_symbol_minus(self) -> None:
+    def test_builtin_symbol_minus(self):
         text = \
             '''
                 (- 1)
@@ -307,7 +339,7 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_builtin_symbol_multiply(self) -> None:
+    def test_builtin_symbol_multiply(self):
         text = \
             '''
                 (*)
@@ -327,7 +359,7 @@ class TestInterpreter(unittest.TestCase):
         ]
         self.interpret_text(text, expected)
 
-    def test_builtin_symbol_division(self) -> None:
+    def test_builtin_symbol_division(self):
         text = \
             '''
                 (/ 1)

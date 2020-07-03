@@ -119,6 +119,26 @@ class TestErrors(unittest.TestCase):
         text = '(define-struct s []) (define x (make-s)) (cond [x 1])'
         self.expect_error(text, ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN)
 
+    def test_cons_list_expected_two_arguments(self):
+        text = '(cons)'
+        self.expect_error(text, ErrorCode.CL_EXPECTED_TWO_ARGUMENTS)
+
+        text = '(cons 1)'
+        self.expect_error(text, ErrorCode.CL_EXPECTED_TWO_ARGUMENTS)
+
+        text = '(cons 1 2 3)'
+        self.expect_error(text, ErrorCode.CL_EXPECTED_TWO_ARGUMENTS)
+
+    def test_cons_list_expected_second_argument_list(self):
+        text = '(cons 1 2)'
+        self.expect_error(text, ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST)
+
+        text = "(cons 1 'a)"
+        self.expect_error(text, ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST)
+
+        text = "(cons 1 (cons 2 (cons 3 4)))"
+        self.expect_error(text, ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST)
+
     def test_define_duplicate_variable(self):
         text = '(define (x a a) a)'
         self.expect_error(text, ErrorCode.D_DUPLICATE_VARIABLE)

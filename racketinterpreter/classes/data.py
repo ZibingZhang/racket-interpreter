@@ -5,12 +5,10 @@ from typing import Any, List, Optional, Union
 
 
 class DataType(type):
-
     pass
 
 
 class StructDataType(DataType):
-
     pass
 
 
@@ -61,7 +59,7 @@ class ConsList(Data):
         super().__init__(value)
 
     def __eq__(self, other) -> bool:
-        return issubclass(type(other), Boolean) and self.value == other.value
+        return issubclass(type(other), ConsList) and self.value == other.value
 
     def __str__(self) -> str:
         string = ' '.join(map(str, self.value))
@@ -164,7 +162,7 @@ class RealNumber(Number):
 
     def __truediv__(self, other) -> Number:
         if other.precedence > self.precedence:
-            return Integer(1)/other.__truediv__(self)
+            return Integer(1) / other.__truediv__(self)
         else:
             return RealNumber(self.value / other.value)
 
@@ -204,7 +202,7 @@ class InexactNumber(RealNumber):
 
     def __truediv__(self, other) -> Number:
         if other.precedence > self.precedence:
-            return Integer(1)/other.__truediv__(self)
+            return Integer(1) / other.__truediv__(self)
         else:
             return InexactNumber(self.value / other.value)
 
@@ -296,7 +294,7 @@ class Rational(ExactNumber):
 
     def __truediv__(self, other) -> Number:
         if other.precedence > self.precedence:
-            return Integer(1)/other.__truediv__(self)
+            return Integer(1) / other.__truediv__(self)
         else:
             other_type = type(other)
             is_other_integer = issubclass(other_type, Integer)
@@ -366,7 +364,7 @@ class Integer(ExactNumber):
             denominator = other.value
             fraction = f.Fraction(numerator, denominator)
         else:
-            return InexactNumber(self.value/other.value)
+            return InexactNumber(self.value / other.value)
 
         if fraction.denominator == 1:
             return Integer(fraction.numerator)
