@@ -41,56 +41,165 @@ class StructDataFactory:
 
 
 class Boolean(Data):
-    """A boolean."""
+    """A boolean.
+
+    :Example:
+        >>> Boolean(True)
+        #t
+        >>> Boolean(False)
+        #f
+    """
 
     def __init__(self, value: bool) -> None:
         super().__init__(value)
 
     def __eq__(self, other) -> bool:
+        """
+        :Example:
+            >>> Boolean(False).__eq__(Boolean(False))
+            True
+            >>> Boolean(True).__eq__(Integer(5))
+            False
+        """
         return issubclass(type(other), Boolean) and self.value == other.value
 
     def __hash__(self) -> int:
+        """
+        :Example:
+            >>> hash(Boolean(True))
+            1
+            >>> hash(Boolean(False))
+            0
+        """
         return hash(self.value)
 
     def __str__(self) -> str:
+        """
+        :Example:
+            >>> str(Boolean(True))
+            '#t'
+            >>> str(Boolean(False))
+            '#f'
+        """
         return f'#{"t" if self.value else "f"}'
 
     def __repr__(self) -> str:
+        """
+        :Example:
+            >>> repr(Boolean(True))
+            '#t'
+            >>> repr(Boolean(False))
+            '#f'
+        """
         return self.__str__()
 
     def __bool__(self) -> bool:
+        """
+        :Example:
+            >>> bool(Boolean(True))
+            True
+            >>> bool(Boolean(False))
+            False
+        """
         return self.value
 
     def __int__(self):
+        """
+        :Example:
+            >>> int(Boolean(True))
+            1
+            >>> int(Boolean(False))
+            0
+        """
         return 1 if self.value else 0
 
 
 class ConsList(Data):
-    """A list."""
+    """A list.
+
+    :Example:
+        >>> ConsList([Integer(68), Boolean(False), Symbol("'sym")])
+        '(68 #f 'sym)
+        >>> ConsList([])
+        '()
+    """
 
     def __init__(self, value: List[Data]) -> None:
         super().__init__(value)
 
     def __eq__(self, other) -> bool:
+        """
+        :Example:
+            >>> bool(ConsList([Integer(68), Boolean(False), Symbol("'sym")]))
+            True
+            >>> bool(ConsList([]))
+            False
+        """
         return issubclass(type(other), ConsList) and self.value == other.value
 
     def __hash__(self) -> int:
+        """
+        :Example:
+            >>> type(hash(ConsList([Integer(68), Boolean(False), Symbol("'sym")])))
+            <class 'int'>
+            >>> hash(ConsList([]))
+            5740354900026072187
+        """
         return hash(tuple(self.value))
 
     def __str__(self) -> str:
+        """
+        :Example:
+            >>> str(ConsList([Integer(68), Boolean(False), Symbol("'sym")]))
+            "'(68 #f 'sym)"
+            >>> str(ConsList([]))
+            "'()"
+        """
         string = ' '.join(map(str, self.value))
         return f"'({string})"
 
     def __repr__(self) -> str:
+        """
+        :Example:
+            >>> repr(ConsList([Integer(68), Boolean(False), Symbol("'sym")]))
+            "'(68 #f 'sym)"
+            >>> repr(ConsList([]))
+            "'()"
+        """
         return self.__str__()
 
     def __len__(self) -> int:
+        """
+        :Example:
+            >>> len(ConsList([Integer(68), Boolean(False), Symbol("'sym")]))
+            3
+            >>> len(ConsList([]))
+            0
+        """
         return len(self.value)
 
-    def __getitem__(self, item) -> Data:
+    def __getitem__(self, item: int) -> Data:
+        """
+        :Example:
+            >>> ConsList([Integer(68), Boolean(False), Symbol("'sym")])[1]
+            #f
+            >>> ConsList([Integer(68), Boolean(False), Symbol("'sym")])[-1]
+            'sym
+            >>> ConsList([])[2]
+            Traceback (most recent call last):
+              ...
+            IndexError: list index out of range
+        """
         return self.value[item]
 
     def __bool__(self) -> bool:
+        """
+        :Example:
+            >>> bool(ConsList([Integer(68), Boolean(False), Symbol("'sym")]))
+            True
+            >>> bool(ConsList([]))
+            False
+        """
         return len(self.value) > 0
 
 
@@ -150,6 +259,9 @@ class Symbol(Data):
     def __eq__(self, other) -> bool:
         return issubclass(type(other), Symbol) and self.value == other.value
 
+    def __hash__(self) -> int:
+        return hash(self.value)
+
     def __str__(self) -> str:
         return f"{self.value}"
 
@@ -170,6 +282,14 @@ class RealNumber(Number):
     def __eq__(self, other) -> bool:
         # TODO: change this when complex numbers are added
         return issubclass(type(other), RealNumber) and self.value == other.value
+
+    def __hash__(self) -> int:
+        """
+        :Example:
+            >>> hash(RealNumber(4.5))
+            1152921504606846980
+        """
+        return hash(self.value)
 
     def __str__(self) -> str:
         return str(self.value)

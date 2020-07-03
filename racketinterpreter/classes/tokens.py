@@ -1,9 +1,10 @@
 from __future__ import annotations
-from typing import Any, Final
+from typing import Any
 from enum import Enum
 
 
 class TokenType(Enum):
+
     # parentheses
     LPAREN = 'LPAREN'
     RPAREN = 'RPAREN'
@@ -20,8 +21,19 @@ class TokenType(Enum):
     # invalid
     INVALID = 'INVALID'
 
+    def __str__(self) -> str:
+        return self.value
+
 
 class Token:
+    """A token from the lexing process.
+
+    :Example:
+        >>> Token(TokenType.ID, 'define', 5, 37)
+        <Token type:ID  value:define  position:5:37>
+        >>> Token(TokenType.SYMBOL, "'sym", 3, 69)
+        <Token type:SYMBOL  value:'sym  position:3:69>
+    """
 
     def __init__(self, type: TokenType, value: Any, line_no: int, column: int) -> None:
         self._type = type
@@ -46,7 +58,7 @@ class Token:
         return self._column
 
     def __str__(self) -> str:
-        return f'<Token token:{self.type}  value:{self.value}  position:{self.line_no}:{self.column}>'
+        return f'<Token type:{self.type}  value:{self.value}  position:{self.line_no}:{self.column}>'
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -57,6 +69,7 @@ class Token:
 
 
 class Keyword(Enum):
+
     CONS = 'cons'
     EMPTY = 'empty'
     COND = 'cond'
