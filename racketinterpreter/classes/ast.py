@@ -27,9 +27,7 @@ class Expr(AST):
     @property
     def value(self):
         if self._value is None:
-            # TODO: make custom error?
-            # TODO: set value once interpreted
-            raise RuntimeError('The value of the expression has not been interpreted yet.')
+            raise err.IllegalStateError('The value of the expression has not been interpreted yet.')
         return self._value
 
 
