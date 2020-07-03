@@ -11,11 +11,13 @@ class DataType(type):
 
 
 class StructDataType(DataType):
+    """The metaclass of a class representing a struct."""
 
     pass
 
 
 class Data(metaclass=DataType):
+    """Data, such as booleans, numbers, and strings."""
 
     def __init__(self, value: Optional[Any] = None) -> None:
         self.value = value
