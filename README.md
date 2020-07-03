@@ -23,7 +23,8 @@ There is no IDE nor does the interpreter read from a text file... yet.
 That being said, here are the steps to set up and get the interpreter running.
 
 ### Prerequisites
-The only prerequisite is to have Python 3.7+.
+The only prerequisite is to have Python 3.8+. 
+The tests are only run on Python 3.8, but there is no reason to believe that they would not pass on more recent versions.
 
 ### Installing
 The package can be installed using pip.
