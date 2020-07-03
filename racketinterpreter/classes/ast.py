@@ -20,7 +20,17 @@ class AST(abc.ABC):
 class Expr(AST):
     """An expression."""
 
-    pass
+    def __init__(self, token: Optional[t.Token], value: Any):
+        super().__init__(token)
+        self._value = value
+
+    @property
+    def value(self):
+        if self._value is None:
+            # TODO: make custom error?
+            # TODO: set value once interpreted
+            raise RuntimeError('The value of the expression has not been interpreted yet.')
+        return self._value
 
 
 class ConsList(AST):
@@ -29,11 +39,12 @@ class ConsList(AST):
     pass
 
 
+# TODO: this token should not be none
 class StructProc(Expr):
     """A proc related to a struct."""
 
     def __init__(self, data_type: d.DataType):
-        super().__init__(None)
+        super().__init__(None, None)
         self.data_type = data_type
 
 
@@ -54,8 +65,7 @@ class Bool(Expr):
     """A boolean."""
 
     def __init__(self, token: t.Token) -> None:
-        super().__init__(token)
-        self.value = token.value
+        super().__init__(token, token.value)
 
     def __str__(self) -> str:
         return f'<Bool value:{self.value}>'
@@ -68,8 +78,7 @@ class Dec(Expr):
     """A decimal number."""
 
     def __init__(self, token: t.Token) -> None:
-        super().__init__(token)
-        self.value = token.value
+        super().__init__(token, token.value)
 
     def __str__(self) -> str:
         return f'<Dec value:{self.value}>'
@@ -82,8 +91,7 @@ class Id(Expr):
     """An name."""
 
     def __init__(self, token: t.Token) -> None:
-        super().__init__(token)
-        self.value = token.value
+        super().__init__(token, token.value)
 
     def __str__(self) -> str:
         return f'<Id value:{self.value}>'
@@ -96,8 +104,7 @@ class Int(Expr):
     """A number."""
 
     def __init__(self, token: t.Token) -> None:
-        super().__init__(token)
-        self.value = token.value
+        super().__init__(token, token.value)
 
     def __str__(self) -> str:
         return f'<Int value:{self.value}>'
@@ -110,8 +117,7 @@ class Rat(Expr):
     """A rational number."""
 
     def __init__(self, token: t.Token) -> None:
-        super().__init__(token)
-        self.value = token.value
+        super().__init__(token, token.value)
 
     def __str__(self) -> str:
         return f'<Rat value:{self.value}>'
@@ -124,8 +130,7 @@ class Str(Expr):
     """A string."""
 
     def __init__(self, token: t.Token) -> None:
-        super().__init__(token)
-        self.value = token.value
+        super().__init__(token, token.value)
 
     def __str__(self) -> str:
         return f'<Str value:{self.value}>'
@@ -138,8 +143,7 @@ class Sym(Expr):
     """A symbol."""
 
     def __init__(self, token: t.Token) -> None:
-        super().__init__(token)
-        self.value = token.value
+        super().__init__(token, token.value)
 
     def __str__(self) -> str:
         return f'<Sym value:{self.value}>'
@@ -151,7 +155,7 @@ class Sym(Expr):
 class Cons(ConsList):
     """A non-empty list."""
 
-    def __init__(self, token: t.Token, exprs: List[AST]) -> None:
+    def __init__(self, token: t.Token, exprs: List[Expr]) -> None:
         super().__init__(token)
         self.exprs = exprs
 
@@ -182,7 +186,7 @@ class Cond(Expr):
     """A cond statement."""
 
     def __init__(self, token: t.Token, branches: List[AST], else_branch: Optional[CondElse] = None) -> None:
-        super().__init__(token)
+        super().__init__(token, None)
         self.branches = branches
         self.else_branch = else_branch
 
@@ -196,7 +200,7 @@ class Cond(Expr):
 class CondBranch(AST):
     """A cond branch with a condition."""
 
-    def __init__(self, token: t.Token, exprs: List[AST]):
+    def __init__(self, token: t.Token, exprs: List[Expr]):
         super().__init__(token)
         self.exprs = exprs
 
@@ -213,7 +217,7 @@ class CondBranch(AST):
 class CondElse(AST):
     """The else cond branch."""
 
-    def __init__(self, token: t.Token, exprs: List[AST]):
+    def __init__(self, token: t.Token, exprs: List[Expr]):
         super().__init__(token)
         self.exprs = exprs
 
@@ -229,7 +233,7 @@ class CondElse(AST):
 class IdAssign(AST):
     """Defining a constant."""
 
-    def __init__(self, token: t.Token, exprs: List[AST]) -> None:
+    def __init__(self, token: t.Token, exprs: List[Expr]) -> None:
         super().__init__(token)
         self.exprs = exprs
         self.identifier = None
@@ -267,7 +271,7 @@ class FormalParam(AST):
 class ProcAssign(AST):
     """Defining a function."""
 
-    def __init__(self, token: t.Token, name_expr: AST, formal_params: List[FormalParam], exprs: List[AST]) -> None:
+    def __init__(self, token: t.Token, name_expr: Expr, formal_params: List[FormalParam], exprs: List[Expr]) -> None:
         super().__init__(token)
 
         self.name_expr = name_expr
@@ -287,8 +291,8 @@ class ProcAssign(AST):
 class ProcCall(Expr):
     """A procedure and a list of arguments."""
 
-    def __init__(self, token: t.Token, exprs: List[AST]) -> None:
-        super().__init__(token)
+    def __init__(self, token: t.Token, exprs: List[Expr]) -> None:
+        super().__init__(token, None)
         self.exprs = exprs
 
         self.original_proc_token = None
@@ -348,7 +352,7 @@ class CheckExpect(AST):
     The first expression is the actual value and the second expression is the expected value.
     """
 
-    def __init__(self, token: t.Token, exprs: List[AST]):
+    def __init__(self, token: t.Token, exprs: List[Expr]):
         super().__init__(token)
         self.exprs = exprs
 
