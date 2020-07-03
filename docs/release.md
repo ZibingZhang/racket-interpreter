@@ -52,6 +52,8 @@ Install the package to test it.
 ```shell
 $ python -m pip install --index-url https://test.pypi.org/simple/ --no-deps racketinterpreter
 $ python
+```
+```python
 >>> import racketinterpreter
 ```
 
