@@ -24,10 +24,26 @@ class TokenType(Enum):
 class Token:
 
     def __init__(self, type: TokenType, value: Any, line_no: int, column: int) -> None:
-        self.type: Final = type
-        self.value: Final = value
-        self.line_no: Final = line_no
-        self.column: Final = column
+        self._type = type
+        self._value = value
+        self._line_no = line_no
+        self._column = column
+
+    @property
+    def type(self):
+        return self._type
+
+    @property
+    def value(self):
+        return self._value
+
+    @property
+    def line_no(self):
+        return self._line_no
+
+    @property
+    def column(self):
+        return self._column
 
     def __str__(self) -> str:
         return f'<Token token:{self.type}  value:{self.value}  position:{self.line_no}:{self.column}>'
