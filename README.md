@@ -4,9 +4,10 @@ These student languages are what first-semester, computer-science students at No
 The end goal of this project is to successfully interpret the code I wrote for a homework assignment regarding graphs.
 
 [![Build Status](https://travis-ci.org/ZibingZhang/racket-interpreter.svg?branch=master)](https://travis-ci.org/ZibingZhang/racket-interpreter)
+[![codecov](https://codecov.io/gh/zibingzhang/racket-interpreter/branch/master/graph/badge.svg)](https://codecov.io/gh/zibingzhang/racket-interpreter)
 [![PyPI version](https://badge.fury.io/py/racketinterpreter.svg)](https://badge.fury.io/py/racketinterpreter)
-<img src="https://img.shields.io/badge/license-MIT-brightgreen"></img>
-<img src="https://img.shields.io/badge/python-3.8-blue"></img>
+[![license](https://img.shields.io/pypi/l/racketinterpreter?color=orange)](https://github.com/ZibingZhang/racket-interpreter/blob/master/LICENSE)
+[![version](https://img.shields.io/badge/python-3.8-blue)](https://www.python.org/downloads/release/python-380/)
 
 ## Table of Contents
   * [Getting Started](#getting-started)
