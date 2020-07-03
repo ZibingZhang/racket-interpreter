@@ -114,7 +114,6 @@ class Parser:
 
         return node
 
-    # TODO: maybe move this logic to semantic analysis...
     def cond(self) -> ast.Cond:
         """cond: LPAREN COND (cond-branch|data|ID|cond)* cond-else? RPAREN"""
         # opening left bracket
@@ -122,30 +121,18 @@ class Parser:
 
         token = self.eat(t.TokenType.ID)
 
-        branches = []
+        exprs = []
         while self.current_token.type is not t.TokenType.RPAREN:
             if self.current_token.type is t.TokenType.LPAREN:
                 expr = self.cond_branch()
             else:
                 expr = self.expr()
-            branches.append(expr)
-
-        else_branch = None
-        try:
-            last_branch = branches[-1]
-            first_expr = last_branch.exprs[0]
-        except (AttributeError, IndexError) as e:
-            pass
-        else:
-            token = first_expr.token
-            if token.type is t.TokenType.ID and token.value == t.Keyword.ELSE.value:
-                branches = branches[:-1]
-                else_branch = ast.CondElse(last_branch.token, last_branch.exprs[1:])
+            exprs.append(expr)
 
         # closing right bracket
         self.eat(t.TokenType.RPAREN)
 
-        node = ast.Cond(token, branches, else_branch)
+        node = ast.Cond(token, exprs)
         return node
 
     def cons(self) -> ast.Cons:

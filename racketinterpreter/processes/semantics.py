@@ -157,26 +157,38 @@ class SemanticAnalyzer(ast.ASTVisitor):
         pass
 
     def visit_Cond(self, node: ast.Cond) -> None:
-        branches_len = len(node.branches)
-        else_branch = node.else_branch
+        exprs_len = len(node.exprs)
 
-        if branches_len == 0 and else_branch is None:
+        if exprs_len == 0:
             raise err.SemanticError(
                 error_code=err.ErrorCode.C_EXPECTED_A_CLAUSE,
                 token=node.token
             )
 
-        for branch in node.branches:
-            if type(branch) is not ast.CondBranch:
+        for idx, expr in enumerate(node.exprs):
+            if type(expr) is not ast.CondBranch:
                 raise err.SemanticError(
                     error_code=err.ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
                     token=node.token,
-                    expr_token=branch.token
+                    expr_token=expr.token
                 )
+            cond_branch = expr
 
-            self.visit(branch)
-        if else_branch is not None:
-            self.visit(else_branch)
+            try:
+                self.visit(cond_branch)
+            except err.SemanticError as e:
+                if e.error_code is err.ErrorCode.C_ELSE_NOT_LAST_CLAUSE and idx == exprs_len - 1:
+                    token = cond_branch.token
+                    expr = cond_branch.exprs[1]
+                    else_branch = ast.CondElse(token, expr)
+
+                    self.visit(else_branch)
+
+                    node.else_branch = else_branch
+                else:
+                    raise e
+            else:
+                node.branches.append(cond_branch)
 
     def visit_CondBranch(self, node: ast.CondBranch) -> None:
         exprs = node.exprs
@@ -188,32 +200,25 @@ class SemanticAnalyzer(ast.ASTVisitor):
                 part_count=exprs_len
             )
 
-        node.predicate = exprs[0]
-        node.expr = exprs[1]
+        predicate = exprs[0]
+        expr = exprs[1]
 
-        predicate_token = node.predicate.token
+        predicate_token = predicate.token
         if predicate_token.type is t.TokenType.ID and predicate_token.value == t.Keyword.ELSE.value:
             raise err.SemanticError(
                 error_code=err.ErrorCode.C_ELSE_NOT_LAST_CLAUSE,
                 token=node.token
             )
 
+        node.predicate = predicate
+        node.expr = expr
+
         self.visit(node.predicate)
         self.visit(node.expr)
 
     def visit_CondElse(self, node: ast.CondElse) -> None:
-        exprs = node.exprs
-        exprs_len = len(exprs)
-        if exprs_len != 1:
-            raise err.SemanticError(
-                error_code=err.ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE,
-                token=node.token,
-                part_count=exprs_len + 1
-            )
-
-        node.expr = node.exprs[0]
-
-        self.visit(node.expr)
+        expr = node.expr
+        self.visit(expr)
 
     def visit_IdAssign(self, node: ast.IdAssign) -> None:
         token = node.token

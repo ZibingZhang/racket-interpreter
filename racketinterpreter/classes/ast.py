@@ -185,10 +185,12 @@ class Empty(ConsList):
 class Cond(Expr):
     """A cond statement."""
 
-    def __init__(self, token: t.Token, branches: List[AST], else_branch: Optional[CondElse] = None) -> None:
+    def __init__(self, token: t.Token, exprs: List[Expr]) -> None:
         super().__init__(token, None)
-        self.branches = branches
-        self.else_branch = else_branch
+        self.exprs = exprs
+
+        self.branches = []
+        self.else_branch = None
 
     def __str__(self) -> str:
         return f'<Cond branches:{self.branches}  else_branch{self.else_branch}>'
@@ -197,34 +199,32 @@ class Cond(Expr):
         return self.__str__()
 
 
-class CondBranch(AST):
+class CondBranch(Expr):
     """A cond branch with a condition."""
 
     def __init__(self, token: t.Token, exprs: List[Expr]):
-        super().__init__(token)
+        super().__init__(token, None)
         self.exprs = exprs
 
         self.predicate = None
         self.expr = None
 
     def __str__(self) -> str:
-        return f'<CondBranch predicate:{self.predicate}  expr{self.expr}>'
+        return f'<CondBranch predicate:{self.predicate}  expr:{self.expr}>'
 
     def __repr__(self) -> str:
         return self.__str__()
 
 
-class CondElse(AST):
+class CondElse(Expr):
     """The else cond branch."""
 
-    def __init__(self, token: t.Token, exprs: List[Expr]):
-        super().__init__(token)
-        self.exprs = exprs
-
-        self.expr = None
+    def __init__(self, token: t.Token, expr: Expr):
+        super().__init__(token, None)
+        self.expr = expr
 
     def __str__(self) -> str:
-        return f'<CondElse expr{self.expr}>'
+        return f'<CondElse expr:{self.expr}>'
 
     def __repr__(self) -> str:
         return self.__str__()

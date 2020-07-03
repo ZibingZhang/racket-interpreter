@@ -96,8 +96,7 @@ class Interpreter(ast.ASTVisitor):
             )
 
         cons_list = [first]
-        # TODO: make it cast into iterator instead of rest.value?
-        cons_list.extend(rest.value)
+        cons_list.extend(rest)
 
         return d.ConsList(cons_list)
 
@@ -114,7 +113,6 @@ class Interpreter(ast.ASTVisitor):
             nesting_level=current_ar.nesting_level + 1
         )
 
-        # TODO: this is def kinda hacky
         with ar(self):
             for idx, branch in enumerate(node.branches):
                 predicate_result = self.visit(branch.predicate)
@@ -130,7 +128,7 @@ class Interpreter(ast.ASTVisitor):
                     return self.visit(branch.expr)
 
             else_branch = node.else_branch
-            if node.else_branch is not None:
+            if else_branch is not None:
                 else_expr = else_branch.expr
                 return self.visit(else_expr)
             else:

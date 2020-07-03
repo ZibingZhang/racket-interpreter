@@ -1056,7 +1056,6 @@ class Sqrt(BuiltInProc):
             )
 
         if param_value < d.Integer(0):
-            # TODO: change to appropriate error code
             raise NotImplementedError('Complex numbers not supported yet.')
 
         number = math.sqrt(param_value.value)
