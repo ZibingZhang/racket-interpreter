@@ -378,7 +378,3 @@ class TestInterpreter(unittest.TestCase):
             InexactNumber(1.0)
         ]
         self.interpret_text(text, expected)
-
-
-if __name__ == '__main__':
-    unittest.main()

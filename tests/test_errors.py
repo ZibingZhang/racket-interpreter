@@ -320,7 +320,3 @@ class TestErrors(unittest.TestCase):
     # ideally should be unable to trigger error
     # def test_read_syntax_unexpected_token(self):
     #     pass
-
-
-if __name__ == '__main__':
-    unittest.main()
