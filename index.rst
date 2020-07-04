@@ -11,7 +11,7 @@ Welcome to racketinterpreter's documentation!
    :maxdepth: 2
    :numbered:
 
-   README
+   README <README>
    Packages <apidoc/modules>
    docs/release
    LICENSE
