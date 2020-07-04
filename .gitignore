@@ -11,3 +11,7 @@ racketinterpreter.egg-info
 
 # local testing file
 test.py
+
+# sphinx
+_build/
+apidoc/
