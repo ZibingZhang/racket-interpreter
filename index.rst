@@ -7,17 +7,11 @@ Welcome to racketinterpreter's documentation!
 =============================================
 
 .. toctree::
-   :maxdepth: 2
    :caption: Table of Contents
+   :maxdepth: 2
    :numbered:
 
    README
+   Packages <apidoc/modules>
    docs/release
    LICENSE
-
-
-Indices and tables
-==================
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

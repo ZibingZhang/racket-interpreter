@@ -32,8 +32,6 @@ Prerequisites
 The only prerequisite is to have Python 3.8+.
 The tests are only run on Python 3.8, but there is no reason to believe that they would not pass on more recent versions.
 
---------------------
-
 Installing
 ~~~~~~~~~~
 The package can be installed using pip.
@@ -56,6 +54,11 @@ The package can be installed using pip.
     >>> print(result.output)
     ['1']
 
+--------------------
+
+Contributing
+===============
+
 Downloading
 ~~~~~~~~~~~
 Clone the repository locally.
@@ -64,13 +67,35 @@ Clone the repository locally.
 
     $ git clone https://github.com/ZibingZhang/racket-interpreter.git
 
-There is an example of the interpreter in the `example.py` file which can be run.
+There is an example of the interpreter in the ``example.py`` file which can be run.
 
 .. code:: shell
 
     $ python example.py
 
-To change the code that is being interpreted, change the value of `code`.
+To change the code that is being interpreted, change the value of ``code``.
+
+Generating the Documentation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+These are the steps to transpile the documentation to an easily readable HTML format.
+
+.. code:: shell
+
+    $ pip install -u sphinx
+    $ pip install -u sphinx-rtd-theme
+    $ sphinx-apidoc -eo apidoc/ racketinterpreter/ --templatedir docs/templates
+    $ make html
+
+The homepage for the documentation can be found at ``_build/html/index.html``.
+
+If the documention needs to be regenerated for any reason, make sure to delete the apidoc directory first.
+
+.. code:: shell
+
+    $ rm -r apidoc
+    $ sphinx-apidoc -eo apidoc/ racketinterpreter/ --templatedir docs/templates
+    $ make html
 
 Testing
 ~~~~~~~
@@ -98,6 +123,9 @@ This project is licensed under the MIT license.
 
 Acknowledgments
 ===============
-This initially started as an adaptation of Ruslan Spivak's [tutorial](https://ruslanspivak.com/lsbasi-part1/) for writing an interpreter.
+This initially started as an adaptation of Ruslan Spivak's tutorial_ for writing an interpreter.
 Most of the structure of this codebase come from the tutorial, but as I've begun to understand his design decisions better I've been able to change and adapt them to fit this project.
-This [template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2) has also been helpful in understanding how to format a README and what I should include.
+This template_ has also been helpful in understanding how to format a README and what I should include.
+
+.. _tutorial: https://ruslanspivak.com/lsbasi-part1/
+.. _template: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
