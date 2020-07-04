@@ -20,7 +20,7 @@ The end goal of this project is to successfully interpret the code I wrote for a
 
 --------------------
 
-.. contents:: Table of Contents
+.. contents:: **Table of Contents**
 .. section-numbering::
 
 Getting Started
@@ -57,8 +57,6 @@ The package can be installed using pip.
     >>> print(result.output)
     ['1']
 
---------------------
-
 Downloading
 ~~~~~~~~~~~
 Clone the repository locally.
@@ -75,10 +73,8 @@ There is an example of the interpreter in the `example.py` file which can be run
 
 To change the code that is being interpreted, change the value of `code`.
 
---------------------
-
 Testing
--------
+~~~~~~~
 At the moment there are only unit tests.
 
 All the tests can be run at once,
@@ -96,13 +92,13 @@ or file by file.
 --------------------
 
 Licence
--------
+=======
 This project is licensed under the MIT license.
 
 --------------------
 
 Acknowledgments
----------------
+===============
 This initially started as an adaptation of Ruslan Spivak's [tutorial](https://ruslanspivak.com/lsbasi-part1/) for writing an interpreter.
 Most of the structure of this codebase come from the tutorial, but as I've begun to understand his design decisions better I've been able to change and adapt them to fit this project.
 This [template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2) has also been helpful in understanding how to format a README and what I should include.
