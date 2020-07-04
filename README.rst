@@ -21,7 +21,6 @@ The end goal of this project is to successfully interpret the code I wrote for a
 --------------------
 
 .. contents:: **Table of Contents**
-.. section-numbering::
 
 Getting Started
 ===============
