@@ -14,7 +14,10 @@ class StructDataType(DataType):
 
 
 class Data(metaclass=DataType):
-    """Data, such as booleans, numbers, and strings."""
+    """Data from the output of the interpretation process.
+
+    :param value: The value of the data.
+    """
 
     @abc.abstractmethod
     def __init__(self, value: Optional[Any] = None) -> None:
@@ -55,9 +58,9 @@ class Boolean(Data):
     def __eq__(self, other) -> bool:
         """
         :Example:
-            >>> Boolean(False).__eq__(Boolean(False))
+            >>> Boolean(False) == (Boolean(False))
             True
-            >>> Boolean(True).__eq__(Integer(5))
+            >>> Boolean(True) == (Integer(5))
             False
         """
         return issubclass(type(other), Boolean) and self.value == other.value
@@ -129,10 +132,12 @@ class ConsList(Data):
     def __eq__(self, other) -> bool:
         """
         :Example:
-            >>> bool(ConsList([Integer(68), Boolean(False), Symbol("'sym")]))
-            True
-            >>> bool(ConsList([]))
+            >>> ConsList([Integer(68), Symbol("'sym")]) == ConsList([Integer(68), Boolean(False), Symbol("'sym")])
             False
+            >>> ConsList([Integer(68), Symbol("'sym")]) == ConsList([Integer(68), Symbol("'sym")])
+            True
+            >>> ConsList([]) == ConsList([])
+            True
         """
         return issubclass(type(other), ConsList) and self.value == other.value
 
@@ -205,43 +210,140 @@ class ConsList(Data):
 class Number(Data):
     """A number."""
 
+    @property
+    def precedence(self) -> int:
+        """An indicator of which object's method will be called for binary operations.
+
+        When performing binary operations on Numbers, the implementation on the object with the higher precedence will
+        be used.
+
+        :return: This objects precedence
+        :rtype: int
+        """
+        return 6
+
     def __init__(self, value: Union[float, int]) -> None:
         super().__init__(value)
 
 
 class Procedure(Data):
+    """A procedure.
+
+    :Example:
+        >>> Procedure('factorial')
+        #<procedure:factorial>
+    """
 
     def __init__(self, name: str) -> None:
         super().__init__(name)
 
     def __eq__(self, other) -> bool:
-        return issubclass(type(other), Procedure) and self.value == other.value
+        """Procedures are never equal to each other.
+
+        The only way to test if procedures are equal is to compare
+        the outputs of the two procedures given the same input.
+        Comparing procedures in a test should raise an error.
+
+        :Example:
+            >>> Procedure('fibonacci') == Procedure('fibonacci')
+            False
+            >>> Procedure('interesting?') == Procedure('weird?')
+            False
+        """
+        return False
 
     def __str__(self) -> str:
+        """
+        :Example:
+            >>> str(Procedure('fibonacci'))
+            '#<procedure:fibonacci>'
+        """
         return f'#<procedure:{self.value}>'
 
     def __repr__(self) -> str:
+        """
+        :Example:
+            >>> repr(Procedure('fibonacci'))
+            '#<procedure:fibonacci>'
+        """
         return self.__str__()
 
 
 class String(Data):
+    """A string.
+
+    :Example:
+        >>> String('Hello World!')
+        "Hello World!"
+        >>> String('')
+        ""
+    """
 
     def __init__(self, value: str) -> None:
         super().__init__(value)
 
     def __eq__(self, other) -> bool:
+        """
+        :Example:
+            >>> String('abc') == String('abc')
+            True
+            >>> String('Case Sensitive') == String('cAsE sEnsITiVe')
+            False
+        """
         return issubclass(type(other), String) and self.value == other.value
 
+    def __hash__(self) -> int:
+        """
+        :Example:
+            >>> type(hash(String('Hello World!')))
+            <class 'int'>
+            >>> hash(String(''))
+            0
+        """
+        return hash(self.value)
+
     def __str__(self) -> str:
+        """
+        :Example:
+            >>> str(String('Hello World!'))
+            '"Hello World!"'
+            >>> str(String(''))
+            '""'
+        """
         return f'"{self.value}"'
 
     def __repr__(self) -> str:
+        """
+        :Example:
+            >>> repr(String('Hello World!'))
+            '"Hello World!"'
+            >>> repr(String(''))
+            '""'
+        """
         return self.__str__()
 
     def __len__(self) -> int:
+        """
+        :Example:
+            >>> len(String('Hello World!'))
+            12
+            >>> len(String(''))
+            0
+        """
         return len(self.value)
 
     def __getitem__(self, item) -> str:
+        """
+        :Example:
+            >>> String('Hello World!')[1]
+            'e'
+            >>> String('Hello World!')[-1]
+            '!'
+            >>> String('')[2]
+            Traceback (most recent call last):
+              ...
+            IndexError: string index out of range
+        """
         return self.value[item]
 
     def __bool__(self) -> bool:
@@ -249,21 +351,52 @@ class String(Data):
 
 
 class Symbol(Data):
+    """A symbol.
+
+    :Example:
+        >>> Symbol("'anything")
+        'anything
+        >>> Symbol("'can=be_a-symbo1")
+        'can=be_a-symbo1
+    """
 
     def __init__(self, value: str) -> None:
         # the value includes the leading apostrophe
         super().__init__(value)
 
     def __eq__(self, other) -> bool:
+        """A symbol.
+
+        :Example:
+            >>> Symbol("'abc") == Symbol("'abc")
+            True
+            >>> Symbol("'Case Sensitive") == Symbol("'cAsE sEnsITiVe")
+            False
+        """
         return issubclass(type(other), Symbol) and self.value == other.value
 
     def __hash__(self) -> int:
+        """
+        :Example:
+            >>> type(hash(Symbol("'abc")))
+            <class 'int'>
+        """
         return hash(self.value)
 
     def __str__(self) -> str:
+        """
+        :Example:
+            >>> str(Symbol("'abc"))
+            "'abc"
+        """
         return f"{self.value}"
 
     def __repr__(self) -> str:
+        """
+        :Example:
+            >>> repr(Symbol("'abc"))
+            "'abc"
+        """
         return self.__str__()
 
 

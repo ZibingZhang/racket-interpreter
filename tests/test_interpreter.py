@@ -23,6 +23,8 @@ class TestInterpreter(unittest.TestCase):
             self.assertEqual(type(actual_data), type(expected_data))
             if issubclass(type(expected_data), InexactNumber):
                 self.assertTrue(abs(actual_data.value - expected_data.value) < 0.01)
+            elif type(expected_data) is Procedure:
+                self.assertEqual(actual_data.value, expected_data.value)
             else:
                 self.assertEqual(actual_data, expected_data)
 
