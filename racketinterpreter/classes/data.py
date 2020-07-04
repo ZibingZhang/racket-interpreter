@@ -1,4 +1,5 @@
 from __future__ import annotations
+import abc
 import fractions as f
 import functools
 from typing import Any, List, Optional, Union
@@ -7,23 +8,21 @@ from typing import Any, List, Optional, Union
 class DataType(type):
     """The metaclass of a class representing data."""
 
-    pass
-
 
 class StructDataType(DataType):
     """The metaclass of a class representing a struct."""
-
-    pass
 
 
 class Data(metaclass=DataType):
     """Data, such as booleans, numbers, and strings."""
 
+    @abc.abstractmethod
     def __init__(self, value: Optional[Any] = None) -> None:
         self.value = value
 
 
 class StructDataFactory:
+    """A factory for creating struct data types."""
 
     @staticmethod
     def create(struct_name: str, fields: List[str]) -> StructDataType:
@@ -206,15 +205,14 @@ class ConsList(Data):
 class Number(Data):
     """A number."""
 
-    @property
-    def precedence(self) -> int:
-        return 6
+    def __init__(self, value: Union[float, int]) -> None:
+        super().__init__(value)
 
 
 class Procedure(Data):
 
-    def __init__(self, value: str) -> None:
-        super().__init__(value)
+    def __init__(self, name: str) -> None:
+        super().__init__(name)
 
     def __eq__(self, other) -> bool:
         return issubclass(type(other), Procedure) and self.value == other.value
@@ -271,9 +269,6 @@ class Symbol(Data):
 
 @functools.total_ordering
 class RealNumber(Number):
-
-    def __init__(self, value: Union[float, int]) -> None:
-        super().__init__(value)
 
     @property
     def precedence(self) -> int:
@@ -333,9 +328,6 @@ class RealNumber(Number):
 
 class InexactNumber(RealNumber):
 
-    def __init__(self, value: Union[float, int]) -> None:
-        super().__init__(value)
-
     @property
     def precedence(self) -> int:
         return 4
@@ -373,6 +365,9 @@ class InexactNumber(RealNumber):
 
 class ExactNumber(RealNumber):
 
+    def __init__(self, numerator: int, denominator: int) -> None:
+        super().__init__(numerator if denominator == 1 else numerator / denominator)
+
     @property
     def precedence(self) -> int:
         return 3
@@ -385,7 +380,7 @@ class Rational(ExactNumber):
         return 2
 
     def __init__(self, numerator: int, denominator: int) -> None:
-        super().__init__(numerator / denominator)
+        super().__init__(numerator, denominator)
         self.numerator = numerator
         self.denominator = denominator
 
@@ -485,7 +480,7 @@ class Integer(ExactNumber):
         return 1
 
     def __init__(self, value: int) -> None:
-        super().__init__(value)
+        super().__init__(value, 1)
 
     def __str__(self) -> str:
         return str(self.value)
