@@ -11,13 +11,8 @@ if TYPE_CHECKING:
 
 class StringHuh(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
+    LOWER = 1
+    UPPER = 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:

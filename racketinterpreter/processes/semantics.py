@@ -565,8 +565,8 @@ class SemanticAnalyzer(ast.ASTVisitor):
         received = actual_params_len
         if proc_name in BUILT_IN_PROCS.keys():
             built_in_proc = BUILT_IN_PROCS[proc_name]
-            lower = built_in_proc.lower()
-            upper = built_in_proc.upper()
+            lower = built_in_proc.LOWER
+            upper = built_in_proc.UPPER
 
             if upper is None:
                 if lower <= received:

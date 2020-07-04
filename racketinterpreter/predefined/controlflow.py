@@ -11,13 +11,8 @@ if TYPE_CHECKING:
 
 class If(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 3
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 3
+    LOWER = 3
+    UPPER = 3
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Data:

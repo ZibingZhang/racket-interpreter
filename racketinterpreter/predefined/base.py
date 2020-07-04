@@ -12,18 +12,13 @@ if TYPE_CHECKING:
 
 
 class BuiltInProc(abc.ABC):
+    """A builtin procedure."""
 
-    @staticmethod
-    @abc.abstractmethod
-    def lower() -> int:
-        """Lower bound on number of formal_params."""
-        pass
+    #: Lower bound on the number of arguments expected.
+    LOWER = 1
 
-    @staticmethod
-    @abc.abstractmethod
-    def upper() -> Optional[int]:
-        """Upper bound on number of formal_params (None indicates no bound)."""
-        pass
+    #: Upper bound on the number of arguments expected.
+    UPPER = 1
 
     @staticmethod
     @abc.abstractmethod

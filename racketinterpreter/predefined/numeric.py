@@ -14,13 +14,8 @@ if TYPE_CHECKING:
 
 class SymbolPlus(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 0
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 0
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
@@ -47,13 +42,8 @@ class SymbolPlus(BuiltInProc):
 
 class SymbolMinus(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 1
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
@@ -83,13 +73,8 @@ class SymbolMinus(BuiltInProc):
 
 class SymbolMultiply(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 0
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 0
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
@@ -120,13 +105,8 @@ class SymbolMultiply(BuiltInProc):
 
 class SymbolDivide(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 1
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
@@ -162,13 +142,8 @@ class SymbolDivide(BuiltInProc):
 
 class SymbolEqual(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 1
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
@@ -200,13 +175,8 @@ class SymbolEqual(BuiltInProc):
 
 class SymbolLessThan(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 1
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
@@ -240,13 +210,8 @@ class SymbolLessThan(BuiltInProc):
 
 class SymbolGreaterThan(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 1
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
@@ -280,13 +245,8 @@ class SymbolGreaterThan(BuiltInProc):
 
 class SymbolLessEqualThan(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 1
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
@@ -320,13 +280,8 @@ class SymbolLessEqualThan(BuiltInProc):
 
 class SymbolGreaterEqualThan(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 1
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
@@ -361,14 +316,6 @@ class SymbolGreaterEqualThan(BuiltInProc):
 class Abs(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -384,14 +331,6 @@ class Abs(BuiltInProc):
 
 
 class Add1(BuiltInProc):
-
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
@@ -411,14 +350,6 @@ class Add1(BuiltInProc):
 class Ceiling(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -435,13 +366,8 @@ class Ceiling(BuiltInProc):
 
 class CurrentSeconds(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 0
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 0
+    LOWER = 0
+    UPPER = 0
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
@@ -450,14 +376,6 @@ class CurrentSeconds(BuiltInProc):
 
 
 class EvenHuh(BuiltInProc):
-
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
@@ -477,14 +395,6 @@ class EvenHuh(BuiltInProc):
 class ExactToInexact(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -500,14 +410,6 @@ class ExactToInexact(BuiltInProc):
 
 
 class ExactHuh(BuiltInProc):
-
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
@@ -527,14 +429,6 @@ class ExactHuh(BuiltInProc):
 class Exp(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -550,14 +444,6 @@ class Exp(BuiltInProc):
 
 
 class Floor(BuiltInProc):
-
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
@@ -576,13 +462,8 @@ class Floor(BuiltInProc):
 
 class Gcd(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 0
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 0
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Integer:
@@ -613,14 +494,6 @@ class Gcd(BuiltInProc):
 class IntegerHuh(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -631,13 +504,8 @@ class IntegerHuh(BuiltInProc):
 
 class Lcm(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 0
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 0
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Integer:
@@ -669,14 +537,6 @@ class Log(BuiltInProc):
     # TODO: should be 1 to 2
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -693,13 +553,8 @@ class Log(BuiltInProc):
 
 class Max(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 1
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.RealNumber:
@@ -728,13 +583,8 @@ class Max(BuiltInProc):
 
 class Min(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 1
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.RealNumber:
@@ -763,13 +613,8 @@ class Min(BuiltInProc):
 
 class Modulo(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 2
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 2
+    LOWER = 2
+    UPPER = 2
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Integer:
@@ -798,14 +643,6 @@ class Modulo(BuiltInProc):
 class NegativeHuh(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -821,14 +658,6 @@ class NegativeHuh(BuiltInProc):
 
 
 class NumberToString(BuiltInProc):
-
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.String:
@@ -848,14 +677,6 @@ class NumberToString(BuiltInProc):
 class NumberHuh(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -865,14 +686,6 @@ class NumberHuh(BuiltInProc):
 
 
 class OddHuh(BuiltInProc):
-
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
@@ -892,14 +705,6 @@ class OddHuh(BuiltInProc):
 class PositiveHuh(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -917,14 +722,6 @@ class PositiveHuh(BuiltInProc):
 class RationalHuh(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -936,14 +733,6 @@ class RationalHuh(BuiltInProc):
 class RealHuh(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -953,14 +742,6 @@ class RealHuh(BuiltInProc):
 
 
 class Round(BuiltInProc):
-
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Integer:
@@ -978,14 +759,6 @@ class Round(BuiltInProc):
 
 
 class Sgn(BuiltInProc):
-
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Integer:
@@ -1011,14 +784,6 @@ class Sgn(BuiltInProc):
 class Sqr(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -1035,14 +800,6 @@ class Sqr(BuiltInProc):
 
 
 class Sqrt(BuiltInProc):
-
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
@@ -1067,14 +824,6 @@ class Sqrt(BuiltInProc):
 class Sub1(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -1090,14 +839,6 @@ class Sub1(BuiltInProc):
 
 
 class ZeroHuh(BuiltInProc):
-
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:

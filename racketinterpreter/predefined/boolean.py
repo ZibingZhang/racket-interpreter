@@ -12,13 +12,8 @@ if TYPE_CHECKING:
 
 class And(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 0
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 0
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
@@ -45,14 +40,6 @@ class And(BuiltInProc):
 class BooleanToString(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.String:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -69,13 +56,8 @@ class BooleanToString(BuiltInProc):
 
 class BooleanSymbolEqualHuh(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 1
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
@@ -108,14 +90,6 @@ class BooleanSymbolEqualHuh(BuiltInProc):
 class BooleanHuh(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -127,14 +101,6 @@ class BooleanHuh(BuiltInProc):
 class FalseHuh(BuiltInProc):
 
     @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
-
-    @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
@@ -144,14 +110,6 @@ class FalseHuh(BuiltInProc):
 
 
 class Not(BuiltInProc):
-
-    @staticmethod
-    def lower() -> int:
-        return 1
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return 1
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
@@ -170,13 +128,8 @@ class Not(BuiltInProc):
 
 class Or(BuiltInProc):
 
-    @staticmethod
-    def lower() -> int:
-        return 0
-
-    @staticmethod
-    def upper() -> Optional[int]:
-        return None
+    LOWER = 0
+    UPPER = None
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
