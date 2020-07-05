@@ -116,7 +116,8 @@ class Error(Exception):
                 # d.InexactNumber, no functions should expect this type
                 # d.ExactNumber, no functions should expect this type
                 d.Rational: 'rational',  # no functions should expect this type... but apparently gcd should?
-                d.Integer: 'integer'
+                d.Integer: 'integer',
+                d.NaturalNumber: 'natural number'
             }
 
             name = kwargs.get('name')

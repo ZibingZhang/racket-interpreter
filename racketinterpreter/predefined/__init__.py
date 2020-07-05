@@ -17,14 +17,14 @@ from racketinterpreter.predefined.list import (
     Rest
 )
 from racketinterpreter.predefined.numeric import (
+    SymbolMultiply,
     SymbolPlus,
     SymbolMinus,
-    SymbolMultiply,
     SymbolDivide,
-    SymbolEqual,
     SymbolLessThan,
-    SymbolGreaterThan,
     SymbolLessEqualThan,
+    SymbolEqual,
+    SymbolGreaterThan,
     SymbolGreaterEqualThan,
     Abs,
     Add1,
@@ -57,6 +57,12 @@ from racketinterpreter.predefined.numeric import (
     ZeroHuh
 )
 from racketinterpreter.predefined.string import (
+    StringAlphabeticHuh,
+    StringAppend,
+    StringContainsHuh,
+    StringCopy,
+    StringDowncase,
+    StringIth,
     StringHuh
 )
 
@@ -65,14 +71,14 @@ BUILT_IN_PROCS = {
     # control flow
     'if': If(),
     # numeric
+    '*': SymbolMultiply(),
     '+': SymbolPlus(),
     '-': SymbolMinus(),
-    '*': SymbolMultiply(),
     '/': SymbolDivide(),
-    '=': SymbolEqual(),
     '<': SymbolLessThan(),
-    '>': SymbolGreaterThan(),
     '<=': SymbolLessEqualThan(),
+    '=': SymbolEqual(),
+    '>': SymbolGreaterThan(),
     '>=': SymbolGreaterEqualThan(),
     'abs': Abs(),
     'add1': Add1(),
@@ -112,11 +118,18 @@ BUILT_IN_PROCS = {
     'not': Not(),
     'or': Or(),
     # string
-    # 'string-alphabetic?': StringAlphabeticHuh(),
-    # 'string-append': StringAppend(),
-    # 'string-contains?': StringContainsHuh(0,
-    # 'string-downcase': StringDowncase(),
-    # 'string-ith': StringIth(),
+    'string-alphabetic?': StringAlphabeticHuh(),
+    'string-append': StringAppend(),
+    # 'string-ci<=?': StringCiSymbolLessEqualHuh(),
+    # 'string-ci<?': StringCiSymbolLessHuh(),
+    # 'string-ci=?': StringCiSymbolEqualHuh(),
+    # 'string-ci>=?': StringCiSymbolGreaterEqualHuh(),
+    # 'string-ci>?': StringCiSymbolGreaterHuh(),
+    # 'string-contains-ci?': StringContainsCiHuh(),
+    'string-contains?': StringContainsHuh(),
+    'string-copy': StringCopy(),
+    'string-downcase': StringDowncase(),
+    'string-ith': StringIth(),
     # 'string-length': StringLength(),
     # 'string-lower-case?': StringLowerCaseHuh(),
     # 'string-numeric?': StringNumericHuh(),

@@ -12,6 +12,38 @@ if TYPE_CHECKING:
     from racketinterpreter.processes.interpreting import Interpreter
 
 
+class SymbolMultiply(BuiltInProc):
+
+    LOWER = 0
+    UPPER = None
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+        evaluated_params = []
+        for idx, param in enumerate(actual_params):
+            param_value = interpreter.visit(param)
+            param_type = type(param_value)
+
+            if not issubclass(param_type, d.Number):
+                raise err.EvaluateBuiltinProcedureError(
+                    idx=idx,
+                    expected=d.Number,
+                    given=param_value
+                )
+
+            evaluated_params.append(param_value)
+
+        result = d.Integer(1)
+        for param_value in evaluated_params:
+            if param_value == d.Integer(0):
+                result = d.Integer(0)
+                break
+
+            result *= param_value
+
+        return result
+
+
 class SymbolPlus(BuiltInProc):
 
     LOWER = 0
@@ -71,38 +103,6 @@ class SymbolMinus(BuiltInProc):
         return result
 
 
-class SymbolMultiply(BuiltInProc):
-
-    LOWER = 0
-    UPPER = None
-
-    @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
-        evaluated_params = []
-        for idx, param in enumerate(actual_params):
-            param_value = interpreter.visit(param)
-            param_type = type(param_value)
-
-            if not issubclass(param_type, d.Number):
-                raise err.EvaluateBuiltinProcedureError(
-                    idx=idx,
-                    expected=d.Number,
-                    given=param_value
-                )
-
-            evaluated_params.append(param_value)
-
-        result = d.Integer(1)
-        for param_value in evaluated_params:
-            if param_value == d.Integer(0):
-                result = d.Integer(0)
-                break
-
-            result *= param_value
-
-        return result
-
-
 class SymbolDivide(BuiltInProc):
 
     LOWER = 1
@@ -136,39 +136,6 @@ class SymbolDivide(BuiltInProc):
             result = evaluated_params[0]
             for param_value in evaluated_params[1:]:
                 result /= param_value
-
-        return result
-
-
-class SymbolEqual(BuiltInProc):
-
-    LOWER = 1
-    UPPER = None
-
-    @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
-        evaluated_params = []
-        for idx, param in enumerate(actual_params):
-            param_value = interpreter.visit(param)
-            param_type = type(param_value)
-
-            if not issubclass(param_type, d.Number):
-                raise err.EvaluateBuiltinProcedureError(
-                    idx=idx,
-                    expected=d.Number,
-                    given=param_value
-                )
-
-            evaluated_params.append(param_value)
-
-        first_param_value = evaluated_params[0]
-
-        result = d.Boolean(True)
-
-        for param_value in evaluated_params:
-            if first_param_value != param_value:
-                result = d.Boolean(False)
-                break
 
         return result
 
@@ -208,41 +175,6 @@ class SymbolLessThan(BuiltInProc):
         return result
 
 
-class SymbolGreaterThan(BuiltInProc):
-
-    LOWER = 1
-    UPPER = None
-
-    @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
-        evaluated_params = []
-        for idx, param in enumerate(actual_params):
-            param_value = interpreter.visit(param)
-            param_type = type(param_value)
-
-            if not issubclass(param_type, d.RealNumber):
-                raise err.EvaluateBuiltinProcedureError(
-                    idx=idx,
-                    expected=d.RealNumber,
-                    given=param_value
-                )
-
-            evaluated_params.append(param_value)
-
-        result = d.Boolean(True)
-        prev_value = evaluated_params[0]
-
-        for param_value in evaluated_params[1:]:
-            current_value = param_value
-            if not prev_value > current_value:
-                result = d.Boolean(False)
-                break
-
-            prev_value = current_value
-
-        return result
-
-
 class SymbolLessEqualThan(BuiltInProc):
 
     LOWER = 1
@@ -270,6 +202,74 @@ class SymbolLessEqualThan(BuiltInProc):
         for param_value in evaluated_params[1:]:
             current_value = param_value
             if not prev_value <= current_value:
+                result = d.Boolean(False)
+                break
+
+            prev_value = current_value
+
+        return result
+
+
+class SymbolEqual(BuiltInProc):
+
+    LOWER = 1
+    UPPER = None
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+        evaluated_params = []
+        for idx, param in enumerate(actual_params):
+            param_value = interpreter.visit(param)
+            param_type = type(param_value)
+
+            if not issubclass(param_type, d.Number):
+                raise err.EvaluateBuiltinProcedureError(
+                    idx=idx,
+                    expected=d.Number,
+                    given=param_value
+                )
+
+            evaluated_params.append(param_value)
+
+        first_param_value = evaluated_params[0]
+
+        result = d.Boolean(True)
+
+        for param_value in evaluated_params:
+            if first_param_value != param_value:
+                result = d.Boolean(False)
+                break
+
+        return result
+
+
+class SymbolGreaterThan(BuiltInProc):
+
+    LOWER = 1
+    UPPER = None
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+        evaluated_params = []
+        for idx, param in enumerate(actual_params):
+            param_value = interpreter.visit(param)
+            param_type = type(param_value)
+
+            if not issubclass(param_type, d.RealNumber):
+                raise err.EvaluateBuiltinProcedureError(
+                    idx=idx,
+                    expected=d.RealNumber,
+                    given=param_value
+                )
+
+            evaluated_params.append(param_value)
+
+        result = d.Boolean(True)
+        prev_value = evaluated_params[0]
+
+        for param_value in evaluated_params[1:]:
+            current_value = param_value
+            if not prev_value > current_value:
                 result = d.Boolean(False)
                 break
 

@@ -182,7 +182,7 @@ class ConsList(Data):
         """
         return len(self.value)
 
-    def __getitem__(self, item: Union[int, slice]) -> Data:
+    def __getitem__(self, item: Union[int, slice, Integer]) -> Data:
         """
         :Example:
             >>> ConsList([Integer(68), Boolean(False), Symbol("'sym")])[1]
@@ -194,6 +194,9 @@ class ConsList(Data):
               ...
             IndexError: list index out of range
         """
+        if type(item) is Integer:
+            item = item.value
+
         result = self.value[item]
 
         if type(item) is slice:
@@ -337,7 +340,7 @@ class String(Data):
         """
         return len(self.value)
 
-    def __getitem__(self, item) -> str:
+    def __getitem__(self, item: Union[int, slice, Integer]) -> str:
         """
         :Example:
             >>> String('Hello World!')[1]
@@ -349,10 +352,30 @@ class String(Data):
               ...
             IndexError: string index out of range
         """
-        return self.value[item]
+        if type(item) is Integer:
+            item = item.value
+
+        result = self.value[item]
+
+        if type(item) is slice:
+            result = ConsList(result)
+
+        return result
 
     def __bool__(self) -> bool:
         return len(self.value) > 0
+
+    def __iadd__(self, other: String) -> String:
+        return String(self.value + other.value)
+
+    def __contains__(self, item: String) -> Boolean:
+        return Boolean(item.value in self.value)
+
+    def copy(self) -> String:
+        return String(self.value)
+
+    def lower(self) -> String:
+        return String(self.value.lower())
 
 
 class Symbol(Data):
@@ -667,3 +690,9 @@ class Integer(ExactNumber):
 
     def __abs__(self) -> Integer:
         return Integer(abs(self.value))
+
+
+# the natural numbers are defined starting at zero
+class NaturalNumber(Integer):
+
+    pass
