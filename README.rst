@@ -89,10 +89,11 @@ These are the steps to transpile the documentation to an easily readable HTML fo
 
 The homepage for the documentation can be found at ``_build/html/index.html``.
 
-If the documention needs to be regenerated for any reason, make sure to delete the apidoc directory first.
+If the documention needs to be regenerated for any reason, some directories need to be deleted first.
 
 .. code:: shell
 
+    $ rm -r _build
     $ rm -r apidoc
     $ sphinx-apidoc -eo apidoc/ racketinterpreter/ --templatedir docs/templates
     $ make html

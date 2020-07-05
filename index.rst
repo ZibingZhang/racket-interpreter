@@ -14,4 +14,5 @@ Welcome to racketinterpreter's documentation!
    README <README>
    Packages <apidoc/modules>
    docs/release
+   docs/files
    LICENSE

@@ -4,7 +4,7 @@ Release
 
 These are the steps needed to release a new version of the package on PyPI.
 
----------------
+--------------------
 
 .. contents:: **Table of Contents**
 
@@ -15,7 +15,7 @@ The version numbers follow the semantic versioning system, the specifications of
 
 .. _here: https://semver.org/
 
-The `setup.py` file contains some metadata about the package including the version number which needs to be incremented.
+The ``setup.py`` file contains some metadata about the package including the version number which needs to be incremented.
 
 Tag the commit which contains the final version of the code being released.
 
@@ -27,7 +27,7 @@ Tag the commit which contains the final version of the code being released.
 Generating Distribution Archives
 ================================
 
-Install the latest versions of `setuptools` and `wheel`.
+Install the latest versions of ``setuptools`` and ``wheel``.
 
 .. code:: shell
 
@@ -39,7 +39,7 @@ Generate distribution archives.
 
     $ python setup.py sdist bdist_wheel
 
-There should now be two files in the `dist` directory.
+There should now be two files in the ``dist`` directory.
 
 Upload the Distribution Archives
 ================================
@@ -52,7 +52,7 @@ Install Twine.
 
     $ python -m pip install --user --upgrade twine
 
-Upload all of the archives under `dist` to Test PyPI.
+Upload all of the archives under ``dist`` to Test PyPI.
 
 .. code:: shell
 
@@ -69,7 +69,7 @@ Install the package to test it.
 
     >>> import racketinterpreter
 
-Upload all of the archives under `dist` to PyPI.
+Upload all of the archives under ``dist`` to PyPI.
 
 .. code:: shell
 
