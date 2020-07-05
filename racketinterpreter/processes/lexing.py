@@ -8,6 +8,7 @@ class Lexer:
     NON_ID_CHARS = ['"', "'", '`', '(', ')', '[', ']', '{', '}', '|', ';', '#']
 
     def __init__(self, text: str) -> None:
+        # TODO: make these private fields?
         self.text = text
         self.pos = 0
         self.current_char = self.text[self.pos]
@@ -18,8 +19,10 @@ class Lexer:
         self.tokens = []
         self.current_token_idx = -1
 
+        self.paren_analyzer = ParenthesesAnalyzer()
+
     def process(self) -> None:
-        paren_analyzer = ParenthesesAnalyzer()
+        paren_analyzer = self.paren_analyzer
 
         while True:
             token = self._get_next_token()
@@ -44,6 +47,7 @@ class Lexer:
             token = self.tokens[self.current_token_idx + pos_ahead]
             return token
         except IndexError as e:
+            # TODO: this might be possible to trigger, look into it
             raise err.IllegalStateError
 
     def _get_next_token(self) -> t.Token:
@@ -57,12 +61,16 @@ class Lexer:
                 self._skip_line_comment()
                 continue
 
-            if self.current_char == '#' and self._peek() == '|':
+            if self.current_char == '#' and self._peek() == ';':
                 self._skip_block_comment()
                 continue
 
-            if self.current_char.isdigit() or self.current_char == '.' \
-                    or (self.current_char == '-' and (self._peek().isdigit() or self._peek() == '.')):
+            if self.current_char == '#' and self._peek() == '|':
+                self._skip_multi_line_comment()
+                continue
+
+            if (self.current_char.isdigit() or self.current_char == '.'
+                    or (self.current_char == '-' and (self._peek().isdigit() or self._peek() == '.'))):
                 return self._number()
 
             if self.current_char not in self.NON_ID_CHARS:
@@ -101,6 +109,7 @@ class Lexer:
                 self._advance()
                 return token
 
+            # TODO: having nested block comments breaks
             raise err.IllegalStateError
 
         return t.Token(t.TokenType.EOF, None, self.line_no, self.column)
@@ -188,8 +197,8 @@ class Lexer:
         numerator = ''
         denominator = ''
 
-        while self.current_char is not None and not self.current_char.isspace() \
-                and self.current_char not in self.NON_ID_CHARS:
+        while (self.current_char is not None and not self.current_char.isspace()
+                and self.current_char not in self.NON_ID_CHARS):
             if self.current_char == '/':
                 is_rational = True
                 numerator = number
@@ -303,14 +312,16 @@ class Lexer:
                 self._skip_whitespace()
             elif self.current_char == ';':
                 self._skip_line_comment()
-            elif self.current_char == '#' and self._peek() == '|':
+            elif self.current_char == '#' and self._peek() == ';':
                 self._skip_block_comment()
+            elif self.current_char == '#' and self._peek() == '|':
+                self._skip_multi_line_comment()
             else:
                 break
 
         current_char = self.current_char
-        if current_char.isdigit() or current_char == '.' \
-                or (self.current_char == '-' and (self._peek().isdigit() or self._peek() == '.')):
+        if (current_char.isdigit() or current_char == '.'
+                or (self.current_char == '-' and (self._peek().isdigit() or self._peek() == '.'))):
             return self._number()
         elif current_char not in self.NON_ID_CHARS:
             token = self._identifier()
@@ -373,6 +384,32 @@ class Lexer:
         self._advance()
 
     def _skip_block_comment(self) -> None:
+        self._advance()
+        self._advance()
+
+        if self.current_char.isspace():
+            self._skip_whitespace()
+
+        if self.current_char != '(':
+            self._get_next_token()
+        else:
+            paren_analyzer = self.paren_analyzer
+            paren_stack = paren_analyzer.paren_stack
+            init_paren_stack_len = len(paren_stack)
+
+            token = self._get_next_token()
+            self.paren_analyzer.received_paren(token)
+
+            while len(paren_stack) > init_paren_stack_len:
+                token = self._get_next_token()
+
+                if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
+                    self.paren_analyzer.received_paren(token)
+                elif token.type is t.TokenType.EOF:
+                    self.paren_analyzer.reached_eof(token)
+                    break
+
+    def _skip_multi_line_comment(self) -> None:
         self._advance()
         self._advance()
 
