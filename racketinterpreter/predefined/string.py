@@ -11,9 +11,6 @@ if TYPE_CHECKING:
 
 class StringHuh(BuiltInProc):
 
-    LOWER = 1
-    UPPER = 1
-
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])

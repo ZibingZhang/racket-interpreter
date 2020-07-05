@@ -1,12 +1,60 @@
-from racketinterpreter.predefined.controlflow import If
+from racketinterpreter.predefined.controlflow import (
+    If
+)
 from racketinterpreter.predefined.boolean import (
-    And, BooleanHuh, BooleanSymbolEqualHuh, BooleanToString, FalseHuh, Or, Not
+    And,
+    BooleanHuh,
+    BooleanSymbolEqualHuh,
+    BooleanToString,
+    FalseHuh,
+    Or,
+    Not
+)
+from racketinterpreter.predefined.list import (
+    ConsHuh,
+    EmptyHuh,
+    First,
+    Rest
 )
 from racketinterpreter.predefined.numeric import (
-    SymbolPlus, SymbolMinus, SymbolMultiply, SymbolDivide, SymbolEqual, SymbolLessThan, SymbolGreaterThan,
-    SymbolLessEqualThan, SymbolGreaterEqualThan, Abs, Add1, Ceiling, CurrentSeconds, EvenHuh, ExactToInexact, ExactHuh,
-    Exp, Floor, Gcd, IntegerHuh, Lcm, Log, Max, Min, Modulo, NegativeHuh, NumberToString, NumberHuh, OddHuh,
-    PositiveHuh, RationalHuh, RealHuh, Round, Sgn, Sqr, Sqrt, Sub1, ZeroHuh
+    SymbolPlus,
+    SymbolMinus,
+    SymbolMultiply,
+    SymbolDivide,
+    SymbolEqual,
+    SymbolLessThan,
+    SymbolGreaterThan,
+    SymbolLessEqualThan,
+    SymbolGreaterEqualThan,
+    Abs,
+    Add1,
+    Ceiling,
+    CurrentSeconds,
+    EvenHuh,
+    ExactToInexact,
+    ExactHuh,
+    Exp,
+    Floor,
+    Gcd,
+    IntegerHuh,
+    Lcm,
+    Log,
+    Max,
+    Min,
+    Modulo,
+    NegativeHuh,
+    NumberToString,
+    NumberHuh,
+    OddHuh,
+    PositiveHuh,
+    RationalHuh,
+    RealHuh,
+    Round,
+    Sgn,
+    Sqr,
+    Sqrt,
+    Sub1,
+    ZeroHuh
 )
 from racketinterpreter.predefined.string import (
     StringHuh
@@ -82,4 +130,9 @@ BUILT_IN_PROCS = {
     # 'string>?': StringSymbolGreaterHuh(),
     'string?': StringHuh(),
     # 'substring': Substring()
+    # list
+    'cons?': ConsHuh(),
+    'empty?': EmptyHuh(),
+    'first': First(),
+    'rest': Rest()
 }

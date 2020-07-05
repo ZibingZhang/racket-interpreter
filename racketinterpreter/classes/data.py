@@ -182,7 +182,7 @@ class ConsList(Data):
         """
         return len(self.value)
 
-    def __getitem__(self, item: int) -> Data:
+    def __getitem__(self, item: Union[int, slice]) -> Data:
         """
         :Example:
             >>> ConsList([Integer(68), Boolean(False), Symbol("'sym")])[1]
@@ -194,7 +194,12 @@ class ConsList(Data):
               ...
             IndexError: list index out of range
         """
-        return self.value[item]
+        result = self.value[item]
+
+        if type(item) is slice:
+            result = ConsList(result)
+
+        return result
 
     def __bool__(self) -> bool:
         """
