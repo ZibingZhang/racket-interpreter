@@ -1,32 +1,12 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List
 import unittest
 from racketinterpreter.classes.data import (
     Boolean, ConsList, InexactNumber, Integer, Procedure, Rational, String, Symbol
 )
-from racketinterpreter.util import Util
-
-if TYPE_CHECKING:
-    from racketinterpreter.classes.data import Data
+from tests import util
 
 
 class TestInterpreter(unittest.TestCase):
-
-    def interpret_text(self, text: str, expected: List[Data]):
-        output, _ = Util.text_to_interpreter_result(text)
-
-        output_len = len(output)
-        expected_len = len(expected)
-        self.assertEqual(output_len, expected_len)
-
-        for actual_data, expected_data in zip(output, expected):
-            self.assertEqual(type(actual_data), type(expected_data))
-            if issubclass(type(expected_data), InexactNumber):
-                self.assertTrue(abs(actual_data.value - expected_data.value) < 0.01)
-            elif type(expected_data) is Procedure:
-                self.assertEqual(actual_data.value, expected_data.value)
-            else:
-                self.assertEqual(actual_data, expected_data)
 
     def test_boolean(self):
         text = \
@@ -46,7 +26,7 @@ class TestInterpreter(unittest.TestCase):
             Boolean(False),
             Boolean(False)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_cons_list(self):
         text = \
@@ -60,7 +40,7 @@ class TestInterpreter(unittest.TestCase):
             ConsList([Integer(1)]),
             ConsList([Integer(1), Integer(2), Integer(3)])
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_number(self):
         text = \
@@ -88,7 +68,7 @@ class TestInterpreter(unittest.TestCase):
             InexactNumber(0.0),
             InexactNumber(0.01)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_number_order(self):
         text = \
@@ -104,7 +84,7 @@ class TestInterpreter(unittest.TestCase):
             Boolean(True),
             Boolean(True)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_procedure(self):
         text = \
@@ -120,7 +100,7 @@ class TestInterpreter(unittest.TestCase):
             Procedure('add1'),
             Procedure('f')
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_string(self):
         text = \
@@ -138,7 +118,7 @@ class TestInterpreter(unittest.TestCase):
             String('3'),
             String("'")
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_struct(self):
         # since structs dynamically generate classes,
@@ -170,7 +150,7 @@ class TestInterpreter(unittest.TestCase):
             Boolean(True),
             InexactNumber(0.3)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_symbol(self):
         text = \
@@ -186,7 +166,7 @@ class TestInterpreter(unittest.TestCase):
             String('this is a string'),
             Boolean(True)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_scope(self):
         text = \
@@ -200,7 +180,7 @@ class TestInterpreter(unittest.TestCase):
             Integer(0),
             Integer(6)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
         text = \
             '''
@@ -212,7 +192,7 @@ class TestInterpreter(unittest.TestCase):
         expected = [
             Integer(3)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_recursion(self):
         text = \
@@ -228,7 +208,7 @@ class TestInterpreter(unittest.TestCase):
             Integer(1),
             Integer(3628800)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
         text = \
             '''
@@ -255,7 +235,7 @@ class TestInterpreter(unittest.TestCase):
             Integer(3),
             # Integer(8670007398507948658051921)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_builtin_if(self):
         text = \
@@ -267,7 +247,7 @@ class TestInterpreter(unittest.TestCase):
             Integer(1),
             Integer(2)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_builtin_add1(self):
         text = \
@@ -279,7 +259,7 @@ class TestInterpreter(unittest.TestCase):
             Rational(-1, 2),
             Integer(3)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_builtin_and(self):
         text = \
@@ -297,7 +277,7 @@ class TestInterpreter(unittest.TestCase):
             Boolean(True),
             Boolean(False)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_builtin_symbol_plus(self):
         text = \
@@ -319,7 +299,7 @@ class TestInterpreter(unittest.TestCase):
             InexactNumber(1),
             Integer(1)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_builtin_symbol_minus(self):
         text = \
@@ -339,7 +319,7 @@ class TestInterpreter(unittest.TestCase):
             InexactNumber(1),
             Integer(1)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_builtin_symbol_multiply(self):
         text = \
@@ -359,7 +339,7 @@ class TestInterpreter(unittest.TestCase):
             Integer(1),
             Integer(0),
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
 
     def test_builtin_symbol_division(self):
         text = \
@@ -379,4 +359,4 @@ class TestInterpreter(unittest.TestCase):
             Integer(1),
             InexactNumber(1.0)
         ]
-        self.interpret_text(text, expected)
+        util.interpret_text(self, text, expected)
