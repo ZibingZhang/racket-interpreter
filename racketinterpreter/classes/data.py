@@ -55,7 +55,7 @@ class Boolean(Data):
     def __init__(self, value: bool) -> None:
         super().__init__(value)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         """
         :Example:
             >>> Boolean(False) == (Boolean(False))
@@ -129,7 +129,7 @@ class ConsList(Data):
     def __init__(self, value: List[Data]) -> None:
         super().__init__(value)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         """
         :Example:
             >>> ConsList([Integer(68), Symbol("'sym")]) == ConsList([Integer(68), Boolean(False), Symbol("'sym")])
@@ -225,13 +225,30 @@ class Number(Data):
         When performing binary operations on Numbers, the implementation on the object with the higher precedence will
         be used.
 
-        :return: This objects precedence
+        :return: This object's precedence
         :rtype: int
         """
         return 6
 
     def __init__(self, value: Union[float, int]) -> None:
         super().__init__(value)
+
+    def __add__(self, other: Number) -> Number: ...
+
+    def __sub__(self, other: Number) -> Number: ...
+
+    def __mul__(self, other: Number) -> Number: ...
+
+    def __truediv__(self, other: Number) -> Number: ...
+
+    def __neg__(self) -> Number: ...
+
+    def is_integer(self) -> bool:
+        """Is this number an integer?
+
+        :return: True if this number is an integer
+        :rtype: bool
+        """
 
 
 class Procedure(Data):
@@ -245,7 +262,7 @@ class Procedure(Data):
     def __init__(self, name: str) -> None:
         super().__init__(name)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         """Procedures are never equal to each other.
 
         The only way to test if procedures are equal is to compare
@@ -290,7 +307,7 @@ class String(Data):
     def __init__(self, value: str) -> None:
         super().__init__(value)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         """
         :Example:
             >>> String('abc') == String('abc')
@@ -363,19 +380,61 @@ class String(Data):
         return result
 
     def __bool__(self) -> bool:
+        """
+        :Example:
+            >>> bool(String('Hello World!'))
+            True
+            >>> bool(String(''))
+            False
+        """
         return len(self.value) > 0
 
     def __iadd__(self, other: String) -> String:
+        """
+        :Example:
+            >>> string = String('Hello')
+            >>> string += String(' World!')
+            >>> string
+            "Hello World!"
+        """
         return String(self.value + other.value)
 
     def __contains__(self, item: String) -> Boolean:
+        """
+        :Example:
+            >>> String('Hello') in String('Hello World!')
+            True
+            >>> String('world') in String('Hello World!')
+            False
+        """
         return Boolean(item.value in self.value)
 
     def copy(self) -> String:
+        """Create a copy of this string.
+
+        :Example:
+            >>> String('Hello World!').copy()
+            "Hello World!"
+        """
         return String(self.value)
 
     def lower(self) -> String:
+        """Create a copy of a lowercase version of this string.
+
+        :Example:
+            >>> String('Hello World!').lower()
+            "hello world!"
+        """
         return String(self.value.lower())
+
+    def upper(self) -> String:
+        """Create a copy of an uppercase version of this string.
+
+        :Example:
+            >>> String('Hello World!').upper()
+            "HELLO WORLD!"
+        """
+        return String(self.value.upper())
 
 
 class Symbol(Data):
@@ -392,7 +451,7 @@ class Symbol(Data):
         # the value includes the leading apostrophe
         super().__init__(value)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         """A symbol.
 
         :Example:
@@ -428,6 +487,35 @@ class Symbol(Data):
         return self.__str__()
 
 
+class ComplexNumber(Number):
+
+    @property
+    def precedence(self) -> int:
+        return 7
+
+    def __eq__(self, other: Number) -> bool: ...
+
+    def __hash__(self): ...
+
+    def __str__(self): ...
+
+    def __repr__(self): ...
+
+    def __bool__(self): ...
+
+    def __add__(self, other: Number) -> Number: ...
+
+    def __sub__(self, other: Number) -> Number: ...
+
+    def __mul__(self, other: Number) -> Number: ...
+
+    def __truediv__(self, other: Number) -> Number: ...
+
+    def __iadd__(self, other: Number) -> Number: ...
+
+    def __neg__(self) -> ComplexNumber: ...
+
+
 @functools.total_ordering
 class RealNumber(Number):
 
@@ -435,9 +523,13 @@ class RealNumber(Number):
     def precedence(self) -> int:
         return 5
 
-    def __eq__(self, other) -> bool:
-        # TODO: change this when complex numbers are added
-        return issubclass(type(other), RealNumber) and self.value == other.value
+    def __eq__(self, other: Any) -> bool:
+        if not issubclass(type(other), Number):
+            return False
+        elif other.precedence > self.precedence:
+            return other.__eq__(self)
+        else:
+            return issubclass(type(other), RealNumber) and self.value == other.value
 
     def __hash__(self) -> int:
         """
@@ -456,34 +548,36 @@ class RealNumber(Number):
     def __bool__(self) -> bool:
         return self.value != 0
 
-    def __add__(self, other) -> Number:
+    def __add__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return other.__add__(self)
         else:
             return RealNumber(self.value + other.value)
 
-    def __sub__(self, other) -> Number:
+    def __sub__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return -other.__sub__(self)
         else:
             return RealNumber(self.value - other.value)
 
-    def __mul__(self, other) -> Number:
+    def __mul__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return other.__mul__(self)
         else:
             return RealNumber(self.value * other.value)
 
-    def __truediv__(self, other) -> Number:
+    def __truediv__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return Integer(1) / other.__truediv__(self)
         else:
             return RealNumber(self.value / other.value)
 
+    def __iadd__(self, other): ...
+
     def __neg__(self) -> RealNumber:
         return RealNumber(-self.value)
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: Number) -> bool:
         return self.value < other.value
 
 
@@ -493,29 +587,31 @@ class InexactNumber(RealNumber):
     def precedence(self) -> int:
         return 4
 
-    def __add__(self, other) -> Number:
+    def __add__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return other.__add__(self)
         else:
             return InexactNumber(self.value + other.value)
 
-    def __sub__(self, other) -> Number:
+    def __sub__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return -other.__sub__(self)
         else:
             return InexactNumber(self.value - other.value)
 
-    def __mul__(self, other) -> Number:
+    def __mul__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return other.__mul__(self)
         else:
             return InexactNumber(self.value * other.value)
 
-    def __truediv__(self, other) -> Number:
+    def __truediv__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return Integer(1) / other.__truediv__(self)
         else:
             return InexactNumber(self.value / other.value)
+
+    def __iadd__(self, other): ...
 
     def __neg__(self) -> InexactNumber:
         return InexactNumber(-self.value)
@@ -548,7 +644,7 @@ class Rational(ExactNumber):
     def __str__(self) -> str:
         return f'{self.numerator}/{self.denominator}'
 
-    def __add__(self, other) -> Number:
+    def __add__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return other.__add__(self)
         else:
@@ -568,7 +664,7 @@ class Rational(ExactNumber):
                 else:
                     return Rational(fraction.numerator, fraction.denominator)
 
-    def __sub__(self, other) -> Number:
+    def __sub__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return -other.__sub__(self)
         else:
@@ -588,7 +684,7 @@ class Rational(ExactNumber):
                 else:
                     return Rational(fraction.numerator, fraction.denominator)
 
-    def __mul__(self, other) -> Number:
+    def __mul__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return other.__mul__(self)
         else:
@@ -606,7 +702,7 @@ class Rational(ExactNumber):
             else:
                 return Rational(fraction.numerator, fraction.denominator)
 
-    def __truediv__(self, other) -> Number:
+    def __truediv__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return Integer(1) / other.__truediv__(self)
         else:
@@ -623,6 +719,8 @@ class Rational(ExactNumber):
                 return Integer(fraction.numerator)
             else:
                 return Rational(fraction.numerator, fraction.denominator)
+
+    def __iadd__(self, other): ...
 
     def __neg__(self) -> Rational:
         fraction = f.Fraction(-self.numerator, self.denominator)
@@ -649,25 +747,25 @@ class Integer(ExactNumber):
     def __int__(self) -> int:
         return self.value
 
-    def __add__(self, other) -> Number:
+    def __add__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return other.__add__(self)
         else:
             return Integer(self.value + other.value)
 
-    def __sub__(self, other) -> Number:
+    def __sub__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return -other.__sub__(self)
         else:
             return Integer(self.value - other.value)
 
-    def __mul__(self, other) -> Number:
+    def __mul__(self, other: Number) -> Number:
         if other.precedence > self.precedence:
             return other.__mul__(self)
         else:
             return Integer(self.value * other.value)
 
-    def __truediv__(self, other) -> Number:
+    def __truediv__(self, other: Number) -> Number:
         other_type = type(other)
         if issubclass(other_type, Rational):
             numerator = self.value * other.denominator
@@ -684,6 +782,8 @@ class Integer(ExactNumber):
             return Integer(fraction.numerator)
         else:
             return Rational(fraction.numerator, fraction.denominator)
+
+    def __iadd__(self, other): ...
 
     def __neg__(self) -> Integer:
         return Integer(-self.value)
