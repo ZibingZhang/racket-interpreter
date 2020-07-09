@@ -67,7 +67,7 @@ class SymbolPlus(BuiltInProc):
 
         result = d.Integer(0)
         for param_value in evaluated_params:
-            result += param_value
+            result = result + param_value
 
         return result
 
