@@ -74,7 +74,6 @@ class SymbolPlus(BuiltInProc):
 
 class SymbolMinus(BuiltInProc):
 
-    LOWER = 1
     UPPER = None
 
     @staticmethod
@@ -105,7 +104,6 @@ class SymbolMinus(BuiltInProc):
 
 class SymbolDivide(BuiltInProc):
 
-    LOWER = 1
     UPPER = None
 
     @staticmethod
@@ -142,7 +140,6 @@ class SymbolDivide(BuiltInProc):
 
 class SymbolLessThan(BuiltInProc):
 
-    LOWER = 1
     UPPER = None
 
     @staticmethod
@@ -177,7 +174,6 @@ class SymbolLessThan(BuiltInProc):
 
 class SymbolLessEqualThan(BuiltInProc):
 
-    LOWER = 1
     UPPER = None
 
     @staticmethod
@@ -212,7 +208,6 @@ class SymbolLessEqualThan(BuiltInProc):
 
 class SymbolEqual(BuiltInProc):
 
-    LOWER = 1
     UPPER = None
 
     @staticmethod
@@ -245,7 +240,6 @@ class SymbolEqual(BuiltInProc):
 
 class SymbolGreaterThan(BuiltInProc):
 
-    LOWER = 1
     UPPER = None
 
     @staticmethod
@@ -280,7 +274,6 @@ class SymbolGreaterThan(BuiltInProc):
 
 class SymbolGreaterEqualThan(BuiltInProc):
 
-    LOWER = 1
     UPPER = None
 
     @staticmethod
@@ -553,7 +546,6 @@ class Log(BuiltInProc):
 
 class Max(BuiltInProc):
 
-    LOWER = 1
     UPPER = None
 
     @staticmethod
@@ -583,7 +575,6 @@ class Max(BuiltInProc):
 
 class Min(BuiltInProc):
 
-    LOWER = 1
     UPPER = None
 
     @staticmethod

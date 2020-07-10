@@ -56,7 +56,6 @@ class BooleanToString(BuiltInProc):
 
 class BooleanSymbolEqualHuh(BuiltInProc):
 
-    LOWER = 1
     UPPER = None
 
     @staticmethod
