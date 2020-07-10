@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List
 from unittest import TestCase
 from racketinterpreter.classes.data import (
-    Boolean, ConsList, InexactNum, Integer, Procedure, RationalNum, String, Symbol
+    Boolean, List, InexactNum, Integer, Procedure, RationalNum, String, Symbol
 )
 from racketinterpreter.util import Util
 

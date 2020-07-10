@@ -2,7 +2,7 @@ from __future__ import annotations
 import abc
 import fractions as f
 import functools
-from typing import Any, List, Optional, Union
+import typing as tp
 
 
 class DataType(type):
@@ -20,7 +20,7 @@ class Data(metaclass=DataType):
     """
 
     @abc.abstractmethod
-    def __init__(self, value: Optional[Any] = None) -> None:
+    def __init__(self, value: tp.Optional[tp.Any] = None) -> None:
         self.value = value
 
 
@@ -28,7 +28,7 @@ class StructDataFactory:
     """A factory for creating struct data types."""
 
     @staticmethod
-    def create(struct_name: str, fields: List[str]) -> StructDataType:
+    def create(struct_name: str, fields: tp.List[str]) -> StructDataType:
         struct_data = StructDataType(struct_name, (Data,), {})
 
         setattr(struct_data, 'field_names', fields)
@@ -42,6 +42,9 @@ class StructDataFactory:
         return struct_data
 
 
+# ========== ========== ========== #
+#         Base Data Classes
+# ========== ========== ========== #
 class Boolean(Data):
     """A boolean.
 
@@ -55,7 +58,7 @@ class Boolean(Data):
     def __init__(self, value: bool) -> None:
         super().__init__(value)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: tp.Any) -> bool:
         """
         :Example:
             >>> Boolean(False) == (Boolean(False))
@@ -116,37 +119,37 @@ class Boolean(Data):
         return 1 if self.value else 0
 
 
-class ConsList(Data):
+class List(Data):
     """A list.
 
     :Example:
-        >>> ConsList([Integer(68), Boolean(False), Symbol("'sym")])
+        >>> List([Integer(68), Boolean(False), Symbol("'sym")])
         '(68 #f 'sym)
-        >>> ConsList([])
+        >>> List([])
         '()
     """
 
-    def __init__(self, value: List[Data]) -> None:
+    def __init__(self, value: tp.List[Data]) -> None:
         super().__init__(value)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: tp.Any) -> bool:
         """
         :Example:
-            >>> ConsList([Integer(68), Symbol("'sym")]) == ConsList([Integer(68), Boolean(False), Symbol("'sym")])
+            >>> List([Integer(68), Symbol("'sym")]) == List([Integer(68), Boolean(False), Symbol("'sym")])
             False
-            >>> ConsList([Integer(68), Symbol("'sym")]) == ConsList([Integer(68), Symbol("'sym")])
+            >>> List([Integer(68), Symbol("'sym")]) == List([Integer(68), Symbol("'sym")])
             True
-            >>> ConsList([]) == ConsList([])
+            >>> List([]) == List([])
             True
         """
-        return issubclass(type(other), ConsList) and self.value == other.value
+        return issubclass(type(other), List) and self.value == other.value
 
     def __hash__(self) -> int:
         """
         :Example:
-            >>> type(hash(ConsList([Integer(68), Boolean(False), Symbol("'sym")])))
+            >>> type(hash(List([Integer(68), Boolean(False), Symbol("'sym")])))
             <class 'int'>
-            >>> hash(ConsList([]))
+            >>> hash(List([]))
             5740354900026072187
         """
         return hash(tuple(self.value))
@@ -154,9 +157,9 @@ class ConsList(Data):
     def __str__(self) -> str:
         """
         :Example:
-            >>> str(ConsList([Integer(68), Boolean(False), Symbol("'sym")]))
+            >>> str(List([Integer(68), Boolean(False), Symbol("'sym")]))
             "'(68 #f 'sym)"
-            >>> str(ConsList([]))
+            >>> str(List([]))
             "'()"
         """
         string = ' '.join(map(str, self.value))
@@ -165,9 +168,9 @@ class ConsList(Data):
     def __repr__(self) -> str:
         """
         :Example:
-            >>> repr(ConsList([Integer(68), Boolean(False), Symbol("'sym")]))
+            >>> repr(List([Integer(68), Boolean(False), Symbol("'sym")]))
             "'(68 #f 'sym)"
-            >>> repr(ConsList([]))
+            >>> repr(List([]))
             "'()"
         """
         return self.__str__()
@@ -175,21 +178,21 @@ class ConsList(Data):
     def __len__(self) -> int:
         """
         :Example:
-            >>> len(ConsList([Integer(68), Boolean(False), Symbol("'sym")]))
+            >>> len(List([Integer(68), Boolean(False), Symbol("'sym")]))
             3
-            >>> len(ConsList([]))
+            >>> len(List([]))
             0
         """
         return len(self.value)
 
-    def __getitem__(self, item: Union[int, slice, Integer]) -> Data:
+    def __getitem__(self, item: tp.Union[int, slice, Integer]) -> Data:
         """
         :Example:
-            >>> ConsList([Integer(68), Boolean(False), Symbol("'sym")])[1]
+            >>> List([Integer(68), Boolean(False), Symbol("'sym")])[1]
             #f
-            >>> ConsList([Integer(68), Boolean(False), Symbol("'sym")])[-1]
+            >>> List([Integer(68), Boolean(False), Symbol("'sym")])[-1]
             'sym
-            >>> ConsList([])[2]
+            >>> List([])[2]
             Traceback (most recent call last):
               ...
             IndexError: list index out of range
@@ -200,16 +203,16 @@ class ConsList(Data):
         result = self.value[item]
 
         if type(item) is slice:
-            result = ConsList(result)
+            result = List(result)
 
         return result
 
     def __bool__(self) -> bool:
         """
         :Example:
-            >>> bool(ConsList([Integer(68), Boolean(False), Symbol("'sym")]))
+            >>> bool(List([Integer(68), Boolean(False), Symbol("'sym")]))
             True
-            >>> bool(ConsList([]))
+            >>> bool(List([]))
             False
         """
         return len(self.value) > 0
@@ -258,7 +261,7 @@ class Number(Data):
     def imaginary(self) -> RealNum:
         raise NotImplementedError
 
-    def __init__(self, value: Union[complex, float, int]) -> None:
+    def __init__(self, value: tp.Union[complex, float, int]) -> None:
         super().__init__(value)
 
     def __add__(self, other: Number) -> Number: ...
@@ -304,7 +307,7 @@ class Procedure(Data):
     def __init__(self, name: str) -> None:
         super().__init__(name)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: tp.Any) -> bool:
         """Procedures are never equal to each other.
 
         The only way to test if procedures are equal is to compare
@@ -349,7 +352,7 @@ class String(Data):
     def __init__(self, value: str) -> None:
         super().__init__(value)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: tp.Any) -> bool:
         """
         :Example:
             >>> String('abc') == String('abc')
@@ -399,7 +402,7 @@ class String(Data):
         """
         return len(self.value)
 
-    def __getitem__(self, item: Union[int, slice, Integer]) -> str:
+    def __getitem__(self, item: tp.Union[int, slice, Integer]) -> str:
         """
         :Example:
             >>> String('Hello World!')[1]
@@ -417,7 +420,7 @@ class String(Data):
         result = self.value[item]
 
         if type(item) is slice:
-            result = ConsList(result)
+            result = List(result)
 
         return result
 
@@ -493,7 +496,7 @@ class Symbol(Data):
         # the value includes the leading apostrophe
         super().__init__(value)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: tp.Any) -> bool:
         """A symbol.
 
         :Example:
@@ -529,6 +532,13 @@ class Symbol(Data):
         return self.__str__()
 
 
+# ========== ========== ========== #
+#        Child Data Classes
+# ========== ========== ========== #
+class ConsList(List):
+    """A constructed (non-empty) list."""
+
+
 class ComplexNum(Number):
     """A complex number.
 
@@ -552,7 +562,7 @@ class ComplexNum(Number):
     def imaginary(self) -> RealNum:
         return self._imaginary
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: tp.Any) -> bool:
         """
         :Example:
             >>> ComplexNum(Integer(1), InexactNum(2.0)) == ComplexNum(Integer(1), Integer(2))
@@ -683,7 +693,7 @@ class ComplexNum(Number):
 @functools.total_ordering
 class RealNum(Number):
 
-    def __init__(self, value: Union[float, int]) -> None:
+    def __init__(self, value: tp.Union[float, int]) -> None:
         super().__init__(value)
 
     @property
@@ -698,7 +708,7 @@ class RealNum(Number):
     def imaginary(self) -> RealNum:
         return Integer(0)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: tp.Any) -> bool:
         if not issubclass(type(other), Number):
             return False
         elif other.precedence > self.precedence:

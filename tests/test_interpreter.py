@@ -1,7 +1,7 @@
 from __future__ import annotations
 import unittest
 from racketinterpreter.classes.data import (
-    Boolean, ConsList, InexactNum, Integer, Procedure, RationalNum, String, Symbol
+    Boolean, List, InexactNum, Integer, Procedure, RationalNum, String, Symbol
 )
 from tests import util
 
@@ -36,9 +36,9 @@ class TestInterpreter(unittest.TestCase):
                 (cons 1 (cons 2 (cons 3 empty)))
             '''
         expected = [
-            ConsList([]),
-            ConsList([Integer(1)]),
-            ConsList([Integer(1), Integer(2), Integer(3)])
+            List([]),
+            List([Integer(1)]),
+            List([Integer(1), Integer(2), Integer(3)])
         ]
         util.interpret_text(self, text, expected)
 

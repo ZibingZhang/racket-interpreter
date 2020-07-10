@@ -112,10 +112,12 @@ class Error(Exception):
                 # d.Procedure, TODO: procedures will be much more complicated...
                 d.String: 'string',
                 d.Symbol: 'symbol',
+                d.ConsList: 'non-empty list',
+                d.ComplexNum: 'complex number',
                 d.RealNum: 'real',
                 # d.InexactNum, no functions should expect this type
                 # d.ExactNum, no functions should expect this type
-                d.RationalNum: 'RationalNum',  # no functions should expect this type... but apparently gcd should?
+                d.RationalNum: 'rational number',  # no functions should expect this type... but apparently gcd should?
                 d.Integer: 'integer',
                 d.NaturalNum: 'natural number'
             }

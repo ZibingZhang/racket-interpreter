@@ -81,13 +81,13 @@ class Interpreter(ast.ASTVisitor):
     def visit_Sym(self, node: ast.Sym) -> d.Symbol:
         return d.Symbol(node.value)
 
-    def visit_Cons(self, node: ast.Cons) -> d.ConsList:
+    def visit_Cons(self, node: ast.Cons) -> d.List:
         self.semantic_analyzer.visit(node)
 
         first = self.visit(node.first)
         rest = self.visit(node.rest)
 
-        if type(rest) is not d.ConsList:
+        if type(rest) is not d.List:
             raise err.InterpreterError(
                 error_code=err.ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST,
                 token=node.token,
@@ -98,10 +98,10 @@ class Interpreter(ast.ASTVisitor):
         cons_list = [first]
         cons_list.extend(rest)
 
-        return d.ConsList(cons_list)
+        return d.List(cons_list)
 
-    def visit_Empty(self, node: ast.Empty) -> d.ConsList:
-        return d.ConsList([])
+    def visit_Empty(self, node: ast.Empty) -> d.List:
+        return d.List([])
 
     def visit_Cond(self, node: ast.Cond) -> Data:
         self.semantic_analyzer.visit(node)
