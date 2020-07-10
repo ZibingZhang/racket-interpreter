@@ -77,7 +77,6 @@ To change the code that is being interpreted, change the value of ``code``.
 
 Generating the Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 These are the steps to transpile the documentation to an easily readable HTML format.
 
 .. code:: shell
@@ -97,6 +96,14 @@ If the documention needs to be regenerated for any reason, some directories need
     $ rm -r apidoc
     $ sphinx-apidoc -eo apidoc/ racketinterpreter/ --templatedir docs/templates
     $ make html
+
+Running the Example
+~~~~~~~~~~~~~~~~~~~
+There is an example of using the interpreter in ``example.py`` which can be run with the following command.
+
+.. code:: shell
+
+  $ python example.py
 
 Testing
 ~~~~~~~
