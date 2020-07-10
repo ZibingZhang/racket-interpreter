@@ -20,7 +20,7 @@ class Data(metaclass=DataType):
         self.value = value
 
 
-class StructDataType(DataType):
+class StructDataType(type):
     """The metaclass of a class representing a struct."""
 
 
