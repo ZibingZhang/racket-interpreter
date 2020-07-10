@@ -14,6 +14,7 @@ from racketinterpreter.predefined.list import (
     ConsHuh,
     EmptyHuh,
     First,
+    List,
     Rest
 )
 from racketinterpreter.predefined.numeric import (
@@ -102,7 +103,7 @@ BUILT_IN_PROCS = {
     'first': First(),
     # 'fourth': Fourth(),
     # 'length': Length(),
-    # 'list': List(),
+    'list': List(),
     # 'list*': ListSymStar(),
     # 'list-ref': ListRef(),
     # 'list?': ListHuh(),
