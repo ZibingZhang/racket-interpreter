@@ -1,12 +1,12 @@
 from __future__ import annotations
 import math
 import time
-from typing import TYPE_CHECKING, List, Optional
+import typing as tp
 from racketinterpreter import errors as err
 from racketinterpreter.classes import data as d
 from racketinterpreter.predefined.base import BuiltInProc
 
-if TYPE_CHECKING:
+if tp.TYPE_CHECKING:
     from racketinterpreter.classes import ast
     from racketinterpreter.classes import tokens as t
     from racketinterpreter.processes.interpreting import Interpreter
@@ -18,7 +18,7 @@ class SymMultiply(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -50,7 +50,7 @@ class SymPlus(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -77,7 +77,7 @@ class SymMinus(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -107,7 +107,7 @@ class SymDivide(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -143,7 +143,7 @@ class SymLessThan(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -177,7 +177,7 @@ class SymLessEqualThan(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -211,7 +211,7 @@ class SymEqual(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -243,7 +243,7 @@ class SymGreaterThan(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -277,7 +277,7 @@ class SymGreaterEqualThan(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -309,7 +309,7 @@ class SymGreaterEqualThan(BuiltInProc):
 class Abs(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -326,7 +326,7 @@ class Abs(BuiltInProc):
 class Add1(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -343,7 +343,7 @@ class Add1(BuiltInProc):
 class Ceiling(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -363,7 +363,7 @@ class CurrentSeconds(BuiltInProc):
     UPPER = 0
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         result = d.Integer(math.floor(time.time()))
         return result
 
@@ -371,7 +371,7 @@ class CurrentSeconds(BuiltInProc):
 class EvenHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -388,7 +388,7 @@ class EvenHuh(BuiltInProc):
 class ExactToInexact(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -405,7 +405,7 @@ class ExactToInexact(BuiltInProc):
 class ExactHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -422,7 +422,7 @@ class ExactHuh(BuiltInProc):
 class Exp(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -439,7 +439,7 @@ class Exp(BuiltInProc):
 class Floor(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -459,7 +459,7 @@ class Gcd(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Integer:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Integer:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -487,7 +487,7 @@ class Gcd(BuiltInProc):
 class IntegerHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -501,7 +501,7 @@ class Lcm(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Integer:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Integer:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -530,7 +530,7 @@ class Log(BuiltInProc):
     # TODO: should be 1 to 2
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -549,7 +549,7 @@ class Max(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.RealNum:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.RealNum:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -578,7 +578,7 @@ class Min(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.RealNum:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.RealNum:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -608,7 +608,7 @@ class Modulo(BuiltInProc):
     UPPER = 2
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Integer:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Integer:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -634,7 +634,7 @@ class Modulo(BuiltInProc):
 class NegativeHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -651,7 +651,7 @@ class NegativeHuh(BuiltInProc):
 class NumberToString(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.String:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.String:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -668,7 +668,7 @@ class NumberToString(BuiltInProc):
 class NumberHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -679,7 +679,7 @@ class NumberHuh(BuiltInProc):
 class OddHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -696,7 +696,7 @@ class OddHuh(BuiltInProc):
 class PositiveHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -713,7 +713,7 @@ class PositiveHuh(BuiltInProc):
 class RationalNumHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -724,7 +724,7 @@ class RationalNumHuh(BuiltInProc):
 class RealHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -735,7 +735,7 @@ class RealHuh(BuiltInProc):
 class Round(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Integer:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Integer:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -752,7 +752,7 @@ class Round(BuiltInProc):
 class Sgn(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Integer:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Integer:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -775,7 +775,7 @@ class Sgn(BuiltInProc):
 class Sqr(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -793,7 +793,7 @@ class Sqr(BuiltInProc):
 class Sqrt(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -815,7 +815,7 @@ class Sqrt(BuiltInProc):
 class Sub1(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -832,7 +832,7 @@ class Sub1(BuiltInProc):
 class ZeroHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 

@@ -1,10 +1,10 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List
+import typing as tp
 from racketinterpreter import errors as err
 from racketinterpreter.classes import data as d
 from racketinterpreter.predefined.base import BuiltInProc
 
-if TYPE_CHECKING:
+if tp.TYPE_CHECKING:
     from racketinterpreter.classes import ast
     from racketinterpreter.classes import tokens as t
     from racketinterpreter.processes.interpreting import Interpreter
@@ -16,7 +16,7 @@ class And(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         result = d.Boolean(True)
 
         for idx, param in enumerate(actual_params):
@@ -40,7 +40,7 @@ class And(BuiltInProc):
 class BooleanToString(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.String:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.String:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -59,7 +59,7 @@ class BooleanSymEqualHuh(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -89,7 +89,7 @@ class BooleanSymEqualHuh(BuiltInProc):
 class BooleanHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -100,7 +100,7 @@ class BooleanHuh(BuiltInProc):
 class FalseHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -111,7 +111,7 @@ class FalseHuh(BuiltInProc):
 class Not(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -131,7 +131,7 @@ class Or(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
         result = d.Boolean(False)
 
         for idx, param in enumerate(actual_params):

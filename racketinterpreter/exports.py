@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+import typing as tp
 from racketinterpreter.errors import Error
 from racketinterpreter.util import Util
 
@@ -64,10 +64,10 @@ class Result:
 
     def __init__(
             self,
-            output: Optional[List[str]] = None,
+            output: tp.Optional[tp.List[str]] = None,
             error: bool = False,
-            error_message: Optional[str] = None,
-            tests: List[TestResult] = None
+            error_message: tp.Optional[str] = None,
+            tests: tp.List[TestResult] = None
     ) -> None:
         self.output = output if output is not None else []
         self.error = error

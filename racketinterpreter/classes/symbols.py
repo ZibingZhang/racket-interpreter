@@ -1,13 +1,13 @@
 from __future__ import annotations
 from collections import OrderedDict
-from typing import Any, List, Optional
+import typing as tp
 from racketinterpreter.constants import C
 from racketinterpreter.predefined import BUILT_IN_PROCS
 
 
 class Symbol:
 
-    def __init__(self, name: str, type: Any = None) -> None:
+    def __init__(self, name: str, type: tp.Any = None) -> None:
         self.name = name
         self.type = type
         self.scope_level = 0
@@ -68,7 +68,7 @@ class ScopedSymbolTable:
 
         self._symbols[symbol.name] = symbol
 
-    def lookup(self, name: str, current_scope_only: bool = False) -> Optional[Symbol]:
+    def lookup(self, name: str, current_scope_only: bool = False) -> tp.Optional[Symbol]:
         self.log_scope(f'Lookup: {name} (Scope Name: {self.scope_name})')
         symbol = self._symbols.get(name)
 
@@ -100,7 +100,7 @@ class AmbiguousSymbol(Symbol):
 class ProcSymbol(Symbol):
     """A procedure."""
 
-    def __init__(self, name: str, formal_params: Optional[List[AmbiguousSymbol]] = None) -> None:
+    def __init__(self, name: str, formal_params: tp.Optional[tp.List[AmbiguousSymbol]] = None) -> None:
         super().__init__(name, 'PROCEDURE')
         self.formal_params = formal_params if formal_params is not None else []
         # a reference to procedure's body (AST)

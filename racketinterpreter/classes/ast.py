@@ -1,10 +1,10 @@
 from __future__ import annotations
 import abc
 from enum import Enum
-from typing import TYPE_CHECKING, Any, List, Optional
+import typing as tp
 from racketinterpreter import errors as err
 
-if TYPE_CHECKING:
+if tp.TYPE_CHECKING:
     import racketinterpreter.classes.data as d
     import racketinterpreter.classes.tokens as t
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class AST(abc.ABC):
     """An abstract syntax tree."""
 
-    def __init__(self, token: Optional[t.Token]):
+    def __init__(self, token: tp.Optional[t.Token]):
         self.token = token
         self.passed_semantic_analysis = False
 
@@ -20,7 +20,7 @@ class AST(abc.ABC):
 class Expr(AST):
     """An expression."""
 
-    def __init__(self, token: t.Token, value: Any = None):
+    def __init__(self, token: t.Token, value: tp.Any = None):
         super().__init__(token)
         self._value = value
 
@@ -31,7 +31,7 @@ class Expr(AST):
         return self._value
 
 
-class ConsList(AST):
+class List(AST):
     """A list."""
 
     pass
@@ -48,7 +48,7 @@ class StructProc(Expr):
 
 class ASTVisitor(abc.ABC):
 
-    def visit(self, node: AST) -> Any:
+    def visit(self, node: AST) -> tp.Any:
         method_name = 'visit_' + type(node).__name__
         visit_func = getattr(self, method_name, self.visit_error)
         return visit_func(node)
@@ -112,7 +112,7 @@ class Int(Expr):
 
 
 class Rat(Expr):
-    """A RationalNum number."""
+    """A rational number."""
 
     def __init__(self, token: t.Token) -> None:
         super().__init__(token, token.value)
@@ -150,10 +150,10 @@ class Sym(Expr):
         return self.__str__()
 
 
-class Cons(ConsList):
+class Cons(List):
     """A non-empty list."""
 
-    def __init__(self, token: t.Token, exprs: List[Expr]) -> None:
+    def __init__(self, token: t.Token, exprs: tp.List[Expr]) -> None:
         super().__init__(token)
         self.exprs = exprs
 
@@ -167,7 +167,7 @@ class Cons(ConsList):
         return self.__str__()
 
 
-class Empty(ConsList):
+class Empty(List):
     """An empty list."""
 
     def __init__(self, token: t.Token) -> None:
@@ -183,7 +183,7 @@ class Empty(ConsList):
 class Cond(Expr):
     """A cond statement."""
 
-    def __init__(self, token: t.Token, exprs: List[Expr]) -> None:
+    def __init__(self, token: t.Token, exprs: tp.List[Expr]) -> None:
         super().__init__(token)
         self.exprs = exprs
 
@@ -200,7 +200,7 @@ class Cond(Expr):
 class CondBranch(Expr):
     """A cond branch with a condition."""
 
-    def __init__(self, token: t.Token, exprs: List[Expr]):
+    def __init__(self, token: t.Token, exprs: tp.List[Expr]):
         super().__init__(token)
         self.exprs = exprs
 
@@ -231,7 +231,7 @@ class CondElse(Expr):
 class IdAssign(AST):
     """Defining a constant."""
 
-    def __init__(self, token: t.Token, exprs: List[Expr]) -> None:
+    def __init__(self, token: t.Token, exprs: tp.List[Expr]) -> None:
         super().__init__(token)
         self.exprs = exprs
         self.identifier = None
@@ -269,7 +269,7 @@ class FormalParam(AST):
 class ProcAssign(AST):
     """Defining a function."""
 
-    def __init__(self, token: t.Token, name_expr: Expr, formal_params: List[FormalParam], exprs: List[Expr]) -> None:
+    def __init__(self, token: t.Token, name_expr: Expr, formal_params: tp.List[FormalParam], exprs: tp.List[Expr]) -> None:
         super().__init__(token)
 
         self.name_expr = name_expr
@@ -289,7 +289,7 @@ class ProcAssign(AST):
 class ProcCall(Expr):
     """A procedure and a list of arguments."""
 
-    def __init__(self, token: t.Token, exprs: List[Expr]) -> None:
+    def __init__(self, token: t.Token, exprs: tp.List[Expr]) -> None:
         super().__init__(token)
         self.exprs = exprs
 
@@ -350,7 +350,7 @@ class CheckExpect(AST):
     The first expression is the actual value and the second expression is the expected value.
     """
 
-    def __init__(self, token: t.Token, exprs: List[Expr]):
+    def __init__(self, token: t.Token, exprs: tp.List[Expr]):
         super().__init__(token)
         self.exprs = exprs
 
@@ -361,7 +361,7 @@ class CheckExpect(AST):
 class Program(AST):
     """A list of statements."""
 
-    def __init__(self, statements: List[AST]) -> None:
+    def __init__(self, statements: tp.List[AST]) -> None:
         super().__init__(None)
         self.statements = statements
 

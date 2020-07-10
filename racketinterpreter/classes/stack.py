@@ -1,10 +1,10 @@
 from __future__ import annotations
 from enum import Enum
-from typing import TYPE_CHECKING, Optional
+import typing as tp
 from racketinterpreter.constants import C
 from racketinterpreter.errors import IllegalStateError, TailEndRecursion
 
-if TYPE_CHECKING:
+if tp.TYPE_CHECKING:
     from racketinterpreter.classes.data import Data
     from racketinterpreter.processes import Interpreter
 
@@ -72,7 +72,7 @@ class ActivationRecord:
 
         self.interpreter = None
 
-    def get(self, key) -> Optional[Data]:
+    def get(self, key) -> tp.Optional[Data]:
         return self.members.get(key)
 
     def log_stack(self, msg: str) -> None:

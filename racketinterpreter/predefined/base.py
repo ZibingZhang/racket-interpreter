@@ -1,11 +1,11 @@
 from __future__ import annotations
 import abc
 import re
-from typing import TYPE_CHECKING, List
+import typing as tp
 from racketinterpreter import errors as err
 from racketinterpreter.classes import data as d
 
-if TYPE_CHECKING:
+if tp.TYPE_CHECKING:
     from racketinterpreter.classes import ast
     from racketinterpreter.classes import tokens as t
     from racketinterpreter.processes.interpreting import Interpreter
@@ -22,10 +22,10 @@ class BuiltInProc(abc.ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Data:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
         pass
 
-    def interpret(self, interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Data:
+    def interpret(self, interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
         try:
             return self._interpret(
                 interpreter=interpreter,

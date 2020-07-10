@@ -1,6 +1,6 @@
 from __future__ import annotations
-from typing import Any
 from enum import Enum
+import typing as tp
 
 
 class TokenType(Enum):
@@ -35,7 +35,7 @@ class Token:
         <Token type:SYMBOL  value:'sym  position:3:69>
     """
 
-    def __init__(self, type: TokenType, value: Any, line_no: int, column: int) -> None:
+    def __init__(self, type: TokenType, value: tp.Any, line_no: int, column: int) -> None:
         self._type = type
         self._value = value
         self._line_no = line_no

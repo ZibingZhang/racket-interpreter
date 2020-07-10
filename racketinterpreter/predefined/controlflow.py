@@ -1,9 +1,9 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List, Optional
+import typing as tp
 from racketinterpreter.classes import data as d
 from racketinterpreter.predefined.base import BuiltInProc
 
-if TYPE_CHECKING:
+if tp.TYPE_CHECKING:
     from racketinterpreter.classes import ast
     from racketinterpreter.classes import tokens as t
     from racketinterpreter.processes.interpreting import Interpreter
@@ -15,7 +15,7 @@ class If(BuiltInProc):
     UPPER = 3
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Data:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
         boolean = interpreter.visit(actual_params[0])
         if bool(boolean):
             result = interpreter.visit(actual_params[1])

@@ -1,4 +1,4 @@
-from typing import List, Tuple
+import typing as tp
 from racketinterpreter import constants
 import racketinterpreter.classes.data as d
 import racketinterpreter.classes.tokens as t
@@ -11,7 +11,7 @@ class Util:
 
     @staticmethod
     def text_to_interpreter_result(text: str, should_log_scope: bool = False, should_log_stack: bool = False) \
-            -> Tuple[List[d.Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
+            -> tp.Tuple[tp.List[d.Data], tp.List[tp.Tuple[bool, t.Token, d.Data, d.Data]]]:
         constants.set_globals(should_log_scope=should_log_scope, should_log_stack=should_log_stack)
 
         lexer = Lexer(text)
