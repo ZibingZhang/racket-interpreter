@@ -152,10 +152,10 @@ class SymbolLessThan(BuiltInProc):
             param_value = interpreter.visit(param)
             param_type = type(param_value)
 
-            if not issubclass(param_type, d.RealNumber):
+            if not issubclass(param_type, d.RealNum):
                 raise err.EvaluateBuiltinProcedureError(
                     idx=idx,
-                    expected=d.RealNumber,
+                    expected=d.RealNum,
                     given=param_value
                 )
 
@@ -187,10 +187,10 @@ class SymbolLessEqualThan(BuiltInProc):
             param_value = interpreter.visit(param)
             param_type = type(param_value)
 
-            if not issubclass(param_type, d.RealNumber):
+            if not issubclass(param_type, d.RealNum):
                 raise err.EvaluateBuiltinProcedureError(
                     idx=idx,
-                    expected=d.RealNumber,
+                    expected=d.RealNum,
                     given=param_value
                 )
 
@@ -255,10 +255,10 @@ class SymbolGreaterThan(BuiltInProc):
             param_value = interpreter.visit(param)
             param_type = type(param_value)
 
-            if not issubclass(param_type, d.RealNumber):
+            if not issubclass(param_type, d.RealNum):
                 raise err.EvaluateBuiltinProcedureError(
                     idx=idx,
-                    expected=d.RealNumber,
+                    expected=d.RealNum,
                     given=param_value
                 )
 
@@ -290,10 +290,10 @@ class SymbolGreaterEqualThan(BuiltInProc):
             param_value = interpreter.visit(param)
             param_type = type(param_value)
 
-            if not issubclass(param_type, d.RealNumber):
+            if not issubclass(param_type, d.RealNum):
                 raise err.EvaluateBuiltinProcedureError(
                     idx=idx,
-                    expected=d.RealNumber,
+                    expected=d.RealNum,
                     given=param_value
                 )
 
@@ -320,9 +320,9 @@ class Abs(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        if not issubclass(param_type, d.RealNumber):
+        if not issubclass(param_type, d.RealNum):
             raise err.EvaluateBuiltinProcedureError(
-                expected=d.RealNumber,
+                expected=d.RealNum,
                 given=param_value
             )
 
@@ -354,9 +354,9 @@ class Ceiling(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        if not issubclass(param_type, d.RealNumber):
+        if not issubclass(param_type, d.RealNum):
             raise err.EvaluateBuiltinProcedureError(
-                expected=d.RealNumber,
+                expected=d.RealNum,
                 given=param_value
             )
 
@@ -405,7 +405,7 @@ class ExactToInexact(BuiltInProc):
                 given=param_value
             )
 
-        result = d.InexactNumber(param_value.value)
+        result = d.InexactNum(param_value.value)
         return result
 
 
@@ -422,7 +422,7 @@ class ExactHuh(BuiltInProc):
                 given=param_value
             )
 
-        result = d.Boolean(issubclass(type(param_value), d.ExactNumber))
+        result = d.Boolean(issubclass(type(param_value), d.ExactNum))
         return result
 
 
@@ -439,7 +439,7 @@ class Exp(BuiltInProc):
                 given=param_value
             )
 
-        result = d.InexactNumber(math.exp(param_value.value))
+        result = d.InexactNum(math.exp(param_value.value))
         return result
 
 
@@ -450,9 +450,9 @@ class Floor(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        if not issubclass(param_type, d.RealNumber):
+        if not issubclass(param_type, d.RealNum):
             raise err.EvaluateBuiltinProcedureError(
-                expected=d.RealNumber,
+                expected=d.RealNum,
                 given=param_value
             )
 
@@ -547,7 +547,7 @@ class Log(BuiltInProc):
                 given=param_value
             )
 
-        result = d.InexactNumber(math.log(param_value.value))
+        result = d.InexactNum(math.log(param_value.value))
         return result
 
 
@@ -557,16 +557,16 @@ class Max(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.RealNumber:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.RealNum:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
             param_type = type(param_value)
 
-            if not issubclass(param_type, d.RealNumber):
+            if not issubclass(param_type, d.RealNum):
                 raise err.EvaluateBuiltinProcedureError(
                     idx=idx,
-                    expected=d.RealNumber,
+                    expected=d.RealNum,
                     given=param_value
                 )
 
@@ -587,16 +587,16 @@ class Min(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.RealNumber:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.RealNum:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
             param_type = type(param_value)
 
-            if not issubclass(param_type, d.RealNumber):
+            if not issubclass(param_type, d.RealNum):
                 raise err.EvaluateBuiltinProcedureError(
                     idx=idx,
-                    expected=d.RealNumber,
+                    expected=d.RealNum,
                     given=param_value
                 )
 
@@ -647,9 +647,9 @@ class NegativeHuh(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        if not issubclass(param_type, d.RealNumber):
+        if not issubclass(param_type, d.RealNum):
             raise err.EvaluateBuiltinProcedureError(
-                expected=d.RealNumber,
+                expected=d.RealNum,
                 given=param_value
             )
 
@@ -709,9 +709,9 @@ class PositiveHuh(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        if not issubclass(param_type, d.RealNumber):
+        if not issubclass(param_type, d.RealNum):
             raise err.EvaluateBuiltinProcedureError(
-                expected=d.RealNumber,
+                expected=d.RealNum,
                 given=param_value
             )
 
@@ -719,14 +719,14 @@ class PositiveHuh(BuiltInProc):
         return result
 
 
-class RationalHuh(BuiltInProc):
+class RationalNumHuh(BuiltInProc):
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        result = d.Boolean(issubclass(param_type, d.Rational))
+        result = d.Boolean(issubclass(param_type, d.RationalNum))
         return result
 
 
@@ -737,7 +737,7 @@ class RealHuh(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        result = d.Boolean(issubclass(param_type, d.RealNumber))
+        result = d.Boolean(issubclass(param_type, d.RealNum))
         return result
 
 
@@ -748,9 +748,9 @@ class Round(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        if not issubclass(param_type, d.RealNumber):
+        if not issubclass(param_type, d.RealNum):
             raise err.EvaluateBuiltinProcedureError(
-                expected=d.RealNumber,
+                expected=d.RealNum,
                 given=param_value
             )
 
@@ -765,9 +765,9 @@ class Sgn(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        if not issubclass(param_type, d.RealNumber):
+        if not issubclass(param_type, d.RealNum):
             raise err.EvaluateBuiltinProcedureError(
-                expected=d.RealNumber,
+                expected=d.RealNum,
                 given=param_value
             )
 
@@ -816,7 +816,7 @@ class Sqrt(BuiltInProc):
             raise NotImplementedError('Complex numbers not supported yet.')
 
         number = math.sqrt(param_value.value)
-        result = d.InexactNumber(number)
+        result = d.InexactNum(number)
 
         return result
 

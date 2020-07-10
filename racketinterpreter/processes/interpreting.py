@@ -43,8 +43,8 @@ class Interpreter(ast.ASTVisitor):
     def visit_Bool(self, node: ast.Bool) -> d.Boolean:
         return d.Boolean(node.value)
 
-    def visit_Dec(self, node: ast.Dec) -> d.InexactNumber:
-        return d.InexactNumber(node.value)
+    def visit_Dec(self, node: ast.Dec) -> d.InexactNum:
+        return d.InexactNum(node.value)
 
     def visit_Id(self, node: ast.Id) -> Data:
         self.semantic_analyzer.visit(node)
@@ -66,14 +66,14 @@ class Interpreter(ast.ASTVisitor):
     def visit_Int(self, node: ast.Int) -> Number:
         return d.Integer(node.value)
 
-    def visit_Rat(self, node: ast.Rat) -> Union[d.Integer, d.Rational]:
+    def visit_Rat(self, node: ast.Rat) -> Union[d.Integer, d.RationalNum]:
         numerator = node.value[0]
         denominator = node.value[1]
         fraction = f.Fraction(numerator, denominator)
         if fraction.denominator == 1:
             return d.Integer(fraction.numerator)
         else:
-            return d.Rational(fraction.numerator, fraction.denominator)
+            return d.RationalNum(fraction.numerator, fraction.denominator)
 
     def visit_Str(self, node: ast.Str) -> d.String:
         return d.String(node.value)

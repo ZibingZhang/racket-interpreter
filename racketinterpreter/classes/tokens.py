@@ -10,7 +10,7 @@ class TokenType(Enum):
     RPAREN = 'RPAREN'
     # data types
     INTEGER = 'INTEGER'
-    RATIONAL = 'RATIONAL'
+    RationalNum = 'RationalNum'
     DECIMAL = 'DECIMAL'
     BOOLEAN = 'BOOLEAN'
     STRING = 'STRING'

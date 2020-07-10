@@ -67,8 +67,8 @@ class Parser:
         elif token.type is t.TokenType.INTEGER:
             self.eat(t.TokenType.INTEGER)
             return ast.Int(token)
-        elif token.type is t.TokenType.RATIONAL:
-            self.eat(t.TokenType.RATIONAL)
+        elif token.type is t.TokenType.RationalNum:
+            self.eat(t.TokenType.RationalNum)
             return ast.Rat(token)
         elif token.type is t.TokenType.STRING:
             self.eat(t.TokenType.STRING)
@@ -312,7 +312,7 @@ class Parser:
         """
         current_token = self.current_token
         if current_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER,
-                                  t.TokenType.RATIONAL, t.TokenType.STRING, t.TokenType.ID, t.TokenType.SYMBOL]:
+                                  t.TokenType.RationalNum, t.TokenType.STRING, t.TokenType.ID, t.TokenType.SYMBOL]:
             return self.expr()
         elif current_token.type is t.TokenType.LPAREN:
             next_token = self.lexer.peek_next_token()

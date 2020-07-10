@@ -140,7 +140,7 @@ class StringIth(BuiltInProc):
 
         if not issubclass(param_type, d.Integer) and index >= 0:
             raise err.EvaluateBuiltinProcedureError(
-                expected=d.NaturalNumber,
+                expected=d.NaturalNum,
                 given=param_value
             )
 

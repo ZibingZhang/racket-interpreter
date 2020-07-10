@@ -1,7 +1,7 @@
 from __future__ import annotations
 import unittest
 from racketinterpreter.classes.data import (
-    Boolean, ConsList, InexactNumber, Integer, Procedure, Rational, String, Symbol
+    Boolean, ConsList, InexactNum, Integer, Procedure, RationalNum, String, Symbol
 )
 from tests import util
 
@@ -60,13 +60,13 @@ class TestInterpreter(unittest.TestCase):
             Integer(123),
             Integer(1),
             Integer(-987),
-            Rational(1, 2),
+            RationalNum(1, 2),
             Integer(-2),
-            InexactNumber(0.1),
-            InexactNumber(-0.05),
-            InexactNumber(0.0),
-            InexactNumber(0.0),
-            InexactNumber(0.01)
+            InexactNum(0.1),
+            InexactNum(-0.05),
+            InexactNum(0.0),
+            InexactNum(0.0),
+            InexactNum(0.01)
         ]
         util.interpret_text(self, text, expected)
 
@@ -145,10 +145,10 @@ class TestInterpreter(unittest.TestCase):
             Boolean(False),
             Boolean(False),
             Boolean(True),
-            InexactNumber(0.3),
+            InexactNum(0.3),
             String('Jeff'),
             Boolean(True),
-            InexactNumber(0.3)
+            InexactNum(0.3)
         ]
         util.interpret_text(self, text, expected)
 
@@ -256,7 +256,7 @@ class TestInterpreter(unittest.TestCase):
                 (add1 2)
             '''
         expected = [
-            Rational(-1, 2),
+            RationalNum(-1, 2),
             Integer(3)
         ]
         util.interpret_text(self, text, expected)
@@ -293,10 +293,10 @@ class TestInterpreter(unittest.TestCase):
         expected = [
             Integer(0),
             Integer(1),
-            Rational(3, 2),
-            Rational(3, 2),
-            Rational(66, 63),
-            InexactNumber(1),
+            RationalNum(3, 2),
+            RationalNum(3, 2),
+            RationalNum(66, 63),
+            InexactNum(1),
             Integer(1)
         ]
         util.interpret_text(self, text, expected)
@@ -313,10 +313,10 @@ class TestInterpreter(unittest.TestCase):
             '''
         expected = [
             Integer(-1),
-            Rational(1, 2),
-            Rational(-1, 2),
-            Rational(24, 63),
-            InexactNumber(1),
+            RationalNum(1, 2),
+            RationalNum(-1, 2),
+            RationalNum(24, 63),
+            InexactNum(1),
             Integer(1)
         ]
         util.interpret_text(self, text, expected)
@@ -334,8 +334,8 @@ class TestInterpreter(unittest.TestCase):
         expected = [
             Integer(1),
             Integer(2),
-            Rational(5, 6),
-            Rational(27, 2),
+            RationalNum(5, 6),
+            RationalNum(27, 2),
             Integer(1),
             Integer(0),
         ]
@@ -353,10 +353,10 @@ class TestInterpreter(unittest.TestCase):
             '''
         expected = [
             Integer(1),
-            Rational(1, 2),
-            InexactNumber(1.0),
+            RationalNum(1, 2),
+            InexactNum(1.0),
             Integer(1),
             Integer(1),
-            InexactNumber(1.0)
+            InexactNum(1.0)
         ]
         util.interpret_text(self, text, expected)

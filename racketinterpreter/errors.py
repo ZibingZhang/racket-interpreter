@@ -112,12 +112,12 @@ class Error(Exception):
                 # d.Procedure, TODO: procedures will be much more complicated...
                 d.String: 'string',
                 d.Symbol: 'symbol',
-                d.RealNumber: 'real',
-                # d.InexactNumber, no functions should expect this type
-                # d.ExactNumber, no functions should expect this type
-                d.Rational: 'rational',  # no functions should expect this type... but apparently gcd should?
+                d.RealNum: 'real',
+                # d.InexactNum, no functions should expect this type
+                # d.ExactNum, no functions should expect this type
+                d.RationalNum: 'RationalNum',  # no functions should expect this type... but apparently gcd should?
                 d.Integer: 'integer',
-                d.NaturalNumber: 'natural number'
+                d.NaturalNum: 'natural number'
             }
 
             name = kwargs.get('name')
@@ -184,7 +184,7 @@ class Error(Exception):
                     found = "nothing's there"
                 elif expr_token.type is t.TokenType.BOOLEAN:
                     found = 'found a boolean'
-                elif expr_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
+                elif expr_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
                     found = 'found a number'
                 elif expr_token.type is t.TokenType.STRING:
                     found = 'found a string'
@@ -235,7 +235,7 @@ class Error(Exception):
 
             if proc_token is None or proc_token.type is t.TokenType.RPAREN:
                 found = "nothing's there"
-            elif proc_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
+            elif proc_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
                 found = 'found a number'
             elif proc_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
@@ -257,7 +257,7 @@ class Error(Exception):
         elif error_code is ErrorCode.D_P_EXPECTED_A_VARIABLE:
             if token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
+            elif token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
                 found = 'found a number'
             elif token.type is t.TokenType.STRING:
                 found = 'found a string'
@@ -277,7 +277,7 @@ class Error(Exception):
                 found = "nothing's there"
             elif name_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif name_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
+            elif name_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
                 found = 'found a number'
             elif name_token.type is t.TokenType.STRING:
                 found = 'found a string'
@@ -317,7 +317,7 @@ class Error(Exception):
         elif error_code is ErrorCode.DS_EXPECTED_A_FIELD:
             if token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
+            elif token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
                 found = 'found a number'
             elif token.type is t.TokenType.STRING:
                 found = 'found a string'
@@ -337,7 +337,7 @@ class Error(Exception):
                 found = "nothing's there"
             elif found_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif found_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
+            elif found_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
                 found = 'found a number'
             elif found_token.type is t.TokenType.STRING:
                 found = 'found a string'
@@ -357,7 +357,7 @@ class Error(Exception):
                 found = "nothing's there"
             elif name_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif name_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
+            elif name_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
                 found = 'found a number'
             elif name_token.type is t.TokenType.STRING:
                 found = 'found a string'
@@ -405,7 +405,7 @@ class Error(Exception):
             else:
                 if proc_token.type is t.TokenType.BOOLEAN:
                     found_type = 'boolean'
-                elif proc_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
+                elif proc_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
                     found_type = 'number'
                 elif proc_token.type is t.TokenType.STRING:
                     found_type = 'string'

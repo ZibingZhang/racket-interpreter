@@ -112,7 +112,7 @@ class Int(Expr):
 
 
 class Rat(Expr):
-    """A rational number."""
+    """A RationalNum number."""
 
     def __init__(self, token: t.Token) -> None:
         super().__init__(token, token.value)

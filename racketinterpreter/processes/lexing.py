@@ -193,26 +193,26 @@ class Lexer:
         else:
             number = ''
 
-        is_rational = False
+        is_RationalNum = False
         numerator = ''
         denominator = ''
 
         while (self.current_char is not None and not self.current_char.isspace()
                 and self.current_char not in self.NON_ID_CHARS):
             if self.current_char == '/':
-                is_rational = True
+                is_RationalNum = True
                 numerator = number
                 number += self.current_char
                 self._advance()
                 continue
 
-            if is_rational:
+            if is_RationalNum:
                 denominator += self.current_char
 
             number += self.current_char
             self._advance()
 
-        if is_rational:
+        if is_RationalNum:
             try:
                 numerator = int(numerator)
                 denominator = int(denominator)
@@ -225,7 +225,7 @@ class Lexer:
                 )
             else:
                 return t.Token(
-                    type=t.TokenType.RATIONAL,
+                    type=t.TokenType.RationalNum,
                     value=(numerator, denominator),
                     line_no=line_no,
                     column=column
