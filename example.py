@@ -3,20 +3,22 @@ if __name__ == '__main__':
 
     code = \
         """
-        #| Code written for an assignment at Northeastern. It has been slightly modified as some of the original
-        code made use of Lists which are not yet implemented in the interpreter. Another change is the removal
-        of check-expect statements, which are replaced with either an = or boolean=?, depending on the output
-        of the procedure being tested. 
+        #| Code written for an assignment at Northeastern.
         
-        Some edits were made for the time being. Some will be removed as more features are added.
-        The entire body of exercise 7 has been commented out since builtin procedures for strings have not yet been
-        implemented.
-        The entire body of exercise 8 has been commented out as has the import statement for the image library.
-        The entire body of exercise 9 has been commented out. The number system is still a WIP... sqrt always returns
-        an inexact number which is never an integer.
-        All empty lists were originally represented with '() but now are represented with empty,
-        even in data definitions.
-        All templates have been commented out.
+        Some edits were made to fix formatting issues or to showcase additional features that were not used when 
+        originally completing the assignment.
+        - The 'list' function is used whenever possible, replacing nested 'cons' expressions.
+        
+        Some edits were made due to the fact that not all features of the language have been implemented. They will be
+        reverted as those features are added.
+        - The entire body of exercise 7 has been commented out since builtin procedures for strings have not yet been
+          implemented.
+        - The entire body of exercise 8 has been commented out as has the import statement for the image library.
+        - The entire body of exercise 9 has been commented out. The number system is still a WIP... sqrt always returns
+        - an inexact number which is never an integer.
+        - All empty lists were originally represented with '() but now are represented with empty, even in data 
+          definitions.
+        - All templates have been commented out.
         |#
 
         ; (require 2htdp/image)
@@ -29,16 +31,11 @@ if __name__ == '__main__':
         ; - (make-plist Number PseudoLON)
         ; and represents a list of numbers
         (define PLON1 "empty")
-        (define PLON2 (make-plist 13
-                                  "empty"))
-        (define PLON3 (make-plist 8/2
-                                  PLON2))
-        (define PLON4 (make-plist 5.5
-                                  PLON3))
-        (define PLON5 (make-plist -3
-                                  PLON4))
-        (define PLON6 (make-plist 0
-                                  PLON5))                        
+        (define PLON2 (make-plist 13 "empty"))
+        (define PLON3 (make-plist 8/2 PLON2))
+        (define PLON4 (make-plist 5.5 PLON3))
+        (define PLON5 (make-plist -3 PLON4))
+        (define PLON6 (make-plist 0 PLON5))                        
         #;
         (define (plon-template plon)
           (cond
@@ -144,7 +141,7 @@ if __name__ == '__main__':
         (define LOS3.1 (cons "apple"   empty))
         (define LOS3.2 (cons "Apple"    LOS3.1))
         (define LOS3.3 (cons "surprise" LOS3.2))
-        (define LOS4 (cons "apple" (cons "zebra" (cons "banana" empty))))
+        (define LOS4 (list "apple" "zebra" "banana"))
         (define (los-template los)
           (cond
             [(empty? los)
@@ -260,10 +257,10 @@ if __name__ == '__main__':
         ; EXERCISE 10 ----------------------------------------------------------------------------------------
         
         (define S0 empty)
-        (define S1 (cons 1 (cons 2 (cons 3 empty))))
-        (define S2 (cons 1 (cons 1 (cons 1 (cons 1 (cons 2 (cons 2 (cons 2 (cons 3 (cons 3 empty))))))))))
-        (define S3 (cons 1 (cons 3 (cons 2 empty))))
-        (define S4 (cons 1 (cons 2 (cons 4 empty))))
+        (define S1 (list 1 2 3))
+        (define S2 (list 1 1 1 1 2 2 2 3 3))
+        (define S3 (list 1 3 2))
+        (define S4 (list 1 2 4))
         
         ; set=? : List List -> Bool
         ; Are the two sets equal?
