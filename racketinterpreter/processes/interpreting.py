@@ -201,7 +201,14 @@ class Interpreter(ast.ASTVisitor):
                 result = d.Boolean(type(evaluated_params[0]) == expr.data_type)
                 return result
             elif expr_type is ast.StructGet:
-                # TODO: add check for type
+                if type(evaluated_params[0]) != expr.data_type:
+                    raise err.InterpreterError(
+                        error_code=err.ErrorCode.INCORRECT_ARGUMENT_TYPE,
+                        token=node.token,
+                        name=proc_name,
+                        expected=expr.data_type,
+                        given=evaluated_params[0]
+                    )
                 data_type_name = expr.data_type.__name__
                 field = proc_name[len(data_type_name) + 1:]
                 result = evaluated_params[0].fields[evaluated_params[0].field_names.index(field)]

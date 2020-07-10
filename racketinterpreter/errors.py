@@ -1,7 +1,13 @@
 from enum import Enum
 from string import Template
+import typing as tp
 from racketinterpreter.classes import data as d
 from racketinterpreter.classes import tokens as t
+
+# The function kwargs.get() is used instead of the selector kwargs[] to make sure that the error message never fails,
+# regardless of if the correct keyword arguments were passed into the constructor. The instantiation of errors should
+# not (in my opinion) generate any errors, since the whole purpose of reaching any code in this file is to alert the
+# user of any errors that have occurred, and what's the point if it blows up on them?
 
 
 class ErrorCode(Enum):
@@ -117,17 +123,28 @@ class Error(Exception):
                 d.RealNum: 'real',
                 # d.InexactNum, no functions should expect this type
                 # d.ExactNum, no functions should expect this type
-                d.RationalNum: 'rational number',  # no functions should expect this type... but apparently gcd should?
+                # d.RationalNum: 'rational number',  # no functions should expect this type...
+                #                                      but apparently gcd should?
                 d.Integer: 'integer',
-                d.NaturalNum: 'natural number'
+                d.NaturalNum: 'natural number',
+                None: 'none'  # here for the same reasons as mentioned at the top of this file
             }
 
             name = kwargs.get('name')
             expected = kwargs.get('expected')
             given = kwargs.get('given')
-            multiple_args = kwargs.get('multiple_args')
+            multiple_args = kwargs.get('multiple_args', False)
 
-            expects = f'expects a {data_type_to_string[expected]}'
+            if expected.__class__ is d.StructDataType:
+                name_of_expected = expected.__name__
+            else:
+                name_of_expected = data_type_to_string[expected]
+
+            if name_of_expected[0] in ['a', 'e', 'i', 'o', 'u']:
+                expects = f'expects an {name_of_expected}'
+            else:
+                expects = f'expects a {name_of_expected}'
+
             if multiple_args:
                 def to_ord(n):
                     return str(n) + {
@@ -501,7 +518,7 @@ class BuiltinProcedureError(Error):
 
 class EvaluateBuiltinProcedureError(TypeError):
 
-    def __init__(self, expected: d.DataType, given: d.Data, idx: int = None):
+    def __init__(self, expected: d.DataType, given: d.Data, idx: tp.Optional[int] = None):
         self.expected = expected
         self.given = given
         self.idx = idx
