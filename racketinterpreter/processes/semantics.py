@@ -486,13 +486,13 @@ class SemanticAnalyzer(ast.ASTVisitor):
                 proc_symbol = sym.ProcSymbol(proc_name, [sym.AmbiguousSymbol('_')])
 
             if idx == 0:
-                proc_symbol.expr = ast.StructMake(struct_class)
+                proc_symbol.expr = ast.StructMake(node.token, struct_class)
             elif idx == 1:
-                proc_symbol.expr = ast.StructHuh(struct_class)
+                proc_symbol.expr = ast.StructHuh(node.token, struct_class)
             elif proc_name == struct_name:
                 pass
             else:
-                proc_symbol.expr = ast.StructGet(struct_class)
+                proc_symbol.expr = ast.StructGet(node.token, struct_class)
 
             if self.current_scope.lookup(proc_name, current_scope_only=True) is not None:
                 if proc_name in BUILT_IN_PROCS:

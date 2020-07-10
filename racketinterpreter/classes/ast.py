@@ -20,7 +20,7 @@ class AST(abc.ABC):
 class Expr(AST):
     """An expression."""
 
-    def __init__(self, token: Optional[t.Token], value: Any):
+    def __init__(self, token: t.Token, value: Any = None):
         super().__init__(token)
         self._value = value
 
@@ -41,8 +41,8 @@ class ConsList(AST):
 class StructProc(Expr):
     """A proc related to a struct."""
 
-    def __init__(self, data_type: d.DataType):
-        super().__init__(None, None)
+    def __init__(self, token: t.Token, data_type: d.DataType):
+        super().__init__(token)
         self.data_type = data_type
 
 
@@ -184,7 +184,7 @@ class Cond(Expr):
     """A cond statement."""
 
     def __init__(self, token: t.Token, exprs: List[Expr]) -> None:
-        super().__init__(token, None)
+        super().__init__(token)
         self.exprs = exprs
 
         self.branches = []
@@ -201,7 +201,7 @@ class CondBranch(Expr):
     """A cond branch with a condition."""
 
     def __init__(self, token: t.Token, exprs: List[Expr]):
-        super().__init__(token, None)
+        super().__init__(token)
         self.exprs = exprs
 
         self.predicate = None
@@ -218,7 +218,7 @@ class CondElse(Expr):
     """The else cond branch."""
 
     def __init__(self, token: t.Token, expr: Expr):
-        super().__init__(token, None)
+        super().__init__(token)
         self.expr = expr
 
     def __str__(self) -> str:
@@ -290,7 +290,7 @@ class ProcCall(Expr):
     """A procedure and a list of arguments."""
 
     def __init__(self, token: t.Token, exprs: List[Expr]) -> None:
-        super().__init__(token, None)
+        super().__init__(token)
         self.exprs = exprs
 
         self.original_proc_token = None
