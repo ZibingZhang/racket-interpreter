@@ -149,6 +149,102 @@ class StringIth(BuiltInProc):
         return string[index]
 
 
+class StringLength(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.NaturalNum:
+        param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.String):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.String,
+                given=param_value
+            )
+
+        return d.NaturalNum(len(param_value))
+
+
+class StringLowerCaseHuh(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+        param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.String):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.String,
+                given=param_value
+            )
+
+        return param_value.islower()
+
+
+class StringNumericHuh(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+        param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.String):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.String,
+                given=param_value
+            )
+
+        return d.Boolean(param_value.isnumeric())
+
+
+class StringUpcase(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.String:
+        param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.String):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.String,
+                given=param_value
+            )
+
+        return param_value.upper()
+
+
+class StringUpperCaseHuh(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+        param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.String):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.String,
+                given=param_value
+            )
+
+        return param_value.isupper()
+
+
+class StringWhitespaceHuh(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: List[ast.AST]) -> d.Boolean:
+        param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.String):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.String,
+                given=param_value
+            )
+
+        return d.Boolean(len(param_value) == 0) or param_value.isspace()
+
+
 class StringHuh(BuiltInProc):
 
     @staticmethod

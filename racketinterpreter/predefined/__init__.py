@@ -4,7 +4,7 @@ from racketinterpreter.predefined.controlflow import (
 from racketinterpreter.predefined.boolean import (
     And,
     BooleanHuh,
-    BooleanSymbolEqualHuh,
+    BooleanSymEqualHuh,
     BooleanToString,
     FalseHuh,
     Or,
@@ -17,15 +17,15 @@ from racketinterpreter.predefined.list import (
     Rest
 )
 from racketinterpreter.predefined.numeric import (
-    SymbolMultiply,
-    SymbolPlus,
-    SymbolMinus,
-    SymbolDivide,
-    SymbolLessThan,
-    SymbolLessEqualThan,
-    SymbolEqual,
-    SymbolGreaterThan,
-    SymbolGreaterEqualThan,
+    SymMultiply,
+    SymPlus,
+    SymMinus,
+    SymDivide,
+    SymLessThan,
+    SymLessEqualThan,
+    SymEqual,
+    SymGreaterThan,
+    SymGreaterEqualThan,
     Abs,
     Add1,
     Ceiling,
@@ -63,23 +63,72 @@ from racketinterpreter.predefined.string import (
     StringCopy,
     StringDowncase,
     StringIth,
+    StringLength,
+    StringLowerCaseHuh,
+    StringNumericHuh,
+    StringUpcase,
+    StringUpperCaseHuh,
+    StringWhitespaceHuh,
     StringHuh
+)
+from racketinterpreter.predefined.symbol import (
+    SymbolHuh
 )
 
 
 BUILT_IN_PROCS = {
-    # control flow
+    # ========== ========== ==========
+    #           control flow
+    # ========== ========== ==========
     'if': If(),
-    # numeric
-    '*': SymbolMultiply(),
-    '+': SymbolPlus(),
-    '-': SymbolMinus(),
-    '/': SymbolDivide(),
-    '<': SymbolLessThan(),
-    '<=': SymbolLessEqualThan(),
-    '=': SymbolEqual(),
-    '>': SymbolGreaterThan(),
-    '>=': SymbolGreaterEqualThan(),
+    # ========== ========== ==========
+    #             boolean
+    # ========== ========== ==========
+    'and': And(),
+    'boolean->string': BooleanToString(),
+    'boolean=?': BooleanSymEqualHuh(),
+    'boolean?': BooleanHuh(),
+    'false?': FalseHuh(),
+    'not': Not(),
+    'or': Or(),
+    # ========== ========== ==========
+    #               list
+    # ========== ========== ==========
+    # 'append': Append(),
+    'cons?': ConsHuh(),
+    # 'eighth': Eighth(),
+    'empty?': EmptyHuh(),
+    # 'fifth' : Fifth(),
+    'first': First(),
+    # 'fourth': Fourth(),
+    # 'length': Length(),
+    # 'list': List(),
+    # 'list*': ListSymStar(),
+    # 'list-ref': ListRef(),
+    # 'list?': ListHuh(),
+    # 'make-list': MakeList(),
+    # 'member': Member(),
+    # 'member?': MemberHuh(),
+    # 'null?': NullHuh(),
+    # 'range': Range(),
+    'rest': Rest(),
+    # 'reverse': Reverse(),
+    # 'second': Second(),
+    # 'seventh': Seventh(),
+    # 'sixth': Sixth(),
+    # 'third': Third()
+    # ========== ========== ==========
+    #             numeric
+    # ========== ========== ==========
+    '*': SymMultiply(),
+    '+': SymPlus(),
+    '-': SymMinus(),
+    '/': SymDivide(),
+    '<': SymLessThan(),
+    '<=': SymLessEqualThan(),
+    '=': SymEqual(),
+    '>': SymGreaterThan(),
+    '>=': SymGreaterEqualThan(),
     'abs': Abs(),
     'add1': Add1(),
     'ceiling': Ceiling(),
@@ -109,43 +158,38 @@ BUILT_IN_PROCS = {
     'sqrt': Sqrt(),  # cannot handle negative numbers for now
     'sub1': Sub1(),
     'zero?': ZeroHuh(),
-    # boolean
-    'and': And(),
-    'boolean->string': BooleanToString(),
-    'boolean=?': BooleanSymbolEqualHuh(),
-    'boolean?': BooleanHuh(),
-    'false?': FalseHuh(),
-    'not': Not(),
-    'or': Or(),
-    # string
+    # ========== ========== ==========
+    #              string
+    # ========== ========== ==========
     'string-alphabetic?': StringAlphabeticHuh(),
     'string-append': StringAppend(),
     # 'string-ci<=?': StringCiSymbolLessEqualHuh(),
     # 'string-ci<?': StringCiSymbolLessHuh(),
-    # 'string-ci=?': StringCiSymbolEqualHuh(),
-    # 'string-ci>=?': StringCiSymbolGreaterEqualHuh(),
-    # 'string-ci>?': StringCiSymbolGreaterHuh(),
+    # 'string-ci=?': StringCiSymEqualHuh(),
+    # 'string-ci>=?': StringCiSymGreaterEqualHuh(),
+    # 'string-ci>?': StringCiSymGreaterHuh(),
     # 'string-contains-ci?': StringContainsCiHuh(),
     'string-contains?': StringContainsHuh(),
     'string-copy': StringCopy(),
     'string-downcase': StringDowncase(),
     'string-ith': StringIth(),
-    # 'string-length': StringLength(),
-    # 'string-lower-case?': StringLowerCaseHuh(),
-    # 'string-numeric?': StringNumericHuh(),
-    # 'string-upcase': StringUpcase(),
-    # 'string-upper-case?': StringUpperCaseHuh(),
-    # 'string-whitespace': StringWhitespace(),
+    'string-length': StringLength(),
+    'string-lower-case?': StringLowerCaseHuh(),
+    'string-numeric?': StringNumericHuh(),
+    'string-upcase': StringUpcase(),
+    'string-upper-case?': StringUpperCaseHuh(),
+    'string-whitespace?': StringWhitespaceHuh(),
     # 'string<=?': StringSymbolLessEqualHuh(),
     # 'string<?': StringSymbolLessHuh(),
-    # 'string=?': StringSymbolEqualHuh(),
-    # 'string>=?': StringSymbolGreaterEqualHuh(),
-    # 'string>?': StringSymbolGreaterHuh(),
+    # 'string=?': StringSymEqualHuh(),
+    # 'string>=?': StringSymGreaterEqualHuh(),
+    # 'string>?': StringSymGreaterHuh(),
     'string?': StringHuh(),
     # 'substring': Substring()
-    # list
-    'cons?': ConsHuh(),
-    'empty?': EmptyHuh(),
-    'first': First(),
-    'rest': Rest()
+    # ========== ========== ==========
+    #              symbol
+    # ========== ========== ==========
+    # 'symbol->string': SymbolToString(),
+    # 'symbol=?': SymbolSymEqualHuh(),
+    'symbol?': SymbolHuh()
 }

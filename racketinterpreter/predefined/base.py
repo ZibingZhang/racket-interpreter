@@ -1,7 +1,7 @@
 from __future__ import annotations
 import abc
 import re
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List
 from racketinterpreter import errors as err
 from racketinterpreter.classes import data as d
 
@@ -62,7 +62,8 @@ class BuiltInProc(abc.ABC):
             'LessThan': '<',
             'Greater': '>',
             'LessEqualThan': '<=',
-            'GreaterEqualThan': '>='
+            'GreaterEqualThan': '>=',
+            'Star': '*'
         }
 
         words = re.findall('[A-Z][^A-Z]*', class_name)
@@ -74,7 +75,7 @@ class BuiltInProc(abc.ABC):
                 symbolic_word = False
                 continue
 
-            if word == 'Symbol':
+            if word == 'Sym':
                 symbolic_word = True
             elif word == 'To':
                 proc_name += '->'

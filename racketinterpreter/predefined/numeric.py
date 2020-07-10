@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from racketinterpreter.processes.interpreting import Interpreter
 
 
-class SymbolMultiply(BuiltInProc):
+class SymMultiply(BuiltInProc):
 
     LOWER = 0
     UPPER = None
@@ -44,7 +44,7 @@ class SymbolMultiply(BuiltInProc):
         return result
 
 
-class SymbolPlus(BuiltInProc):
+class SymPlus(BuiltInProc):
 
     LOWER = 0
     UPPER = None
@@ -72,7 +72,7 @@ class SymbolPlus(BuiltInProc):
         return result
 
 
-class SymbolMinus(BuiltInProc):
+class SymMinus(BuiltInProc):
 
     UPPER = None
 
@@ -102,7 +102,7 @@ class SymbolMinus(BuiltInProc):
         return result
 
 
-class SymbolDivide(BuiltInProc):
+class SymDivide(BuiltInProc):
 
     UPPER = None
 
@@ -138,7 +138,7 @@ class SymbolDivide(BuiltInProc):
         return result
 
 
-class SymbolLessThan(BuiltInProc):
+class SymLessThan(BuiltInProc):
 
     UPPER = None
 
@@ -172,7 +172,7 @@ class SymbolLessThan(BuiltInProc):
         return result
 
 
-class SymbolLessEqualThan(BuiltInProc):
+class SymLessEqualThan(BuiltInProc):
 
     UPPER = None
 
@@ -206,7 +206,7 @@ class SymbolLessEqualThan(BuiltInProc):
         return result
 
 
-class SymbolEqual(BuiltInProc):
+class SymEqual(BuiltInProc):
 
     UPPER = None
 
@@ -238,7 +238,7 @@ class SymbolEqual(BuiltInProc):
         return result
 
 
-class SymbolGreaterThan(BuiltInProc):
+class SymGreaterThan(BuiltInProc):
 
     UPPER = None
 
@@ -272,7 +272,7 @@ class SymbolGreaterThan(BuiltInProc):
         return result
 
 
-class SymbolGreaterEqualThan(BuiltInProc):
+class SymGreaterEqualThan(BuiltInProc):
 
     UPPER = None
 

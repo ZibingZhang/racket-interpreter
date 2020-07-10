@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List
 from racketinterpreter import errors as err
 from racketinterpreter.classes import data as d
 from racketinterpreter.predefined.base import BuiltInProc
@@ -54,7 +54,7 @@ class BooleanToString(BuiltInProc):
         return result
 
 
-class BooleanSymbolEqualHuh(BuiltInProc):
+class BooleanSymEqualHuh(BuiltInProc):
 
     UPPER = None
 
