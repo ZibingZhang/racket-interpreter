@@ -442,7 +442,8 @@ class String(Data):
             >>> string
             "Hello World!"
         """
-        return String(self.value + other.value)
+        self.value += other.value
+        return self
 
     def __contains__(self, item: String) -> Boolean:
         """
@@ -480,6 +481,18 @@ class String(Data):
             "HELLO WORLD!"
         """
         return String(self.value.upper())
+
+    def isspace(self) -> Boolean:
+        return Boolean(self.value.isspace())
+
+    def isnumeric(self) -> Boolean:
+        return Boolean(self.value.isnumeric())
+
+    def islower(self) -> Boolean:
+        return Boolean(self.value.islower())
+
+    def isupper(self) -> Boolean:
+        return Boolean(self.value.isupper())
 
 
 class Symbol(Data):
