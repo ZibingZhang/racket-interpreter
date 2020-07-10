@@ -539,8 +539,6 @@ class SemanticAnalyzer(ast.ASTVisitor):
             scope = self.current_scope
 
             proc = call_stack.get(proc_name)
-            proc_name = proc.value
-            proc_symbol = scope.lookup(proc_name)
 
             if type(proc) is not d.Procedure:
                 raise err.SemanticError(
@@ -549,6 +547,9 @@ class SemanticAnalyzer(ast.ASTVisitor):
                     proc_token=node.proc_token,
                     found_data=proc
                 )
+
+            proc_name = proc.value
+            proc_symbol = scope.lookup(proc_name)
 
             while proc_symbol.type == 'AMBIGUOUS':
                 scope = scope.enclosing_scope

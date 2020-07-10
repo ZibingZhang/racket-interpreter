@@ -9,10 +9,6 @@ class DataType(type):
     """The metaclass of a class representing data."""
 
 
-class StructDataType(DataType):
-    """The metaclass of a class representing a struct."""
-
-
 class Data(metaclass=DataType):
     """Data from the output of the interpretation process.
 
@@ -24,12 +20,20 @@ class Data(metaclass=DataType):
         self.value = value
 
 
+class StructDataType(DataType):
+    """The metaclass of a class representing a struct."""
+
+
+class StructData(metaclass=StructDataType):
+    """Data representing a struct."""
+
+
 class StructDataFactory:
     """A factory for creating struct data types."""
 
     @staticmethod
     def create(struct_name: str, fields: tp.List[str]) -> StructDataType:
-        struct_data = StructDataType(struct_name, (Data,), {})
+        struct_data = StructDataType(struct_name, (StructData,), {})
 
         setattr(struct_data, 'field_names', fields)
         setattr(struct_data, 'fields', None)
