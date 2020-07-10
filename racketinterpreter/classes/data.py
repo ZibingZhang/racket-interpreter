@@ -41,7 +41,7 @@ class StructDataFactory:
         setattr(struct_data, 'metaclass', StructDataType)
         struct_data.metaclass = staticmethod(struct_data.metaclass)
 
-        setattr(struct_data, '__str__', lambda self: f'#<{struct_name}>')
+        setattr(struct_data, '__str__', lambda self: f'(make-{struct_name} {str(" ".join(map(str, self.fields)))})')
 
         return struct_data
 
