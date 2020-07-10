@@ -173,7 +173,7 @@ class Parser:
                 node = self.p_expr()
             return node
         elif self.current_token.type is t.TokenType.ID:
-            if self.current_token.value == t.Keyword.EMPTY.value:
+            if self.current_token.value in [t.Keyword.EMPTY.value, t.Keyword.NULL.value]:
                 token = self.current_token
                 self.eat(t.TokenType.ID)
                 return ast.Empty(token)
