@@ -73,6 +73,8 @@ from racketinterpreter.predefined.string import (
     StringHuh
 )
 from racketinterpreter.predefined.symbol import (
+    SymbolToString,
+    SymbolSymEqualHuh,
     SymbolHuh
 )
 
@@ -190,7 +192,7 @@ BUILT_IN_PROCS = {
     # ========== ========== ==========
     #              symbol
     # ========== ========== ==========
-    # 'symbol->string': SymbolToString(),
-    # 'symbol=?': SymbolSymEqualHuh(),
+    'symbol->string': SymbolToString(),
+    'symbol=?': SymbolSymEqualHuh(),
     'symbol?': SymbolHuh()
 }

@@ -79,7 +79,7 @@ class BooleanSymEqualHuh(BuiltInProc):
         result = d.Boolean(True)
 
         for param_value in evaluated_params:
-            if first_param_value != param_value:
+            if param_value != first_param_value:
                 result = d.Boolean(False)
                 break
 
