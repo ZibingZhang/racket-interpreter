@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.1.1.1.1.5. racketinterpreter.classes.tokens &mdash; racketinterpreter v0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.1.1.2. racketinterpreter.predefined" href="racketinterpreter.predefined.html" />
+    <link rel="prev" title="2.1.1.1.1.4. racketinterpreter.classes.symbols" href="racketinterpreter.classes.symbols.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> racketinterpreter
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">1. README</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Packages</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="racketinterpreter.html">2.1. racketinterpreter</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="racketinterpreter.html#subpackages">2.1.1. Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="racketinterpreter.classes.html">2.1.1.1. racketinterpreter.classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.predefined.html">2.1.1.2. racketinterpreter.predefined</a></li>
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.processes.html">2.1.1.3. racketinterpreter.processes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="racketinterpreter.html#submodules">2.1.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="racketinterpreter.html#module-racketinterpreter">2.1.3. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/release.html">3. Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/files.html">4. Root Directory Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">5. MIT License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">racketinterpreter</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html"><span class="section-number">2. </span>racketinterpreter</a> &raquo;</li>
+        
+          <li><a href="racketinterpreter.html"><span class="section-number">2.1. </span>racketinterpreter</a> &raquo;</li>
+        
+          <li><a href="racketinterpreter.classes.html"><span class="section-number">2.1.1.1. </span>racketinterpreter.classes</a> &raquo;</li>
+        
+      <li><span class="section-number">2.1.1.1.1.5. </span>racketinterpreter.classes.tokens</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidoc/racketinterpreter.classes.tokens.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-racketinterpreter.classes.tokens">
+<span id="racketinterpreter-classes-tokens"></span><h1><span class="section-number">2.1.1.1.1.5. </span>racketinterpreter.classes.tokens<a class="headerlink" href="#module-racketinterpreter.classes.tokens" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="racketinterpreter.classes.tokens.Keyword">
+<em class="property">class </em><code class="sig-name descname">Keyword</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.tokens.Keyword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.Keyword.CHECK_EXPECT">
+<code class="sig-name descname">CHECK_EXPECT</code><em class="property"> = 'check-expect'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.Keyword.CHECK_EXPECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.Keyword.COND">
+<code class="sig-name descname">COND</code><em class="property"> = 'cond'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.Keyword.COND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.Keyword.CONS">
+<code class="sig-name descname">CONS</code><em class="property"> = 'cons'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.Keyword.CONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.Keyword.DEFINE">
+<code class="sig-name descname">DEFINE</code><em class="property"> = 'define'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.Keyword.DEFINE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.Keyword.DEFINE_STRUCT">
+<code class="sig-name descname">DEFINE_STRUCT</code><em class="property"> = 'define-struct'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.Keyword.DEFINE_STRUCT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.Keyword.ELSE">
+<code class="sig-name descname">ELSE</code><em class="property"> = 'else'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.Keyword.ELSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.Keyword.EMPTY">
+<code class="sig-name descname">EMPTY</code><em class="property"> = 'empty'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.Keyword.EMPTY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.Keyword.NULL">
+<code class="sig-name descname">NULL</code><em class="property"> = 'null'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.Keyword.NULL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.tokens.Token">
+<em class="property">class </em><code class="sig-name descname">Token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#racketinterpreter.classes.tokens.TokenType" title="racketinterpreter.classes.tokens.TokenType">racketinterpreter.classes.tokens.TokenType</a></span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">line_no</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">column</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.tokens.Token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A token from the lexing process.</p>
+<dl class="field-list">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<a class="reference internal" href="#racketinterpreter.classes.tokens.TokenType" title="racketinterpreter.classes.tokens.TokenType"><em>TokenType</em></a>) – The type of token.</p></li>
+<li><p><strong>value</strong> (<em>tp.Any</em>) – The value of the token.</p></li>
+<li><p><strong>line_no</strong> (<em>int</em>) – The line number of the tokens first character.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Ivar</dt>
+<dd class="field-even"><p>int column: The column of the tokens first character.</p>
+</dd>
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Token</span><span class="p">(</span><span class="n">TokenType</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s1">&#39;define&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">37</span><span class="p">)</span>
+<span class="go">&lt;Token type:ID  value:define  position:5:37&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Token</span><span class="p">(</span><span class="n">TokenType</span><span class="o">.</span><span class="n">SYMBOL</span><span class="p">,</span> <span class="s2">&quot;&#39;sym&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">69</span><span class="p">)</span>
+<span class="go">&lt;Token type:SYMBOL  value:&#39;sym  position:3:69&gt;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="racketinterpreter.classes.tokens.Token.children">
+<em class="property">property </em><code class="sig-name descname">children</code><a class="headerlink" href="#racketinterpreter.classes.tokens.Token.children" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.tokens.Token.column">
+<em class="property">property </em><code class="sig-name descname">column</code><a class="headerlink" href="#racketinterpreter.classes.tokens.Token.column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.tokens.Token.create_proc">
+<em class="property">static </em><code class="sig-name descname">create_proc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">line_no</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">column</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#racketinterpreter.classes.tokens.Token" title="racketinterpreter.classes.tokens.Token">racketinterpreter.classes.tokens.Token</a><a class="headerlink" href="#racketinterpreter.classes.tokens.Token.create_proc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.tokens.Token.line_no">
+<em class="property">property </em><code class="sig-name descname">line_no</code><a class="headerlink" href="#racketinterpreter.classes.tokens.Token.line_no" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.tokens.Token.type">
+<em class="property">property </em><code class="sig-name descname">type</code><a class="headerlink" href="#racketinterpreter.classes.tokens.Token.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.tokens.Token.value">
+<em class="property">property </em><code class="sig-name descname">value</code><a class="headerlink" href="#racketinterpreter.classes.tokens.Token.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.tokens.TokenType">
+<em class="property">class </em><code class="sig-name descname">TokenType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.BOOLEAN">
+<code class="sig-name descname">BOOLEAN</code><em class="property"> = 'BOOLEAN'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.BOOLEAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.DECIMAL">
+<code class="sig-name descname">DECIMAL</code><em class="property"> = 'DECIMAL'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.DECIMAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.EOF">
+<code class="sig-name descname">EOF</code><em class="property"> = 'EOF'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.EOF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.ID">
+<code class="sig-name descname">ID</code><em class="property"> = 'ID'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.INTEGER">
+<code class="sig-name descname">INTEGER</code><em class="property"> = 'INTEGER'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.INTEGER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.INVALID">
+<code class="sig-name descname">INVALID</code><em class="property"> = 'INVALID'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.INVALID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.LIST_ABRV">
+<code class="sig-name descname">LIST_ABRV</code><em class="property"> = 'LIST_ABRV'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.LIST_ABRV" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.LPAREN">
+<code class="sig-name descname">LPAREN</code><em class="property"> = 'LPAREN'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.LPAREN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.RATIONAL">
+<code class="sig-name descname">RATIONAL</code><em class="property"> = 'RATIONAL'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.RATIONAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.RPAREN">
+<code class="sig-name descname">RPAREN</code><em class="property"> = 'RPAREN'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.RPAREN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.STRING">
+<code class="sig-name descname">STRING</code><em class="property"> = 'STRING'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.STRING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.classes.tokens.TokenType.SYMBOL">
+<code class="sig-name descname">SYMBOL</code><em class="property"> = 'SYMBOL'</em><a class="headerlink" href="#racketinterpreter.classes.tokens.TokenType.SYMBOL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="racketinterpreter.predefined.html" class="btn btn-neutral float-right" title="2.1.1.2. racketinterpreter.predefined" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="racketinterpreter.classes.symbols.html" class="btn btn-neutral float-left" title="2.1.1.1.1.4. racketinterpreter.classes.symbols" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Zibing Zhang
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

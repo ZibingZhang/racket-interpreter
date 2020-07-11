@@ -1,0 +1,7 @@
+racketinterpreter.predefined.boolean
+====================================
+
+.. automodule:: racketinterpreter.predefined.boolean
+   :members:
+   :undoc-members:
+   :show-inheritance:

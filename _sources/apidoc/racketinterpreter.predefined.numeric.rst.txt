@@ -1,0 +1,7 @@
+racketinterpreter.predefined.numeric
+====================================
+
+.. automodule:: racketinterpreter.predefined.numeric
+   :members:
+   :undoc-members:
+   :show-inheritance:

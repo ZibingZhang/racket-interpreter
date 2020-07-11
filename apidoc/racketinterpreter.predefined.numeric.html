@@ -1,0 +1,569 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.1.1.2.1.5. racketinterpreter.predefined.numeric &mdash; racketinterpreter v0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.1.1.2.1.6. racketinterpreter.predefined.string" href="racketinterpreter.predefined.string.html" />
+    <link rel="prev" title="2.1.1.2.1.4. racketinterpreter.predefined.list" href="racketinterpreter.predefined.list.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> racketinterpreter
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">1. README</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Packages</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="racketinterpreter.html">2.1. racketinterpreter</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="racketinterpreter.html#subpackages">2.1.1. Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.classes.html">2.1.1.1. racketinterpreter.classes</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="racketinterpreter.predefined.html">2.1.1.2. racketinterpreter.predefined</a></li>
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.processes.html">2.1.1.3. racketinterpreter.processes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="racketinterpreter.html#submodules">2.1.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="racketinterpreter.html#module-racketinterpreter">2.1.3. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/release.html">3. Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/files.html">4. Root Directory Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">5. MIT License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">racketinterpreter</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html"><span class="section-number">2. </span>racketinterpreter</a> &raquo;</li>
+        
+          <li><a href="racketinterpreter.html"><span class="section-number">2.1. </span>racketinterpreter</a> &raquo;</li>
+        
+          <li><a href="racketinterpreter.predefined.html"><span class="section-number">2.1.1.2. </span>racketinterpreter.predefined</a> &raquo;</li>
+        
+      <li><span class="section-number">2.1.1.2.1.5. </span>racketinterpreter.predefined.numeric</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidoc/racketinterpreter.predefined.numeric.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-racketinterpreter.predefined.numeric">
+<span id="racketinterpreter-predefined-numeric"></span><h1><span class="section-number">2.1.1.2.1.5. </span>racketinterpreter.predefined.numeric<a class="headerlink" href="#module-racketinterpreter.predefined.numeric" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Abs">
+<em class="property">class </em><code class="sig-name descname">Abs</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Abs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Add1">
+<em class="property">class </em><code class="sig-name descname">Add1</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Add1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Ceiling">
+<em class="property">class </em><code class="sig-name descname">Ceiling</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Ceiling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.CurrentSeconds">
+<em class="property">class </em><code class="sig-name descname">CurrentSeconds</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.CurrentSeconds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.CurrentSeconds.LOWER">
+<code class="sig-name descname">LOWER</code><em class="property"> = 0</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.CurrentSeconds.LOWER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.CurrentSeconds.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = 0</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.CurrentSeconds.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.EvenHuh">
+<em class="property">class </em><code class="sig-name descname">EvenHuh</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.EvenHuh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.ExactHuh">
+<em class="property">class </em><code class="sig-name descname">ExactHuh</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.ExactHuh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.ExactToInexact">
+<em class="property">class </em><code class="sig-name descname">ExactToInexact</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.ExactToInexact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Exp">
+<em class="property">class </em><code class="sig-name descname">Exp</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Exp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Floor">
+<em class="property">class </em><code class="sig-name descname">Floor</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Floor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Gcd">
+<em class="property">class </em><code class="sig-name descname">Gcd</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Gcd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.Gcd.LOWER">
+<code class="sig-name descname">LOWER</code><em class="property"> = 0</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.Gcd.LOWER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.Gcd.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.Gcd.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.IntegerHuh">
+<em class="property">class </em><code class="sig-name descname">IntegerHuh</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.IntegerHuh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Lcm">
+<em class="property">class </em><code class="sig-name descname">Lcm</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Lcm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.Lcm.LOWER">
+<code class="sig-name descname">LOWER</code><em class="property"> = 0</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.Lcm.LOWER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.Lcm.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.Lcm.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Log">
+<em class="property">class </em><code class="sig-name descname">Log</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Max">
+<em class="property">class </em><code class="sig-name descname">Max</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.Max.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.Max.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Min">
+<em class="property">class </em><code class="sig-name descname">Min</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.Min.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.Min.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Modulo">
+<em class="property">class </em><code class="sig-name descname">Modulo</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Modulo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.Modulo.LOWER">
+<code class="sig-name descname">LOWER</code><em class="property"> = 2</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.Modulo.LOWER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.Modulo.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = 2</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.Modulo.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.NegativeHuh">
+<em class="property">class </em><code class="sig-name descname">NegativeHuh</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.NegativeHuh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.NumberHuh">
+<em class="property">class </em><code class="sig-name descname">NumberHuh</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.NumberHuh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.NumberToString">
+<em class="property">class </em><code class="sig-name descname">NumberToString</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.NumberToString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.OddHuh">
+<em class="property">class </em><code class="sig-name descname">OddHuh</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.OddHuh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.PositiveHuh">
+<em class="property">class </em><code class="sig-name descname">PositiveHuh</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.PositiveHuh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.RationalHuh">
+<em class="property">class </em><code class="sig-name descname">RationalHuh</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.RationalHuh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.RealHuh">
+<em class="property">class </em><code class="sig-name descname">RealHuh</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.RealHuh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Round">
+<em class="property">class </em><code class="sig-name descname">Round</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Round" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Sgn">
+<em class="property">class </em><code class="sig-name descname">Sgn</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Sgn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Sqr">
+<em class="property">class </em><code class="sig-name descname">Sqr</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Sqr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Sqrt">
+<em class="property">class </em><code class="sig-name descname">Sqrt</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Sqrt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.Sub1">
+<em class="property">class </em><code class="sig-name descname">Sub1</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.Sub1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.SymDivide">
+<em class="property">class </em><code class="sig-name descname">SymDivide</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymDivide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.SymDivide.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymDivide.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.SymEqual">
+<em class="property">class </em><code class="sig-name descname">SymEqual</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymEqual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.SymEqual.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymEqual.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.SymGreaterEqualThan">
+<em class="property">class </em><code class="sig-name descname">SymGreaterEqualThan</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymGreaterEqualThan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.SymGreaterEqualThan.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymGreaterEqualThan.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.SymGreaterThan">
+<em class="property">class </em><code class="sig-name descname">SymGreaterThan</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymGreaterThan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.SymGreaterThan.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymGreaterThan.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.SymLessEqualThan">
+<em class="property">class </em><code class="sig-name descname">SymLessEqualThan</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymLessEqualThan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.SymLessEqualThan.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymLessEqualThan.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.SymLessThan">
+<em class="property">class </em><code class="sig-name descname">SymLessThan</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymLessThan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.SymLessThan.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymLessThan.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.SymMinus">
+<em class="property">class </em><code class="sig-name descname">SymMinus</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymMinus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.SymMinus.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymMinus.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.SymMultiply">
+<em class="property">class </em><code class="sig-name descname">SymMultiply</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymMultiply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.SymMultiply.LOWER">
+<code class="sig-name descname">LOWER</code><em class="property"> = 0</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymMultiply.LOWER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.SymMultiply.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymMultiply.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.SymPlus">
+<em class="property">class </em><code class="sig-name descname">SymPlus</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymPlus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.SymPlus.LOWER">
+<code class="sig-name descname">LOWER</code><em class="property"> = 0</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymPlus.LOWER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.predefined.numeric.SymPlus.UPPER">
+<code class="sig-name descname">UPPER</code><em class="property"> = None</em><a class="headerlink" href="#racketinterpreter.predefined.numeric.SymPlus.UPPER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.predefined.numeric.ZeroHuh">
+<em class="property">class </em><code class="sig-name descname">ZeroHuh</code><a class="headerlink" href="#racketinterpreter.predefined.numeric.ZeroHuh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="racketinterpreter.predefined.base.html#racketinterpreter.predefined.base.BuiltInProc" title="racketinterpreter.predefined.base.BuiltInProc"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.predefined.base.BuiltInProc</span></code></a></p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="racketinterpreter.predefined.string.html" class="btn btn-neutral float-right" title="2.1.1.2.1.6. racketinterpreter.predefined.string" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="racketinterpreter.predefined.list.html" class="btn btn-neutral float-left" title="2.1.1.2.1.4. racketinterpreter.predefined.list" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Zibing Zhang
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

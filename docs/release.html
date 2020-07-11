@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3. Release &mdash; racketinterpreter v0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4. Root Directory Files" href="files.html" />
+    <link rel="prev" title="2.1.2.5. racketinterpreter.util" href="../apidoc/racketinterpreter.util.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> racketinterpreter
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">1. README</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apidoc/modules.html">2. Packages</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#incrementing-the-version">3.1. Incrementing the Version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generating-distribution-archives">3.2. Generating Distribution Archives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#upload-the-distribution-archives">3.3. Upload the Distribution Archives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sources">3.4. Sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="files.html">4. Root Directory Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">5. MIT License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">racketinterpreter</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><span class="section-number">3. </span>Release</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/docs/release.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="release">
+<h1><a class="toc-backref" href="#id4"><span class="section-number">3. </span>Release</a><a class="headerlink" href="#release" title="Permalink to this headline">¶</a></h1>
+<p>These are the steps needed to release a new version of the package on PyPI.</p>
+<hr class="docutils" />
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title"><strong>Table of Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#release" id="id4">Release</a></p>
+<ul>
+<li><p><a class="reference internal" href="#incrementing-the-version" id="id5">Incrementing the Version</a></p></li>
+<li><p><a class="reference internal" href="#generating-distribution-archives" id="id6">Generating Distribution Archives</a></p></li>
+<li><p><a class="reference internal" href="#upload-the-distribution-archives" id="id7">Upload the Distribution Archives</a></p></li>
+<li><p><a class="reference internal" href="#sources" id="id8">Sources</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="incrementing-the-version">
+<h2><a class="toc-backref" href="#id5"><span class="section-number">3.1. </span>Incrementing the Version</a><a class="headerlink" href="#incrementing-the-version" title="Permalink to this headline">¶</a></h2>
+<p>The version numbers follow the semantic versioning system, the specifications of which can be found <a class="reference external" href="https://semver.org/">here</a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file contains some metadata about the package including the version number which needs to be incremented.</p>
+<p>Tag the commit which contains the final version of the code being released.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ git tag -a v0.1.0 -m <span class="s2">&quot;Release Version 0.1.0&quot;</span> a029ac
+$ git push origin --tags
+</pre></div>
+</div>
+</div>
+<div class="section" id="generating-distribution-archives">
+<h2><a class="toc-backref" href="#id6"><span class="section-number">3.2. </span>Generating Distribution Archives</a><a class="headerlink" href="#generating-distribution-archives" title="Permalink to this headline">¶</a></h2>
+<p>Install the latest versions of <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> and <code class="docutils literal notranslate"><span class="pre">wheel</span></code>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python -m pip install --user --upgrade setuptools wheel
+</pre></div>
+</div>
+<p>Generate distribution archives.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ python setup.py sdist bdist_wheel
+</pre></div>
+</div>
+<p>There should now be two files in the <code class="docutils literal notranslate"><span class="pre">dist</span></code> directory.</p>
+</div>
+<div class="section" id="upload-the-distribution-archives">
+<h2><a class="toc-backref" href="#id7"><span class="section-number">3.3. </span>Upload the Distribution Archives</a><a class="headerlink" href="#upload-the-distribution-archives" title="Permalink to this headline">¶</a></h2>
+<p>Before uploading them to PyPI, first upload them to Test PyPI to ensure that everything has gone as intended.</p>
+<p>Install Twine.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ python -m pip install --user --upgrade twine
+</pre></div>
+</div>
+<p>Upload all of the archives under <code class="docutils literal notranslate"><span class="pre">dist</span></code> to Test PyPI.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ python -m twine upload --repository testpypi dist/*
+</pre></div>
+</div>
+<p>Install the package to test it.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ python -m pip install --index-url https://test.pypi.org/simple/ --no-deps racketinterpreter
+$ python
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">racketinterpreter</span>
+</pre></div>
+</div>
+<p>Upload all of the archives under <code class="docutils literal notranslate"><span class="pre">dist</span></code> to PyPI.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ python3 -m twine upload dist/*
+</pre></div>
+</div>
+</div>
+<div class="section" id="sources">
+<h2><a class="toc-backref" href="#id8"><span class="section-number">3.4. </span>Sources</a><a class="headerlink" href="#sources" title="Permalink to this headline">¶</a></h2>
+<p>[<a class="reference external" href="https://medium.com/&#64;joel.barmettler/how-to-upload-your-python-package-to-pypi-65edc5fe9c56">1</a>]
+[<a class="reference external" href="https://packaging.python.org/tutorials/packaging-projects/">2</a>]
+[<a class="reference external" href="https://www.freecodecamp.org/news/git-tag-explained-how-to-add-remove/">3</a>]</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="files.html" class="btn btn-neutral float-right" title="4. Root Directory Files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../apidoc/racketinterpreter.util.html" class="btn btn-neutral float-left" title="2.1.2.5. racketinterpreter.util" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Zibing Zhang
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

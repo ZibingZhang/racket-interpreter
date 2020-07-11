@@ -1,0 +1,534 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.1.2.2. racketinterpreter.errors &mdash; racketinterpreter v0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.1.2.3. racketinterpreter.exports" href="racketinterpreter.exports.html" />
+    <link rel="prev" title="2.1.2.1. racketinterpreter.constants" href="racketinterpreter.constants.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> racketinterpreter
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">1. README</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Packages</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="racketinterpreter.html">2.1. racketinterpreter</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="racketinterpreter.html#subpackages">2.1.1. Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="racketinterpreter.html#submodules">2.1.2. Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.constants.html">2.1.2.1. racketinterpreter.constants</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">2.1.2.2. racketinterpreter.errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.exports.html">2.1.2.3. racketinterpreter.exports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.interactive.html">2.1.2.4. racketinterpreter.interactive</a></li>
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.util.html">2.1.2.5. racketinterpreter.util</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="racketinterpreter.html#module-racketinterpreter">2.1.3. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/release.html">3. Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/files.html">4. Root Directory Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">5. MIT License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">racketinterpreter</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html"><span class="section-number">2. </span>racketinterpreter</a> &raquo;</li>
+        
+          <li><a href="racketinterpreter.html"><span class="section-number">2.1. </span>racketinterpreter</a> &raquo;</li>
+        
+      <li><span class="section-number">2.1.2.2. </span>racketinterpreter.errors</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidoc/racketinterpreter.errors.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-racketinterpreter.errors">
+<span id="racketinterpreter-errors"></span><h1><span class="section-number">2.1.2.2. </span>racketinterpreter.errors<a class="headerlink" href="#module-racketinterpreter.errors" title="Permalink to this headline">¶</a></h1>
+<dl class="py exception">
+<dt id="racketinterpreter.errors.BuiltinProcedureError">
+<em class="property">exception </em><code class="sig-name descname">BuiltinProcedureError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_code</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.errors.BuiltinProcedureError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.errors.Error" title="racketinterpreter.errors.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.errors.Error</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="racketinterpreter.errors.Error">
+<em class="property">exception </em><code class="sig-name descname">Error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_code</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.errors.Error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.errors.ErrorCode">
+<em class="property">class </em><code class="sig-name descname">ErrorCode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.errors.ErrorCode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.BUILTIN_OR_IMPORTED_NAME">
+<code class="sig-name descname">BUILTIN_OR_IMPORTED_NAME</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.BUILTIN_OR_IMPORTED_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.CE_INCORRECT_ARGUMENT_COUNT">
+<code class="sig-name descname">CE_INCORRECT_ARGUMENT_COUNT</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.CE_INCORRECT_ARGUMENT_COUNT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST">
+<code class="sig-name descname">CL_EXPECTED_SECOND_ARGUMENT_LIST</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.CL_EXPECTED_TWO_ARGUMENTS">
+<code class="sig-name descname">CL_EXPECTED_TWO_ARGUMENTS</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.CL_EXPECTED_TWO_ARGUMENTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.C_ALL_QUESTION_RESULTS_FALSE">
+<code class="sig-name descname">C_ALL_QUESTION_RESULTS_FALSE</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.C_ALL_QUESTION_RESULTS_FALSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.C_ELSE_NOT_LAST_CLAUSE">
+<code class="sig-name descname">C_ELSE_NOT_LAST_CLAUSE</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.C_ELSE_NOT_LAST_CLAUSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.C_EXPECTED_A_CLAUSE">
+<code class="sig-name descname">C_EXPECTED_A_CLAUSE</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.C_EXPECTED_A_CLAUSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.C_EXPECTED_OPEN_PARENTHESIS">
+<code class="sig-name descname">C_EXPECTED_OPEN_PARENTHESIS</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.C_EXPECTED_OPEN_PARENTHESIS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE">
+<code class="sig-name descname">C_EXPECTED_QUESTION_ANSWER_CLAUSE</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.C_EXPECTED_QUESTION_ANSWER_CLAUSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN">
+<code class="sig-name descname">C_QUESTION_RESULT_NOT_BOOLEAN</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.DIVISION_BY_ZERO">
+<code class="sig-name descname">DIVISION_BY_ZERO</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.DIVISION_BY_ZERO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.DS_EXPECTED_A_FIELD">
+<code class="sig-name descname">DS_EXPECTED_A_FIELD</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.DS_EXPECTED_A_FIELD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.DS_EXPECTED_FIELD_NAMES">
+<code class="sig-name descname">DS_EXPECTED_FIELD_NAMES</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.DS_EXPECTED_FIELD_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.DS_EXPECTED_OPEN_PARENTHESIS">
+<code class="sig-name descname">DS_EXPECTED_OPEN_PARENTHESIS</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.DS_EXPECTED_OPEN_PARENTHESIS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.DS_EXPECTED_STRUCTURE_NAME">
+<code class="sig-name descname">DS_EXPECTED_STRUCTURE_NAME</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.DS_EXPECTED_STRUCTURE_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.DS_NOT_TOP_LEVEL">
+<code class="sig-name descname">DS_NOT_TOP_LEVEL</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.DS_NOT_TOP_LEVEL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.DS_POST_FIELD_NAMES">
+<code class="sig-name descname">DS_POST_FIELD_NAMES</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.DS_POST_FIELD_NAMES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.D_DUPLICATE_VARIABLE">
+<code class="sig-name descname">D_DUPLICATE_VARIABLE</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.D_DUPLICATE_VARIABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.D_EXPECTED_A_NAME">
+<code class="sig-name descname">D_EXPECTED_A_NAME</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.D_EXPECTED_A_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.D_EXPECTED_OPEN_PARENTHESIS">
+<code class="sig-name descname">D_EXPECTED_OPEN_PARENTHESIS</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.D_EXPECTED_OPEN_PARENTHESIS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.D_NOT_TOP_LEVEL">
+<code class="sig-name descname">D_NOT_TOP_LEVEL</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.D_NOT_TOP_LEVEL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.D_P_EXPECTED_A_VARIABLE">
+<code class="sig-name descname">D_P_EXPECTED_A_VARIABLE</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.D_P_EXPECTED_A_VARIABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.D_P_EXPECTED_FUNCTION_NAME">
+<code class="sig-name descname">D_P_EXPECTED_FUNCTION_NAME</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.D_P_EXPECTED_FUNCTION_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.D_P_EXPECTED_ONE_EXPRESSION">
+<code class="sig-name descname">D_P_EXPECTED_ONE_EXPRESSION</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.D_P_EXPECTED_ONE_EXPRESSION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.D_P_MISSING_AN_EXPRESSION">
+<code class="sig-name descname">D_P_MISSING_AN_EXPRESSION</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.D_P_MISSING_AN_EXPRESSION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.D_V_EXPECTED_ONE_EXPRESSION">
+<code class="sig-name descname">D_V_EXPECTED_ONE_EXPRESSION</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.D_V_EXPECTED_ONE_EXPRESSION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.D_V_MISSING_AN_EXPRESSION">
+<code class="sig-name descname">D_V_MISSING_AN_EXPRESSION</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.D_V_MISSING_AN_EXPRESSION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.E_NOT_ALLOWED">
+<code class="sig-name descname">E_NOT_ALLOWED</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.E_NOT_ALLOWED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.FC_EXPECTED_A_FUNCTION">
+<code class="sig-name descname">FC_EXPECTED_A_FUNCTION</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.FC_EXPECTED_A_FUNCTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.FEATURE_NOT_IMPLEMENTED">
+<code class="sig-name descname">FEATURE_NOT_IMPLEMENTED</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.FEATURE_NOT_IMPLEMENTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.INCORRECT_ARGUMENT_COUNT">
+<code class="sig-name descname">INCORRECT_ARGUMENT_COUNT</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.INCORRECT_ARGUMENT_COUNT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.INCORRECT_ARGUMENT_TYPE">
+<code class="sig-name descname">INCORRECT_ARGUMENT_TYPE</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.INCORRECT_ARGUMENT_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.PREVIOUSLY_DEFINED_NAME">
+<code class="sig-name descname">PREVIOUSLY_DEFINED_NAME</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.PREVIOUSLY_DEFINED_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.RS_BAD_SYNTAX">
+<code class="sig-name descname">RS_BAD_SYNTAX</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.RS_BAD_SYNTAX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.RS_EOF_IN_BLOCK_COMMENT">
+<code class="sig-name descname">RS_EOF_IN_BLOCK_COMMENT</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.RS_EOF_IN_BLOCK_COMMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.RS_EXPECTED_DOUBLE_QUOTE">
+<code class="sig-name descname">RS_EXPECTED_DOUBLE_QUOTE</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.RS_EXPECTED_DOUBLE_QUOTE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.RS_EXPECTED_RIGHT_PARENTHESIS">
+<code class="sig-name descname">RS_EXPECTED_RIGHT_PARENTHESIS</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.RS_EXPECTED_RIGHT_PARENTHESIS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.RS_INCORRECT_RIGHT_PARENTHESIS">
+<code class="sig-name descname">RS_INCORRECT_RIGHT_PARENTHESIS</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.RS_INCORRECT_RIGHT_PARENTHESIS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.RS_SYMBOL_FOUND_EOF">
+<code class="sig-name descname">RS_SYMBOL_FOUND_EOF</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.RS_SYMBOL_FOUND_EOF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.RS_UNEXPECTED">
+<code class="sig-name descname">RS_UNEXPECTED</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.RS_UNEXPECTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.RS_UNEXPECTED_EOF">
+<code class="sig-name descname">RS_UNEXPECTED_EOF</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.RS_UNEXPECTED_EOF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.RS_UNEXPECTED_RIGHT_PARENTHESIS">
+<code class="sig-name descname">RS_UNEXPECTED_RIGHT_PARENTHESIS</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.RS_UNEXPECTED_RIGHT_PARENTHESIS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.RS_UNEXPECTED_TOKEN">
+<code class="sig-name descname">RS_UNEXPECTED_TOKEN</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.RS_UNEXPECTED_TOKEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.USED_BEFORE_DEFINITION">
+<code class="sig-name descname">USED_BEFORE_DEFINITION</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.USED_BEFORE_DEFINITION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="racketinterpreter.errors.ErrorCode.USING_STRUCTURE_TYPE">
+<code class="sig-name descname">USING_STRUCTURE_TYPE</code><em class="property"> = &lt;string.Template object&gt;</em><a class="headerlink" href="#racketinterpreter.errors.ErrorCode.USING_STRUCTURE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt id="racketinterpreter.errors.EvaluateBuiltinProcedureError">
+<em class="property">exception </em><code class="sig-name descname">EvaluateBuiltinProcedureError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">expected</span><span class="p">:</span> <span class="n"><a class="reference internal" href="racketinterpreter.classes.data.html#racketinterpreter.classes.data.DataType" title="racketinterpreter.classes.data.DataType">racketinterpreter.classes.data.DataType</a></span></em>, <em class="sig-param"><span class="n">given</span><span class="p">:</span> <span class="n"><a class="reference internal" href="racketinterpreter.classes.data.html#racketinterpreter.classes.data.Data" title="racketinterpreter.classes.data.Data">racketinterpreter.classes.data.Data</a></span></em>, <em class="sig-param"><span class="n">idx</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.errors.EvaluateBuiltinProcedureError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeError</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="racketinterpreter.errors.IllegalStateError">
+<em class="property">exception </em><code class="sig-name descname">IllegalStateError</code><a class="headerlink" href="#racketinterpreter.errors.IllegalStateError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="racketinterpreter.errors.InterpreterError">
+<em class="property">exception </em><code class="sig-name descname">InterpreterError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_code</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.errors.InterpreterError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.errors.Error" title="racketinterpreter.errors.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.errors.Error</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="racketinterpreter.errors.LexerError">
+<em class="property">exception </em><code class="sig-name descname">LexerError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_code</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.errors.LexerError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.errors.Error" title="racketinterpreter.errors.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.errors.Error</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="racketinterpreter.errors.ParserError">
+<em class="property">exception </em><code class="sig-name descname">ParserError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_code</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.errors.ParserError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.errors.Error" title="racketinterpreter.errors.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.errors.Error</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="racketinterpreter.errors.PreLexerError">
+<em class="property">exception </em><code class="sig-name descname">PreLexerError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_code</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.errors.PreLexerError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.errors.Error" title="racketinterpreter.errors.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.errors.Error</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="racketinterpreter.errors.ReachedEOF">
+<em class="property">exception </em><code class="sig-name descname">ReachedEOF</code><a class="headerlink" href="#racketinterpreter.errors.ReachedEOF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="racketinterpreter.errors.SemanticError">
+<em class="property">exception </em><code class="sig-name descname">SemanticError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_code</span></em>, <em class="sig-param"><span class="n">token</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.errors.SemanticError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.errors.Error" title="racketinterpreter.errors.Error"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.errors.Error</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="racketinterpreter.errors.TailEndRecursion">
+<em class="property">exception </em><code class="sig-name descname">TailEndRecursion</code><a class="headerlink" href="#racketinterpreter.errors.TailEndRecursion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="racketinterpreter.exports.html" class="btn btn-neutral float-right" title="2.1.2.3. racketinterpreter.exports" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="racketinterpreter.constants.html" class="btn btn-neutral float-left" title="2.1.2.1. racketinterpreter.constants" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Zibing Zhang
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

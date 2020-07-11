@@ -1,0 +1,7 @@
+racketinterpreter.predefined.string
+===================================
+
+.. automodule:: racketinterpreter.predefined.string
+   :members:
+   :undoc-members:
+   :show-inheritance:

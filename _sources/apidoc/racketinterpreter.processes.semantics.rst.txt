@@ -1,0 +1,7 @@
+racketinterpreter.processes.semantics
+=====================================
+
+.. automodule:: racketinterpreter.processes.semantics
+   :members:
+   :undoc-members:
+   :show-inheritance:

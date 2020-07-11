@@ -1,0 +1,7 @@
+racketinterpreter.errors
+========================
+
+.. automodule:: racketinterpreter.errors
+   :members:
+   :undoc-members:
+   :show-inheritance:

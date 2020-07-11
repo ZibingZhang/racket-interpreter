@@ -1,0 +1,321 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4. Root Directory Files &mdash; racketinterpreter v0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5. MIT License" href="../LICENSE.html" />
+    <link rel="prev" title="3. Release" href="release.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> racketinterpreter
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">1. README</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apidoc/modules.html">2. Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release.html">3. Release</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Root Directory Files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#files">4.1. Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#codecov-yml">4.1.1. <code class="docutils literal notranslate"><span class="pre">.codecov.yml</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gitignore">4.1.2. <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#travis-yml">4.1.3. <code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conf-py">4.1.4. <code class="docutils literal notranslate"><span class="pre">conf.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-py">4.1.5. <code class="docutils literal notranslate"><span class="pre">example.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#index-rst">4.1.6. <code class="docutils literal notranslate"><span class="pre">index.rst</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#license-rst">4.1.7. <code class="docutils literal notranslate"><span class="pre">LICENSE.rst</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-bat">4.1.8. <code class="docutils literal notranslate"><span class="pre">make.bat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#makefile">4.1.9. <code class="docutils literal notranslate"><span class="pre">Makefile</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#readme-rst">4.1.10. <code class="docutils literal notranslate"><span class="pre">README.rst</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#requirements-txt">4.1.11. <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setup-py">4.1.12. <code class="docutils literal notranslate"><span class="pre">setup.py</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">5. MIT License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">racketinterpreter</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><span class="section-number">4. </span>Root Directory Files</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/docs/files.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="root-directory-files">
+<h1><a class="toc-backref" href="#id1"><span class="section-number">4. </span>Root Directory Files</a><a class="headerlink" href="#root-directory-files" title="Permalink to this headline">¶</a></h1>
+<p>There are a lot of files in the root directory.
+The purpose of this file is to document what each of the files are used for.</p>
+<hr class="docutils" />
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title"><strong>Table of Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#root-directory-files" id="id1">Root Directory Files</a></p>
+<ul>
+<li><p><a class="reference internal" href="#files" id="id2">Files</a></p>
+<ul>
+<li><p><a class="reference internal" href="#codecov-yml" id="id3"><code class="docutils literal notranslate"><span class="pre">.codecov.yml</span></code></a></p></li>
+<li><p><a class="reference internal" href="#gitignore" id="id4"><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code></a></p></li>
+<li><p><a class="reference internal" href="#travis-yml" id="id5"><code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code></a></p></li>
+<li><p><a class="reference internal" href="#conf-py" id="id6"><code class="docutils literal notranslate"><span class="pre">conf.py</span></code></a></p></li>
+<li><p><a class="reference internal" href="#example-py" id="id7"><code class="docutils literal notranslate"><span class="pre">example.py</span></code></a></p></li>
+<li><p><a class="reference internal" href="#index-rst" id="id8"><code class="docutils literal notranslate"><span class="pre">index.rst</span></code></a></p></li>
+<li><p><a class="reference internal" href="#license-rst" id="id9"><code class="docutils literal notranslate"><span class="pre">LICENSE.rst</span></code></a></p></li>
+<li><p><a class="reference internal" href="#make-bat" id="id10"><code class="docutils literal notranslate"><span class="pre">make.bat</span></code></a></p></li>
+<li><p><a class="reference internal" href="#makefile" id="id11"><code class="docutils literal notranslate"><span class="pre">Makefile</span></code></a></p></li>
+<li><p><a class="reference internal" href="#readme-rst" id="id12"><code class="docutils literal notranslate"><span class="pre">README.rst</span></code></a></p></li>
+<li><p><a class="reference internal" href="#requirements-txt" id="id13"><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code></a></p></li>
+<li><p><a class="reference internal" href="#setup-py" id="id14"><code class="docutils literal notranslate"><span class="pre">setup.py</span></code></a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="files">
+<h2><a class="toc-backref" href="#id2"><span class="section-number">4.1. </span>Files</a><a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="codecov-yml">
+<h3><a class="toc-backref" href="#id3"><span class="section-number">4.1.1. </span><code class="docutils literal notranslate"><span class="pre">.codecov.yml</span></code></a><a class="headerlink" href="#codecov-yml" title="Permalink to this headline">¶</a></h3>
+<p>The configuration file for <a class="reference external" href="codecov.io">codecov.io</a>, a tool to automatically detect and process test coverage.</p>
+<p>Currently the file is set up such that after the tests are run, there will be no status check.
+In the future, this file will be change so that if the commit results in a significant decrease in code coverage, there will be a status check at a failing state.</p>
+</div>
+<div class="section" id="gitignore">
+<h3><a class="toc-backref" href="#id4"><span class="section-number">4.1.2. </span><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code></a><a class="headerlink" href="#gitignore" title="Permalink to this headline">¶</a></h3>
+<p>Tells git which files and directories should not be tracked.</p>
+</div>
+<div class="section" id="travis-yml">
+<h3><a class="toc-backref" href="#id5"><span class="section-number">4.1.3. </span><code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code></a><a class="headerlink" href="#travis-yml" title="Permalink to this headline">¶</a></h3>
+<p>The configuration file for <a class="reference external" href="travis-ci.org">travis-ci.org</a>, a continuous integration tool.</p>
+<p>Currently the file runs the test suite and notifies <a class="reference external" href="codecov.io">codecov.io</a> of changes on success.
+Ideally Python 3.9 would also be automatically tested, but I’m not sure how to set that up.</p>
+</div>
+<div class="section" id="conf-py">
+<h3><a class="toc-backref" href="#id6"><span class="section-number">4.1.4. </span><code class="docutils literal notranslate"><span class="pre">conf.py</span></code></a><a class="headerlink" href="#conf-py" title="Permalink to this headline">¶</a></h3>
+<p>The configuration file for the Sphinx documentation builder.</p>
+</div>
+<div class="section" id="example-py">
+<h3><a class="toc-backref" href="#id7"><span class="section-number">4.1.5. </span><code class="docutils literal notranslate"><span class="pre">example.py</span></code></a><a class="headerlink" href="#example-py" title="Permalink to this headline">¶</a></h3>
+<p>An example of <code class="docutils literal notranslate"><span class="pre">racketinterpreter</span></code>.</p>
+</div>
+<div class="section" id="index-rst">
+<h3><a class="toc-backref" href="#id8"><span class="section-number">4.1.6. </span><code class="docutils literal notranslate"><span class="pre">index.rst</span></code></a><a class="headerlink" href="#index-rst" title="Permalink to this headline">¶</a></h3>
+<p>The Sphinx documentation master file.
+Also the documentation homepage.</p>
+</div>
+<div class="section" id="license-rst">
+<h3><a class="toc-backref" href="#id9"><span class="section-number">4.1.7. </span><code class="docutils literal notranslate"><span class="pre">LICENSE.rst</span></code></a><a class="headerlink" href="#license-rst" title="Permalink to this headline">¶</a></h3>
+<p>An MIT license.</p>
+</div>
+<div class="section" id="make-bat">
+<h3><a class="toc-backref" href="#id10"><span class="section-number">4.1.8. </span><code class="docutils literal notranslate"><span class="pre">make.bat</span></code></a><a class="headerlink" href="#make-bat" title="Permalink to this headline">¶</a></h3>
+<p>An autogenerated file that makes simplifies the processes for generating documentation.</p>
+</div>
+<div class="section" id="makefile">
+<h3><a class="toc-backref" href="#id11"><span class="section-number">4.1.9. </span><code class="docutils literal notranslate"><span class="pre">Makefile</span></code></a><a class="headerlink" href="#makefile" title="Permalink to this headline">¶</a></h3>
+<p>An autogenerated file that makes simplifies the processes for generating documentation.</p>
+</div>
+<div class="section" id="readme-rst">
+<h3><a class="toc-backref" href="#id12"><span class="section-number">4.1.10. </span><code class="docutils literal notranslate"><span class="pre">README.rst</span></code></a><a class="headerlink" href="#readme-rst" title="Permalink to this headline">¶</a></h3>
+<p>An introduction to the project.</p>
+</div>
+<div class="section" id="requirements-txt">
+<h3><a class="toc-backref" href="#id13"><span class="section-number">4.1.11. </span><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code></a><a class="headerlink" href="#requirements-txt" title="Permalink to this headline">¶</a></h3>
+<p>The packages (and their versions) that this project depends on.</p>
+<p>In the future it will be split into sections for documentation, publishing, and the project itself.</p>
+</div>
+<div class="section" id="setup-py">
+<h3><a class="toc-backref" href="#id14"><span class="section-number">4.1.12. </span><code class="docutils literal notranslate"><span class="pre">setup.py</span></code></a><a class="headerlink" href="#setup-py" title="Permalink to this headline">¶</a></h3>
+<p>Used in the process of generating distribution archives.
+Specifies metadata about the project.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../LICENSE.html" class="btn btn-neutral float-right" title="5. MIT License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="release.html" class="btn btn-neutral float-left" title="3. Release" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Zibing Zhang
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

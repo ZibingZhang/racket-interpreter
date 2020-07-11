@@ -1,0 +1,830 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.1.1.1.1.2. racketinterpreter.classes.data &mdash; racketinterpreter v0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.1.1.1.1.3. racketinterpreter.classes.stack" href="racketinterpreter.classes.stack.html" />
+    <link rel="prev" title="2.1.1.1.1.1. racketinterpreter.classes.ast" href="racketinterpreter.classes.ast.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> racketinterpreter
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">1. README</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Packages</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="racketinterpreter.html">2.1. racketinterpreter</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="racketinterpreter.html#subpackages">2.1.1. Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="racketinterpreter.classes.html">2.1.1.1. racketinterpreter.classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.predefined.html">2.1.1.2. racketinterpreter.predefined</a></li>
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.processes.html">2.1.1.3. racketinterpreter.processes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="racketinterpreter.html#submodules">2.1.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="racketinterpreter.html#module-racketinterpreter">2.1.3. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/release.html">3. Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/files.html">4. Root Directory Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">5. MIT License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">racketinterpreter</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html"><span class="section-number">2. </span>racketinterpreter</a> &raquo;</li>
+        
+          <li><a href="racketinterpreter.html"><span class="section-number">2.1. </span>racketinterpreter</a> &raquo;</li>
+        
+          <li><a href="racketinterpreter.classes.html"><span class="section-number">2.1.1.1. </span>racketinterpreter.classes</a> &raquo;</li>
+        
+      <li><span class="section-number">2.1.1.1.1.2. </span>racketinterpreter.classes.data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidoc/racketinterpreter.classes.data.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-racketinterpreter.classes.data">
+<span id="racketinterpreter-classes-data"></span><h1><span class="section-number">2.1.1.1.1.2. </span>racketinterpreter.classes.data<a class="headerlink" href="#module-racketinterpreter.classes.data" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.Boolean">
+<em class="property">class </em><code class="sig-name descname">Boolean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">bool</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.Boolean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.Data" title="racketinterpreter.classes.data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.Data</span></code></a></p>
+<p>A boolean.</p>
+<dl class="field-list">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Boolean</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">#t</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Boolean</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">#f</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.ComplexNum">
+<em class="property">class </em><code class="sig-name descname">ComplexNum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">real</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#racketinterpreter.classes.data.RealNum" title="racketinterpreter.classes.data.RealNum">racketinterpreter.classes.data.RealNum</a></span></em>, <em class="sig-param"><span class="n">imaginary</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#racketinterpreter.classes.data.RealNum" title="racketinterpreter.classes.data.RealNum">racketinterpreter.classes.data.RealNum</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.ComplexNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.Number" title="racketinterpreter.classes.data.Number"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.Number</span></code></a></p>
+<p>A complex number.</p>
+<p>A number with a real and imaginary part.</p>
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.ComplexNum.imaginary">
+<em class="property">property </em><code class="sig-name descname">imaginary</code><a class="headerlink" href="#racketinterpreter.classes.data.ComplexNum.imaginary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.ComplexNum.is_integer">
+<code class="sig-name descname">is_integer</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#racketinterpreter.classes.data.ComplexNum.is_integer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ComplexNum</span><span class="p">(</span><span class="n">Integer</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">Integer</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">is_integer</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ComplexNum</span><span class="p">(</span><span class="n">RationalNum</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">Integer</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">is_integer</span><span class="p">()</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ComplexNum</span><span class="p">(</span><span class="n">Integer</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">Integer</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">is_integer</span><span class="p">()</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.ComplexNum.is_zero">
+<code class="sig-name descname">is_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#racketinterpreter.classes.data.ComplexNum.is_zero" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ComplexNum</span><span class="p">(</span><span class="n">InexactNum</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">Integer</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">is_zero</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ComplexNum</span><span class="p">(</span><span class="n">RationalNum</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">Integer</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">is_zero</span><span class="p">()</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ComplexNum</span><span class="p">(</span><span class="n">Integer</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">Integer</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">is_zero</span><span class="p">()</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.ComplexNum.precedence">
+<em class="property">property </em><code class="sig-name descname">precedence</code><a class="headerlink" href="#racketinterpreter.classes.data.ComplexNum.precedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indicator of which object’s method will be called for binary operations.</p>
+<p>When performing binary operations on Numbers, the implementation on the object with the higher precedence will
+be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>This object’s precedence.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.ComplexNum.real">
+<em class="property">property </em><code class="sig-name descname">real</code><a class="headerlink" href="#racketinterpreter.classes.data.ComplexNum.real" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.ConsList">
+<em class="property">class </em><code class="sig-name descname">ConsList</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#racketinterpreter.classes.data.Data" title="racketinterpreter.classes.data.Data">racketinterpreter.classes.data.Data</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.ConsList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.List" title="racketinterpreter.classes.data.List"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.List</span></code></a></p>
+<p>A constructed (non-empty) list.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.Data">
+<em class="property">class </em><code class="sig-name descname">Data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Any<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.Data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Data from the output of the interpretation process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – The value of the data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.DataType">
+<em class="property">class </em><code class="sig-name descname">DataType</code><a class="headerlink" href="#racketinterpreter.classes.data.DataType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
+<p>The metaclass of a class representing data.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.ExactNum">
+<em class="property">class </em><code class="sig-name descname">ExactNum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numerator</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">denominator</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.ExactNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.RealNum" title="racketinterpreter.classes.data.RealNum"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.RealNum</span></code></a></p>
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.ExactNum.precedence">
+<em class="property">property </em><code class="sig-name descname">precedence</code><a class="headerlink" href="#racketinterpreter.classes.data.ExactNum.precedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indicator of which object’s method will be called for binary operations.</p>
+<p>When performing binary operations on Numbers, the implementation on the object with the higher precedence will
+be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>This object’s precedence.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.InexactNum">
+<em class="property">class </em><code class="sig-name descname">InexactNum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.InexactNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.RealNum" title="racketinterpreter.classes.data.RealNum"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.RealNum</span></code></a></p>
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.InexactNum.precedence">
+<em class="property">property </em><code class="sig-name descname">precedence</code><a class="headerlink" href="#racketinterpreter.classes.data.InexactNum.precedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indicator of which object’s method will be called for binary operations.</p>
+<p>When performing binary operations on Numbers, the implementation on the object with the higher precedence will
+be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>This object’s precedence.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.Integer">
+<em class="property">class </em><code class="sig-name descname">Integer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.Integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.ExactNum" title="racketinterpreter.classes.data.ExactNum"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.ExactNum</span></code></a></p>
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.Integer.denominator">
+<em class="property">property </em><code class="sig-name descname">denominator</code><a class="headerlink" href="#racketinterpreter.classes.data.Integer.denominator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The denominator of the number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>AttributeError</strong> – If this number does not have a denominator an error will be raised.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The denominator.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.Integer.numerator">
+<em class="property">property </em><code class="sig-name descname">numerator</code><a class="headerlink" href="#racketinterpreter.classes.data.Integer.numerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numerator of the number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>AttributeError</strong> – If this number does not have a numerator an error will be raised.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The numerator.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.Integer.precedence">
+<em class="property">property </em><code class="sig-name descname">precedence</code><a class="headerlink" href="#racketinterpreter.classes.data.Integer.precedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indicator of which object’s method will be called for binary operations.</p>
+<p>When performing binary operations on Numbers, the implementation on the object with the higher precedence will
+be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>This object’s precedence.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.List">
+<em class="property">class </em><code class="sig-name descname">List</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#racketinterpreter.classes.data.Data" title="racketinterpreter.classes.data.Data">racketinterpreter.classes.data.Data</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.List" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.Data" title="racketinterpreter.classes.data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.Data</span></code></a></p>
+<p>A list.</p>
+<dl class="field-list">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">List</span><span class="p">([</span><span class="n">Integer</span><span class="p">(</span><span class="mi">68</span><span class="p">),</span> <span class="n">Boolean</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span> <span class="n">Symbol</span><span class="p">(</span><span class="s2">&quot;&#39;sym&quot;</span><span class="p">)])</span>
+<span class="go">(list 68 #f &#39;sym)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">List</span><span class="p">([])</span>
+<span class="go">&#39;()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.NaturalNum">
+<em class="property">class </em><code class="sig-name descname">NaturalNum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.NaturalNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.Integer" title="racketinterpreter.classes.data.Integer"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.Integer</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.Number">
+<em class="property">class </em><code class="sig-name descname">Number</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>complex<span class="p">, </span>float<span class="p">, </span>int<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.Number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.Data" title="racketinterpreter.classes.data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.Data</span></code></a></p>
+<p>A number.</p>
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.Number.denominator">
+<em class="property">property </em><code class="sig-name descname">denominator</code><a class="headerlink" href="#racketinterpreter.classes.data.Number.denominator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The denominator of the number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>AttributeError</strong> – If this number does not have a denominator an error will be raised.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The denominator.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.Number.imaginary">
+<em class="property">property </em><code class="sig-name descname">imaginary</code><a class="headerlink" href="#racketinterpreter.classes.data.Number.imaginary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.Number.is_integer">
+<code class="sig-name descname">is_integer</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#racketinterpreter.classes.data.Number.is_integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this number an integer?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>NotImplementedError</strong> – By default an implementation is not provided in the Number base class.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if this number is an integer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.Number.is_zero">
+<code class="sig-name descname">is_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#racketinterpreter.classes.data.Number.is_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this number equal to zero?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>NotImplementedError</strong> – By default an implementation is not provided in the Number base class.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if this number is equal to zero.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.Number.numerator">
+<em class="property">property </em><code class="sig-name descname">numerator</code><a class="headerlink" href="#racketinterpreter.classes.data.Number.numerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numerator of the number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>AttributeError</strong> – If this number does not have a numerator an error will be raised.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The numerator.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.Number.precedence">
+<em class="property">property </em><code class="sig-name descname">precedence</code><a class="headerlink" href="#racketinterpreter.classes.data.Number.precedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indicator of which object’s method will be called for binary operations.</p>
+<p>When performing binary operations on Numbers, the implementation on the object with the higher precedence will
+be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>This object’s precedence.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.Number.real">
+<em class="property">property </em><code class="sig-name descname">real</code><a class="headerlink" href="#racketinterpreter.classes.data.Number.real" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.Procedure">
+<em class="property">class </em><code class="sig-name descname">Procedure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.Procedure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.Data" title="racketinterpreter.classes.data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.Data</span></code></a></p>
+<p>A procedure.</p>
+<dl class="field-list">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Procedure</span><span class="p">(</span><span class="s1">&#39;factorial&#39;</span><span class="p">)</span>
+<span class="go">#&lt;procedure:factorial&gt;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.RationalNum">
+<em class="property">class </em><code class="sig-name descname">RationalNum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numerator</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">denominator</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.RationalNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.ExactNum" title="racketinterpreter.classes.data.ExactNum"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.ExactNum</span></code></a></p>
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.RationalNum.denominator">
+<em class="property">property </em><code class="sig-name descname">denominator</code><a class="headerlink" href="#racketinterpreter.classes.data.RationalNum.denominator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The denominator of the number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>AttributeError</strong> – If this number does not have a denominator an error will be raised.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The denominator.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.RationalNum.numerator">
+<em class="property">property </em><code class="sig-name descname">numerator</code><a class="headerlink" href="#racketinterpreter.classes.data.RationalNum.numerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The numerator of the number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>AttributeError</strong> – If this number does not have a numerator an error will be raised.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The numerator.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.RationalNum.precedence">
+<em class="property">property </em><code class="sig-name descname">precedence</code><a class="headerlink" href="#racketinterpreter.classes.data.RationalNum.precedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indicator of which object’s method will be called for binary operations.</p>
+<p>When performing binary operations on Numbers, the implementation on the object with the higher precedence will
+be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>This object’s precedence.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.RealNum">
+<em class="property">class </em><code class="sig-name descname">RealNum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>int<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.RealNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.Number" title="racketinterpreter.classes.data.Number"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.Number</span></code></a></p>
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.RealNum.imaginary">
+<em class="property">property </em><code class="sig-name descname">imaginary</code><a class="headerlink" href="#racketinterpreter.classes.data.RealNum.imaginary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.RealNum.is_integer">
+<code class="sig-name descname">is_integer</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#racketinterpreter.classes.data.RealNum.is_integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this number an integer?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>NotImplementedError</strong> – By default an implementation is not provided in the Number base class.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if this number is an integer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.RealNum.is_zero">
+<code class="sig-name descname">is_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#racketinterpreter.classes.data.RealNum.is_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this number equal to zero?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>NotImplementedError</strong> – By default an implementation is not provided in the Number base class.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if this number is equal to zero.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.RealNum.precedence">
+<em class="property">property </em><code class="sig-name descname">precedence</code><a class="headerlink" href="#racketinterpreter.classes.data.RealNum.precedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>An indicator of which object’s method will be called for binary operations.</p>
+<p>When performing binary operations on Numbers, the implementation on the object with the higher precedence will
+be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>This object’s precedence.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.RealNum.real">
+<em class="property">property </em><code class="sig-name descname">real</code><a class="headerlink" href="#racketinterpreter.classes.data.RealNum.real" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.String">
+<em class="property">class </em><code class="sig-name descname">String</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.String" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.Data" title="racketinterpreter.classes.data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.Data</span></code></a></p>
+<p>A string.</p>
+<dl class="field-list">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;Hello World!&#39;</span><span class="p">)</span>
+<span class="go">&quot;Hello World!&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="go">&quot;&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.String.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#racketinterpreter.classes.data.String" title="racketinterpreter.classes.data.String">racketinterpreter.classes.data.String</a><a class="headerlink" href="#racketinterpreter.classes.data.String.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a copy of this string.</p>
+<dl class="field-list">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;Hello World!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="go">&quot;Hello World!&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.String.islower">
+<code class="sig-name descname">islower</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#racketinterpreter.classes.data.Boolean" title="racketinterpreter.classes.data.Boolean">racketinterpreter.classes.data.Boolean</a><a class="headerlink" href="#racketinterpreter.classes.data.String.islower" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.String.isnumeric">
+<code class="sig-name descname">isnumeric</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#racketinterpreter.classes.data.Boolean" title="racketinterpreter.classes.data.Boolean">racketinterpreter.classes.data.Boolean</a><a class="headerlink" href="#racketinterpreter.classes.data.String.isnumeric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.String.isspace">
+<code class="sig-name descname">isspace</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#racketinterpreter.classes.data.Boolean" title="racketinterpreter.classes.data.Boolean">racketinterpreter.classes.data.Boolean</a><a class="headerlink" href="#racketinterpreter.classes.data.String.isspace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.String.isupper">
+<code class="sig-name descname">isupper</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#racketinterpreter.classes.data.Boolean" title="racketinterpreter.classes.data.Boolean">racketinterpreter.classes.data.Boolean</a><a class="headerlink" href="#racketinterpreter.classes.data.String.isupper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.String.lower">
+<code class="sig-name descname">lower</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#racketinterpreter.classes.data.String" title="racketinterpreter.classes.data.String">racketinterpreter.classes.data.String</a><a class="headerlink" href="#racketinterpreter.classes.data.String.lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a copy of a lowercase version of this string.</p>
+<dl class="field-list">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;Hello World!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="go">&quot;hello world!&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.String.upper">
+<code class="sig-name descname">upper</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#racketinterpreter.classes.data.String" title="racketinterpreter.classes.data.String">racketinterpreter.classes.data.String</a><a class="headerlink" href="#racketinterpreter.classes.data.String.upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a copy of an uppercase version of this string.</p>
+<dl class="field-list">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;Hello World!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+<span class="go">&quot;HELLO WORLD!&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.StructData">
+<em class="property">class </em><code class="sig-name descname">StructData</code><a class="headerlink" href="#racketinterpreter.classes.data.StructData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Data representing a struct.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.StructDataFactory">
+<em class="property">class </em><code class="sig-name descname">StructDataFactory</code><a class="headerlink" href="#racketinterpreter.classes.data.StructDataFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A factory for creating struct data types.</p>
+<dl class="py method">
+<dt id="racketinterpreter.classes.data.StructDataFactory.create">
+<em class="property">static </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">struct_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">fields</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#racketinterpreter.classes.data.StructDataType" title="racketinterpreter.classes.data.StructDataType">racketinterpreter.classes.data.StructDataType</a><a class="headerlink" href="#racketinterpreter.classes.data.StructDataFactory.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.StructDataType">
+<em class="property">class </em><code class="sig-name descname">StructDataType</code><a class="headerlink" href="#racketinterpreter.classes.data.StructDataType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
+<p>The metaclass of a class representing a struct.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="racketinterpreter.classes.data.Symbol">
+<em class="property">class </em><code class="sig-name descname">Symbol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.classes.data.Symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#racketinterpreter.classes.data.Data" title="racketinterpreter.classes.data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">racketinterpreter.classes.data.Data</span></code></a></p>
+<p>A symbol.</p>
+<dl class="field-list">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Symbol</span><span class="p">(</span><span class="s2">&quot;&#39;anything&quot;</span><span class="p">)</span>
+<span class="go">&#39;anything</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Symbol</span><span class="p">(</span><span class="s2">&quot;&#39;can=be_a-symbo1&quot;</span><span class="p">)</span>
+<span class="go">&#39;can=be_a-symbo1</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="racketinterpreter.classes.stack.html" class="btn btn-neutral float-right" title="2.1.1.1.1.3. racketinterpreter.classes.stack" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="racketinterpreter.classes.ast.html" class="btn btn-neutral float-left" title="2.1.1.1.1.1. racketinterpreter.classes.ast" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Zibing Zhang
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

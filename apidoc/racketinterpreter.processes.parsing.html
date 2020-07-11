@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.1.1.3.1.3. racketinterpreter.processes.parsing &mdash; racketinterpreter v0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.1.1.3.1.4. racketinterpreter.processes.semantics" href="racketinterpreter.processes.semantics.html" />
+    <link rel="prev" title="2.1.1.3.1.2. racketinterpreter.processes.lexing" href="racketinterpreter.processes.lexing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> racketinterpreter
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">1. README</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">2. Packages</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="racketinterpreter.html">2.1. racketinterpreter</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="racketinterpreter.html#subpackages">2.1.1. Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.classes.html">2.1.1.1. racketinterpreter.classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="racketinterpreter.predefined.html">2.1.1.2. racketinterpreter.predefined</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="racketinterpreter.processes.html">2.1.1.3. racketinterpreter.processes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="racketinterpreter.html#submodules">2.1.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="racketinterpreter.html#module-racketinterpreter">2.1.3. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/release.html">3. Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/files.html">4. Root Directory Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">5. MIT License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">racketinterpreter</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html"><span class="section-number">2. </span>racketinterpreter</a> &raquo;</li>
+        
+          <li><a href="racketinterpreter.html"><span class="section-number">2.1. </span>racketinterpreter</a> &raquo;</li>
+        
+          <li><a href="racketinterpreter.processes.html"><span class="section-number">2.1.1.3. </span>racketinterpreter.processes</a> &raquo;</li>
+        
+      <li><span class="section-number">2.1.1.3.1.3. </span>racketinterpreter.processes.parsing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidoc/racketinterpreter.processes.parsing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-racketinterpreter.processes.parsing">
+<span id="racketinterpreter-processes-parsing"></span><h1><span class="section-number">2.1.1.3.1.3. </span>racketinterpreter.processes.parsing<a class="headerlink" href="#module-racketinterpreter.processes.parsing" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="racketinterpreter.processes.parsing.Parser">
+<em class="property">class </em><code class="sig-name descname">Parser</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lexer</span><span class="p">:</span> <span class="n">Lexer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.assignment_statement">
+<code class="sig-name descname">assignment_statement</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.IdAssign" title="racketinterpreter.classes.ast.IdAssign">racketinterpreter.classes.ast.IdAssign</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.ProcAssign" title="racketinterpreter.classes.ast.ProcAssign">racketinterpreter.classes.ast.ProcAssign</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.StructAssign" title="racketinterpreter.classes.ast.StructAssign">racketinterpreter.classes.ast.StructAssign</a><span class="p">]</span><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.assignment_statement" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>assignment_statement: constant_assignment</dt><dd><div class="line-block">
+<div class="line">function_assignment</div>
+<div class="line">structure_assignment</div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.check_expect">
+<code class="sig-name descname">check_expect</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.CheckExpect" title="racketinterpreter.classes.ast.CheckExpect">racketinterpreter.classes.ast.CheckExpect</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.check_expect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.cond">
+<code class="sig-name descname">cond</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Cond" title="racketinterpreter.classes.ast.Cond">racketinterpreter.classes.ast.Cond</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.cond" title="Permalink to this definition">¶</a></dt>
+<dd><p>cond: LPAREN COND (cond-branch|data|ID|cond)* cond-else? RPAREN</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.cond_branch">
+<code class="sig-name descname">cond_branch</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.CondBranch" title="racketinterpreter.classes.ast.CondBranch">racketinterpreter.classes.ast.CondBranch</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.cond_branch" title="Permalink to this definition">¶</a></dt>
+<dd><p>cond-branch: p-expr</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.cons">
+<code class="sig-name descname">cons</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Cons" title="racketinterpreter.classes.ast.Cons">racketinterpreter.classes.ast.Cons</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.cons" title="Permalink to this definition">¶</a></dt>
+<dd><p>LPAREN CONS expr{0,1} expr* RPAREN</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.constant_assignment">
+<code class="sig-name descname">constant_assignment</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.IdAssign" title="racketinterpreter.classes.ast.IdAssign">racketinterpreter.classes.ast.IdAssign</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.constant_assignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>constant_assignment: LPAREN DEFINE expr* RPAREN</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.data">
+<code class="sig-name descname">data</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Bool" title="racketinterpreter.classes.ast.Bool">racketinterpreter.classes.ast.Bool</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Dec" title="racketinterpreter.classes.ast.Dec">racketinterpreter.classes.ast.Dec</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Int" title="racketinterpreter.classes.ast.Int">racketinterpreter.classes.ast.Int</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Rat" title="racketinterpreter.classes.ast.Rat">racketinterpreter.classes.ast.Rat</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Str" title="racketinterpreter.classes.ast.Str">racketinterpreter.classes.ast.Str</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Sym" title="racketinterpreter.classes.ast.Sym">racketinterpreter.classes.ast.Sym</a><span class="p">]</span><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.data" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>data: INTEGER</dt><dd><div class="line-block">
+<div class="line">BOOLEAN</div>
+<div class="line">STRING</div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.eat">
+<code class="sig-name descname">eat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token_type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="racketinterpreter.classes.tokens.html#racketinterpreter.classes.tokens.TokenType" title="racketinterpreter.classes.tokens.TokenType">racketinterpreter.classes.tokens.TokenType</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.tokens.html#racketinterpreter.classes.tokens.Token" title="racketinterpreter.classes.tokens.Token">racketinterpreter.classes.tokens.Token</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.eat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Eat the current token and advance to the next one.</p>
+<p>Compare the current token to the passed type. If they
+match then ‘eat’ the current token and assign the next
+token to self.current_token, otherwise raise an
+exception.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.error_unexpected_token">
+<code class="sig-name descname">error_unexpected_token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.error_unexpected_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.expr">
+<code class="sig-name descname">expr</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Bool" title="racketinterpreter.classes.ast.Bool">racketinterpreter.classes.ast.Bool</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Cond" title="racketinterpreter.classes.ast.Cond">racketinterpreter.classes.ast.Cond</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Cons" title="racketinterpreter.classes.ast.Cons">racketinterpreter.classes.ast.Cons</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Dec" title="racketinterpreter.classes.ast.Dec">racketinterpreter.classes.ast.Dec</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Empty" title="racketinterpreter.classes.ast.Empty">racketinterpreter.classes.ast.Empty</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Int" title="racketinterpreter.classes.ast.Int">racketinterpreter.classes.ast.Int</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Id" title="racketinterpreter.classes.ast.Id">racketinterpreter.classes.ast.Id</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.ProcCall" title="racketinterpreter.classes.ast.ProcCall">racketinterpreter.classes.ast.ProcCall</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Rat" title="racketinterpreter.classes.ast.Rat">racketinterpreter.classes.ast.Rat</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Str" title="racketinterpreter.classes.ast.Str">racketinterpreter.classes.ast.Str</a><span class="p">, </span><a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Sym" title="racketinterpreter.classes.ast.Sym">racketinterpreter.classes.ast.Sym</a><span class="p">]</span><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.expr" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>expr: data</dt><dd><div class="line-block">
+<div class="line">p-expr</div>
+<div class="line">ID</div>
+<div class="line">cond</div>
+<div class="line">list</div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.list_abrv">
+<code class="sig-name descname">list_abrv</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.ProcCall" title="racketinterpreter.classes.ast.ProcCall">racketinterpreter.classes.ast.ProcCall</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.list_abrv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.p_expr">
+<code class="sig-name descname">p_expr</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.ProcCall" title="racketinterpreter.classes.ast.ProcCall">racketinterpreter.classes.ast.ProcCall</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.p_expr" title="Permalink to this definition">¶</a></dt>
+<dd><p>p-expr: LPAREN expr* RPAREN</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.parse">
+<code class="sig-name descname">parse</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Program" title="racketinterpreter.classes.ast.Program">racketinterpreter.classes.ast.Program</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.procedure_assignment">
+<code class="sig-name descname">procedure_assignment</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.ProcAssign" title="racketinterpreter.classes.ast.ProcAssign">racketinterpreter.classes.ast.ProcAssign</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.procedure_assignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>procedure_assignment: LPAREN DEFINE LPAREN expr* RPAREN expr* RPAREN</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.program">
+<code class="sig-name descname">program</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.Program" title="racketinterpreter.classes.ast.Program">racketinterpreter.classes.ast.Program</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.program" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>program<span class="classifier">statement</span></dt><dd><div class="line-block">
+<div class="line">statement compound_statement</div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.statement">
+<code class="sig-name descname">statement</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.AST" title="racketinterpreter.classes.ast.AST">racketinterpreter.classes.ast.AST</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.statement" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>statement: assignment_statement</dt><dd><div class="line-block">
+<div class="line">expr</div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="racketinterpreter.processes.parsing.Parser.structure_assignment">
+<code class="sig-name descname">structure_assignment</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="racketinterpreter.classes.ast.html#racketinterpreter.classes.ast.StructAssign" title="racketinterpreter.classes.ast.StructAssign">racketinterpreter.classes.ast.StructAssign</a><a class="headerlink" href="#racketinterpreter.processes.parsing.Parser.structure_assignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>structure_assignment: LPAREN DEFINE_STRUCT LPAREN expr* RPAREN RPAREN</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="racketinterpreter.processes.semantics.html" class="btn btn-neutral float-right" title="2.1.1.3.1.4. racketinterpreter.processes.semantics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="racketinterpreter.processes.lexing.html" class="btn btn-neutral float-left" title="2.1.1.3.1.2. racketinterpreter.processes.lexing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Zibing Zhang
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
