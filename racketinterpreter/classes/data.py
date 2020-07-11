@@ -236,7 +236,7 @@ class Number(Data):
         When performing binary operations on Numbers, the implementation on the object with the higher precedence will
         be used.
 
-        :return: This object's precedence
+        :return: This object's precedence.
         :rtype: int
         """
         return 6
@@ -246,7 +246,7 @@ class Number(Data):
         """The numerator of the number.
 
         :raises AttributeError: If this number does not have a numerator an error will be raised.
-        :return: The numerator
+        :return: The numerator.
         :rtype: int
         """
         raise AttributeError
@@ -256,7 +256,7 @@ class Number(Data):
         """The denominator of the number.
 
         :raises AttributeError: If this number does not have a denominator an error will be raised.
-        :return: The denominator
+        :return: The denominator.
         :rtype: int
         """
         raise AttributeError
@@ -289,7 +289,7 @@ class Number(Data):
         """Is this number an integer?
 
         :raises NotImplementedError: By default an implementation is not provided in the Number base class.
-        :return: True if this number is an integer
+        :return: True if this number is an integer.
         :rtype: bool
         """
         raise NotImplementedError
@@ -298,7 +298,7 @@ class Number(Data):
         """Is this number equal to zero?
 
         :raises NotImplementedError: By default an implementation is not provided in the Number base class.
-        :return: True if this number is equal to zero
+        :return: True if this number is equal to zero.
         :rtype: bool
         """
         raise NotImplementedError

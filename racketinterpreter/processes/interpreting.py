@@ -257,7 +257,7 @@ class Interpreter(ast.ASTVisitor):
         ar = stack.ActivationRecord(
             name='global',
             type=stack.ARType.PROGRAM,
-            nesting_level=1
+            nesting_level=0
         )
 
         with ar(self):

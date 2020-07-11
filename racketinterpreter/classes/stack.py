@@ -10,11 +10,28 @@ if tp.TYPE_CHECKING:
 
 
 class ARType(Enum):
+    """The type of an activation record."""
+
     PROGRAM = 'PROGRAM',
     PROCEDURE = 'PROCEDURE'
 
 
 class ActivationRecord:
+    """A record in the stack.
+
+    An activation record is created whenever there is need to assign values to names temporarily, e.g. assigning
+    actual parameters to formal parameters when calling a procedure, or initializing builtin procedures to the global
+    scope.
+
+    :ivar str name: The name of the record, either the procedure name or 'global' for the global scope.
+    :ivar ARType type: The type of activation record.
+    :ivar int nesting_level: The number of activation records below this one.
+    :ivar dict members: A mapping of names to values in the record.
+
+    .. automethod:: __setitem__
+    .. automethod:: __getitem__
+    """
+
     def __init__(self, name: str, type: ARType, nesting_level: int) -> None:
         self.name = name
         self.type = type
@@ -24,9 +41,22 @@ class ActivationRecord:
         self.interpreter = None
 
     def __setitem__(self, key: str, value: Data) -> None:
+        """Define a name within this record.
+
+        :param str key: The name to be defined.
+        :param Data value: The value of the name.
+
+        """
         self.members[key] = value
 
     def __getitem__(self, key: str) -> Data:
+        """Retrieve the value assigned to a name within this record.
+
+        :param str key: The name whose value to return.
+        :return: The value assigned to the name.
+        :rtype: Data
+        :raises KeyError: If there is no value assigned to the name.
+        """
         return self.members[key]
 
     def __str__(self) -> str:
@@ -52,11 +82,12 @@ class ActivationRecord:
         return self
 
     def __enter__(self):
-        self.interpreter.call_stack.push(self)
+        if self.interpreter:
+            self.interpreter.call_stack.push(self)
 
-        self.log_stack('')
-        self.log_stack(f'ENTER: {self.type.value}')
-        self.log_stack(str(self.interpreter.call_stack))
+            self.log_stack('')
+            self.log_stack(f'ENTER: {self.type.value}')
+            self.log_stack(str(self.interpreter.call_stack))
 
         return self
 
@@ -64,23 +95,32 @@ class ActivationRecord:
         if exc_type is not None and exc_type is not TailEndRecursion:
             return
 
-        self.interpreter.call_stack.pop()
+        if self.interpreter:
+            self.interpreter.call_stack.pop()
 
-        self.log_stack(f'LEAVE: {self.type.value}')
-        self.log_stack(str(self.interpreter.call_stack))
-        self.log_stack('')
+            self.log_stack(f'LEAVE: {self.type.value}')
+            self.log_stack(str(self.interpreter.call_stack))
+            self.log_stack('')
 
-        self.interpreter = None
+            self.interpreter = None
 
     def get(self, key) -> tp.Optional[Data]:
         return self.members.get(key)
 
-    def log_stack(self, msg: str) -> None:
+    @staticmethod
+    def log_stack(msg: str) -> None:
+        """Log messages related to the stack.
+
+        If the global constant SHOULD_LOG_STACK is set to True, this method will print out the message.
+
+        :param msg: The message to be displayed.
+        """
         if C.SHOULD_LOG_STACK:
             print(msg)
 
 
 class CallStack:
+
     def __init__(self) -> None:
         self._records = []
 
