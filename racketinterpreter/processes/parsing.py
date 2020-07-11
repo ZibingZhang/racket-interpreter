@@ -155,28 +155,56 @@ class Parser:
         return node
 
     def list_abrv(self) -> ast.ProcCall:
+        # TODO: update grammar
         list_abrv_token = self.current_token
         tokens = list_abrv_token.children
 
         self.eat(t.TokenType.LIST_ABRV)
 
-        exprs = []
-        # while self.current_token.type is not t.TokenType.RPAREN:
-        #     expr = self.expr()
-        #     exprs.append(expr)
-        exprs.append(ast.Id(t.Token(
-            type=t.TokenType.ID,
-            value='list',
-            line_no=list_abrv_token.line_no,
-            column=list_abrv_token.column
-        )))
+        exprs_stack = []
 
-        node = ast.ProcCall(list_abrv_token, exprs)
+        for token in tokens:
+            if token.type is t.TokenType.LPAREN:
+                exprs = [ast.Id(t.Token(
+                    type=t.TokenType.ID,
+                    value='list',
+                    line_no=list_abrv_token.line_no,
+                    column=list_abrv_token.column
+                ))]
+                exprs_stack.append(exprs)
+                continue
+            elif token.type is t.TokenType.RPAREN:
+                if len(exprs_stack) > 1:
+                    top = exprs_stack[-1]
+                    expr = ast.ProcCall(list_abrv_token, top)
+
+                    exprs_stack = exprs_stack[:-1]
+                    exprs_stack[-1].append(expr)
+
+                continue
+
+            exprs = exprs_stack[-1]
+            if token.type is t.TokenType.BOOLEAN:
+                exprs.append(ast.Bool(token))
+            elif token.type is t.TokenType.DECIMAL:
+                exprs.append(ast.Dec(token))
+            elif token.type is t.TokenType.INTEGER:
+                exprs.append(ast.Int(token))
+            elif token.type is t.TokenType.RATIONAL:
+                exprs.append(ast.Rat(token))
+            elif token.type is t.TokenType.STRING:
+                exprs.append(ast.Str(token))
+            elif token.type is t.TokenType.SYMBOL:
+                exprs.append(ast.Sym(token))
+            else:
+                self.error_unexpected_token(token=token)
+
+        node = ast.ProcCall(list_abrv_token, exprs_stack[0])
 
         return node
 
-    def expr(self) -> Union[ast.Bool, ast.Cond, ast.Cons, ast.Dec, ast.Empty, ast.Int,
-                            ast.Id, ast.ProcCall, ast.Rat, ast.Str, ast.Sym]:
+    def expr(self) -> Union[ast.Bool, ast.Cond, ast.Cons, ast.Dec, ast.Empty, ast.Int, ast.Id, ast.ProcCall, ast.Rat,
+                            ast.Str, ast.Sym]:
         """
         expr: data
             | p-expr

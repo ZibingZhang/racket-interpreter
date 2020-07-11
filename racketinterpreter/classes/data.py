@@ -167,8 +167,11 @@ class List(Data):
             >>> str(List([]))
             "'()"
         """
-        string = ' '.join(map(str, self.value))
-        return f"'({string})"
+        if len(self.value) == 0:
+            return "'()"
+        else:
+            string = ' '.join(map(str, self.value))
+            return f"(list {string})"
 
     def __repr__(self) -> str:
         """
