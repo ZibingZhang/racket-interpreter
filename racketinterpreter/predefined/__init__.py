@@ -14,8 +14,15 @@ from racketinterpreter.predefined.list import (
     ConsHuh,
     EmptyHuh,
     First,
+    Length,
     List,
-    Rest
+    ListHuh,
+    MakeList,
+    Member,
+    MemberHuh,
+    NullHuh,
+    Rest,
+    Reverse
 )
 from racketinterpreter.predefined.numeric import (
     SymMultiply,
@@ -48,7 +55,7 @@ from racketinterpreter.predefined.numeric import (
     NumberHuh,
     OddHuh,
     PositiveHuh,
-    RationalNumHuh,
+    RationalHuh,
     RealHuh,
     Round,
     Sgn,
@@ -79,6 +86,7 @@ from racketinterpreter.predefined.symbol import (
 )
 
 
+#TODO: member / member? & empty? / null? do the same thing
 BUILT_IN_PROCS = {
     # ========== ========== ==========
     #           control flow
@@ -104,18 +112,18 @@ BUILT_IN_PROCS = {
     # 'fifth' : Fifth(),
     'first': First(),
     # 'fourth': Fourth(),
-    # 'length': Length(),
+    'length': Length(),
     'list': List(),
     # 'list*': ListSymStar(),
     # 'list-ref': ListRef(),
-    # 'list?': ListHuh(),
-    # 'make-list': MakeList(),
-    # 'member': Member(),
-    # 'member?': MemberHuh(),
-    # 'null?': NullHuh(),
+    'list?': ListHuh(),
+    'make-list': MakeList(),
+    'member': Member(),
+    'member?': MemberHuh(),
+    'null?': NullHuh(),
     # 'range': Range(),
     'rest': Rest(),
-    # 'reverse': Reverse(),
+    'reverse': Reverse(),
     # 'second': Second(),
     # 'seventh': Seventh(),
     # 'sixth': Sixth(),
@@ -153,7 +161,7 @@ BUILT_IN_PROCS = {
     'number?': NumberHuh(),
     'odd?': OddHuh(),
     'positive?': PositiveHuh(),
-    'RationalNum?': RationalNumHuh(),
+    'rational?': RationalHuh(),
     'real?': RealHuh(),
     'round': Round(),
     'sgn': Sgn(),

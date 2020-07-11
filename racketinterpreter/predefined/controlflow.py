@@ -17,8 +17,10 @@ class If(BuiltInProc):
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
         boolean = interpreter.visit(actual_params[0])
+
         if bool(boolean):
             result = interpreter.visit(actual_params[1])
         else:
             result = interpreter.visit(actual_params[2])
+
         return result

@@ -18,8 +18,8 @@ class ConsHuh(BuiltInProc):
         param_type = type(param_value)
         is_list = issubclass(param_type, d.List)
 
-        result = is_list and len(param_value) > 0
-        return d.Boolean(result)
+        result = d.Boolean(is_list and len(param_value) > 0)
+        return result
 
 
 class EmptyHuh(BuiltInProc):
@@ -30,8 +30,8 @@ class EmptyHuh(BuiltInProc):
         param_type = type(param_value)
         is_list = issubclass(param_type, d.List)
 
-        result = is_list and len(param_value) == 0
-        return d.Boolean(result)
+        result = d.Boolean(is_list and len(param_value) == 0)
+        return result
 
 
 class First(BuiltInProc):
@@ -47,7 +47,25 @@ class First(BuiltInProc):
                 given=param_value
             )
 
-        return param_value[0]
+        result = param_value[0]
+        return result
+
+
+class Length(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
+        param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.List):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.List,
+                given=param_value
+            )
+
+        result = d.NaturalNum(len(param_value))
+        return result
 
 
 class List(BuiltInProc):
@@ -63,7 +81,98 @@ class List(BuiltInProc):
 
             evaluated_params.append(param_value)
 
-        return d.List(evaluated_params)
+        result = d.List(evaluated_params)
+        return result
+
+
+class ListHuh(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
+        param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+        is_list = issubclass(param_type, d.List)
+
+        result = d.Boolean(is_list)
+        return result
+
+
+class MakeList(BuiltInProc):
+
+    LOWER = 2
+    UPPER = 2
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.List:
+        count = param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.Integer) or param_value < d.Integer(0):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.NaturalNum,
+                given=param_value
+            )
+
+        data = interpreter.visit(actual_params[1])
+
+        result = d.List(int(count) * [data])
+        return result
+
+
+class Member(BuiltInProc):
+
+    LOWER = 2
+    UPPER = 2
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
+        item = interpreter.visit(actual_params[0])
+
+        list_ = param_value = interpreter.visit(actual_params[1])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.List):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.List,
+                given=param_value
+            )
+
+        result = d.Boolean(item in list_)
+        return result
+
+
+class MemberHuh(BuiltInProc):
+
+    LOWER = 2
+    UPPER = 2
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
+        item = interpreter.visit(actual_params[0])
+
+        list_ = param_value = interpreter.visit(actual_params[1])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.List):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.List,
+                given=param_value
+            )
+
+        result = d.Boolean(item in list_)
+        return result
+
+
+class NullHuh(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
+        param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+        is_list = issubclass(param_type, d.List)
+
+        result = d.Boolean(is_list and len(param_value) == 0)
+        return result
 
 
 class Rest(BuiltInProc):
@@ -79,4 +188,22 @@ class Rest(BuiltInProc):
                 given=param_value
             )
 
-        return param_value[1:]
+        result = param_value[1:]
+        return result
+
+
+class Reverse(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.List:
+        param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.List):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.List,
+                given=param_value
+            )
+
+        result = param_value[::-1]
+        return result

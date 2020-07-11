@@ -491,7 +491,7 @@ class IntegerHuh(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        result = d.Boolean(issubclass(param_type, d.Integer))
+        result = d.Boolean(issubclass(param_type, d.Number) and param_value.is_integer())
         return result
 
 
@@ -710,7 +710,7 @@ class PositiveHuh(BuiltInProc):
         return result
 
 
-class RationalNumHuh(BuiltInProc):
+class RationalHuh(BuiltInProc):
 
     @staticmethod
     def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:

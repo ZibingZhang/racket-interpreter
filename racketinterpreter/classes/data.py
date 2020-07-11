@@ -1018,4 +1018,5 @@ class Integer(ExactNum):
 # the natural numbers are defined starting at zero
 class NaturalNum(Integer):
 
+    # TODO: raise an error in init if not nat
     pass
