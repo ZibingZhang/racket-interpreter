@@ -14,8 +14,8 @@ if __name__ == '__main__':
         - The entire body of exercise 7 has been commented out since builtin procedures for strings have not yet been
           implemented.
         - The entire body of exercise 8 has been commented out as has the import statement for the image library.
-        - The entire body of exercise 9 has been commented out. The number system is still a WIP... sqrt always returns
-        - an inexact number which is never an integer.
+        - A single test of exercise 9 has been commented out as tries to sqrt a negative number and complex numbers are
+          not yet supported.
         - All empty lists were originally represented with '() but now are represented with empty, even in data 
           definitions.
         - All templates have been commented out.
@@ -222,7 +222,6 @@ if __name__ == '__main__':
         
         ; EXERCISE 9 -----------------------------------------------------------------------------------------
         
-        #|
         (define LON7 (cons 4 LON1))
         (define LON8 (cons 9 LON7))
         (define LON9 (cons 0.2 LON8))
@@ -237,9 +236,9 @@ if __name__ == '__main__':
              (cons (cond-sqrt (first lon))
                    (root-the-squares (rest lon)))]))
         (check-expect (root-the-squares LON1) empty)
-        (check-expect (root-the-squares LON7) (cons 2 LON1))
-        (check-expect (root-the-squares LON8) (cons 3 (cons 2 LON1)))
-        (check-expect (root-the-squares LON9) (cons 0.2 (cons 3 (cons 2 LON1))))
+        (check-expect (root-the-squares LON7) (list 2))
+        (check-expect (root-the-squares LON8) (list 3 2))
+        (check-expect (root-the-squares LON9) (list 0.2 3 2))
         
         ; cond-sqrt : Number -> Number
         ; Takes the square root only if the given argument is a perfect square
@@ -251,8 +250,7 @@ if __name__ == '__main__':
         (check-expect (cond-sqrt   0) 0)
         (check-expect (cond-sqrt 8/2) 2)
         (check-expect (cond-sqrt 9.0) 3)
-        (check-expect (cond-sqrt  -9) -9)
-        |#
+        ; (check-expect (cond-sqrt  -9) -9)
         
         ; EXERCISE 10 ----------------------------------------------------------------------------------------
         

@@ -84,21 +84,29 @@ class Interpreter(ast.ASTVisitor):
     def visit_Cons(self, node: ast.Cons) -> d.List:
         self.semantic_analyzer.visit(node)
 
-        first = self.visit(node.first)
-        rest = self.visit(node.rest)
+        current_ar = self.call_stack.peek()
+        ar = stack.ActivationRecord(
+            name='cond',
+            type=stack.ARType.PROCEDURE,
+            nesting_level=current_ar.nesting_level + 1
+        )
 
-        if type(rest) is not d.List:
-            raise err.InterpreterError(
-                error_code=err.ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST,
-                token=node.token,
-                arg1=first,
-                arg2=rest
-            )
+        with ar(self):
+            first = self.visit(node.first)
+            rest = self.visit(node.rest)
 
-        cons_list = [first]
-        cons_list.extend(rest)
+            if type(rest) is not d.List:
+                raise err.InterpreterError(
+                    error_code=err.ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST,
+                    token=node.token,
+                    arg1=first,
+                    arg2=rest
+                )
 
-        return d.List(cons_list)
+            cons_list = [first]
+            cons_list.extend(rest)
+
+            return d.List(cons_list)
 
     def visit_Empty(self, node: ast.Empty) -> d.List:
         return d.List([])
