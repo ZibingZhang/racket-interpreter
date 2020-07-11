@@ -46,72 +46,7 @@ class Lexer:
         paren_analyzer = self.paren_analyzer
 
         while True:
-            tokens = None
-
-            while self.current_char:
-                if self.current_char.isspace():
-                    self._skip_whitespace()
-                    continue
-
-                if self.current_char == ';':
-                    self._skip_line_comment()
-                    continue
-
-                if self.current_char == '#' and self._peek() == ';':
-                    self._skip_block_comment()
-                    continue
-
-                if self.current_char == '#' and self._peek() == '|':
-                    self._skip_multi_line_comment()
-                    continue
-
-                if (self.current_char.isdigit() or self.current_char == '.'
-                        or (self.current_char == '-' and (self._peek().isdigit() or self._peek() == '.'))):
-                    tokens = [self._number()]
-                    break
-
-                if self.current_char not in self.NON_ID_CHARS:
-                    tokens = [self._identifier()]
-                    break
-
-                if self.current_char == '#':
-                    tokens = [self._boolean()]
-                    break
-
-                if self.current_char == '"':
-                    tokens = [self._string()]
-                    break
-
-                if self.current_char == "'":
-                    tokens = self._symbol()
-                    break
-
-                if self.current_char in ['(', '{', '[']:
-                    token_type = t.TokenType.LPAREN
-                    value = self.current_char
-                    tokens = [t.Token(
-                        type=token_type,
-                        value=value,
-                        line_no=self.line_no,
-                        column=self.column
-                    )]
-                    self._advance()
-                    break
-
-                if self.current_char in [')', '}', ']']:
-                    token_type = t.TokenType.RPAREN
-                    value = self.current_char
-                    tokens = [t.Token(
-                        type=token_type,
-                        value=value,
-                        line_no=self.line_no,
-                        column=self.column
-                    )]
-                    self._advance()
-                    break
-
-                # TODO: having nested block comments breaks
-                raise err.IllegalStateError
+            tokens = self._process_next_tokens()
 
             if tokens is None:
                 token = t.Token(t.TokenType.EOF, None, self.line_no, self.column)
@@ -125,6 +60,77 @@ class Lexer:
 
                 if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
                     paren_analyzer.received_paren(token)
+
+    def _process_next_tokens(self, apostrophe_as_quote: bool = False) -> tp.Optional[tp.List[t.Token]]:
+        tokens = None
+
+        while self.current_char:
+            try:
+                self._skip_whitespace_or_comments()
+            except err.ReachedEOF as e:
+                break
+
+            if (self.current_char.isdigit() or self.current_char == '.'
+                    or (self.current_char == '-' and (self._peek().isdigit() or self._peek() == '.'))):
+                tokens = [self._number()]
+                break
+
+            if self.current_char not in self.NON_ID_CHARS:
+                tokens = [self._identifier()]
+                break
+
+            if self.current_char == '#':
+                tokens = [self._boolean()]
+                break
+
+            if self.current_char == '"':
+                tokens = [self._string()]
+                break
+
+            if self.current_char == "'":
+                if apostrophe_as_quote:
+                    raise err.LexerError(
+                        error_code=err.ErrorCode.FEATURE_NOT_IMPLEMENTED,
+                        token=t.Token(
+                            type=t.TokenType.INVALID,
+                            value="'",
+                            line_no=self.line_no,
+                            column=self.column
+                        )
+                    )
+                else:
+                    tokens = self._symbol()
+
+                break
+
+            if self.current_char in ['(', '{', '[']:
+                token_type = t.TokenType.LPAREN
+                value = self.current_char
+                tokens = [t.Token(
+                    type=token_type,
+                    value=value,
+                    line_no=self.line_no,
+                    column=self.column
+                )]
+                self._advance()
+                break
+
+            if self.current_char in [')', '}', ']']:
+                token_type = t.TokenType.RPAREN
+                value = self.current_char
+                tokens = [t.Token(
+                    type=token_type,
+                    value=value,
+                    line_no=self.line_no,
+                    column=self.column
+                )]
+                self._advance()
+                break
+
+            # TODO: having nested block comments breaks
+            raise err.IllegalStateError
+
+        return tokens
 
     def _peek(self) -> tp.Optional[str]:
         pos = self.pos + 1
@@ -193,6 +199,19 @@ class Lexer:
                 line_no=line_no,
                 column=column
             )
+
+    def _identifier(self, initial: str = '') -> t.Token:
+        """Handles identifiers (including builtin functions)."""
+        line_no = self.line_no
+        column = self.column
+
+        result = initial
+        while self.current_char is not None and self.current_char not in self.NON_ID_CHARS \
+                and not self.current_char.isspace():
+            result += self.current_char
+            self._advance()
+
+        return t.Token(t.TokenType.ID, result, line_no, column)
 
     def _number(self) -> t.Token:
         """Return a number token from a number consumed from the input (or an ID if not a valid number)."""
@@ -310,27 +329,18 @@ class Lexer:
         self._advance()
 
         # skip whitespace / comments before the body of the symbol
-        while True:
-            if self.current_char is None:
-                raise err.LexerError(
-                    error_code=err.ErrorCode.RS_SYMBOL_FOUND_EOF,
-                    token=t.Token(
-                        type=t.TokenType.INVALID,
-                        value="'",
-                        line_no=line_no,
-                        column=column
-                    )
+        try:
+            self._skip_whitespace_or_comments()
+        except err.ReachedEOF as e:
+            raise err.LexerError(
+                error_code=err.ErrorCode.RS_SYMBOL_FOUND_EOF,
+                token=t.Token(
+                    type=t.TokenType.INVALID,
+                    value="'",
+                    line_no=line_no,
+                    column=column
                 )
-            elif self.current_char.isspace():
-                self._skip_whitespace()
-            elif self.current_char == ';':
-                self._skip_line_comment()
-            elif self.current_char == '#' and self._peek() == ';':
-                self._skip_block_comment()
-            elif self.current_char == '#' and self._peek() == '|':
-                self._skip_multi_line_comment()
-            else:
-                break
+            )
 
         current_char = self.current_char
         if (current_char.isdigit() or current_char == '.'
@@ -348,7 +358,9 @@ class Lexer:
             return [self._boolean()]
         elif current_char == '"':
             return [self._string()]
-        elif current_char in [')', '}', ']', '(', '{', '[']:
+        elif current_char in ['(', '{', '[']:
+            pass
+        elif current_char in [')', '}', ']']:
             raise err.LexerError(
                 error_code=err.ErrorCode.RS_UNEXPECTED,
                 token=t.Token(
@@ -372,18 +384,28 @@ class Lexer:
         else:
             raise err.IllegalStateError
 
-    def _identifier(self, initial: str = '') -> t.Token:
-        """Handles identifiers (including builtin functions)."""
-        line_no = self.line_no
-        column = self.column
+    def _skip_whitespace_or_comments(self):
+        while self.current_char:
+            if self.current_char.isspace():
+                self._skip_whitespace()
+                continue
 
-        result = initial
-        while self.current_char is not None and self.current_char not in self.NON_ID_CHARS \
-                and not self.current_char.isspace():
-            result += self.current_char
-            self._advance()
+            if self.current_char == ';':
+                self._skip_line_comment()
+                continue
 
-        return t.Token(t.TokenType.ID, result, line_no, column)
+            if self.current_char == '#' and self._peek() == ';':
+                self._skip_block_comment()
+                continue
+
+            if self.current_char == '#' and self._peek() == '|':
+                self._skip_multi_line_comment()
+                continue
+
+            break
+
+        if self.current_char is None:
+            raise err.ReachedEOF
 
     def _skip_whitespace(self) -> None:
         """Consume whitespace until next non-whitespace character."""
@@ -410,17 +432,22 @@ class Lexer:
             paren_stack = paren_analyzer.paren_stack
             init_paren_stack_len = len(paren_stack)
 
-            token = self._process_all_tokens()
-            self.paren_analyzer.received_paren(token)
+            tokens = self._process_next_tokens()
+            self.paren_analyzer.received_paren(tokens[0])
 
-            while len(paren_stack) > init_paren_stack_len:
-                token = self._process_all_tokens()
+            try:
+                while len(paren_stack) > init_paren_stack_len:
+                    tokens = self._process_next_tokens()
 
-                if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
-                    self.paren_analyzer.received_paren(token)
-                elif token.type is t.TokenType.EOF:
-                    self.paren_analyzer.reached_eof(token)
-                    break
+                    for token in tokens:
+                        if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
+                            self.paren_analyzer.received_paren(token)
+                        elif token.type is t.TokenType.EOF:
+                            self.paren_analyzer.reached_eof(token)
+                            raise err.ReachedEOF
+
+            except err.ReachedEOF as e:
+                pass
 
     def _skip_multi_line_comment(self) -> None:
         self._advance()
