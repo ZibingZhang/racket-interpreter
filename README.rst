@@ -24,8 +24,6 @@ The end goal of this project is to successfully interpret the code I wrote for a
 
 Getting Started
 ===============
-There is no IDE nor does the interpreter read from a text file... yet.
-That being said, here are the steps to set up and get the interpreter running.
 
 Prerequisites
 ~~~~~~~~~~~~~
@@ -53,6 +51,14 @@ The package can be installed using pip.
     >>> result = racketinterpreter.interpret('(define x 1) x')
     >>> print(result.output)
     ['1']
+
+Documentation
+~~~~~~~~~~~~~
+The documentation can be found here_.
+It is generated using Sphinx_.
+
+.. _here: https://zibingzhang.com/racket-interpreter
+.. _Sphinx: https://github.com/sphinx-doc/sphinx
 
 --------------------
 
