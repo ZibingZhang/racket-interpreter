@@ -12,7 +12,7 @@ from racketinterpreter.classes import tokens as t
 
 class ErrorCode(Enum):
 
-    FEATURE_NOT_IMPLEMENTED = Template('what you are trying to do is valid, it is just not supported yet')
+    FEATURE_NOT_IMPLEMENTED = Template("what you're trying to do is (probably) valid, it's just not supported yet")
 
     BUILTIN_OR_IMPORTED_NAME = Template('$name: this name was defined in the language or a required library and cannot be re-defined')
     DIVISION_BY_ZERO = Template('/: division by zero')
@@ -486,34 +486,22 @@ class Error(Exception):
         self.message += error_message
 
 
-class PreLexerError(Error):
-
-    pass
+class PreLexerError(Error): ...
 
 
-class LexerError(Error):
-
-    pass
+class LexerError(Error): ...
 
 
-class ParserError(Error):
-
-    pass
+class ParserError(Error): ...
 
 
-class SemanticError(Error):
-
-    pass
+class SemanticError(Error): ...
 
 
-class InterpreterError(Error):
-
-    pass
+class InterpreterError(Error): ...
 
 
-class BuiltinProcedureError(Error):
-
-    pass
+class BuiltinProcedureError(Error): ...
 
 
 class EvaluateBuiltinProcedureError(TypeError):
@@ -524,11 +512,10 @@ class EvaluateBuiltinProcedureError(TypeError):
         self.idx = idx
 
 
-class IllegalStateError(RuntimeError):
-
-    pass
+class IllegalStateError(RuntimeError): ...
 
 
-class TailEndRecursion(RuntimeError):
+class TailEndRecursion(RuntimeError): ...
 
-    pass
+
+class ReachedEOF(RuntimeError): ...
