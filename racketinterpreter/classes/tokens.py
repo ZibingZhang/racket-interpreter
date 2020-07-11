@@ -30,6 +30,11 @@ class TokenType(Enum):
 class Token:
     """A token from the lexing process.
 
+    :ivar TokenType type: The type of token.
+    :ivar tp.Any value: The value of the token.
+    :ivar int line_no: The line number of the tokens first character.
+    :ivar: int column: The column of the tokens first character.
+
     :Example:
         >>> Token(TokenType.ID, 'define', 5, 37)
         <Token type:ID  value:define  position:5:37>

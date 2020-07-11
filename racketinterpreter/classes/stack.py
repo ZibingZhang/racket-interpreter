@@ -19,9 +19,9 @@ class ARType(Enum):
 class ActivationRecord:
     """A record in the stack.
 
-    An activation record is created whenever there is need to assign values to names temporarily, e.g. assigning
-    actual parameters to formal parameters when calling a procedure, or initializing builtin procedures to the global
-    scope.
+    An activation record is created for subroutines. It is especially useful whenever there is a need to assign values
+    to names temporarily, e.g. assigning actual parameters to formal parameters when calling a procedure, or
+    initializing builtin procedures to the global scope.
 
     :ivar str name: The name of the record, either the procedure name or 'global' for the global scope.
     :ivar ARType type: The type of activation record.
@@ -40,24 +40,24 @@ class ActivationRecord:
 
         self.interpreter = None
 
-    def __setitem__(self, key: str, value: Data) -> None:
+    def __setitem__(self, name: str, value: Data) -> None:
         """Define a name within this record.
 
-        :param str key: The name to be defined.
+        :param str name: The name to be defined.
         :param Data value: The value of the name.
 
         """
-        self.members[key] = value
+        self.members[name] = value
 
-    def __getitem__(self, key: str) -> Data:
+    def __getitem__(self, name: str) -> Data:
         """Retrieve the value assigned to a name within this record.
 
-        :param str key: The name whose value to return.
+        :param str name: The name whose value to return.
         :return: The value assigned to the name.
         :rtype: Data
         :raises KeyError: If there is no value assigned to the name.
         """
-        return self.members[key]
+        return self.members[name]
 
     def __str__(self) -> str:
         lines = [
@@ -113,13 +113,18 @@ class ActivationRecord:
 
         If the global constant SHOULD_LOG_STACK is set to True, this method will print out the message.
 
-        :param msg: The message to be displayed.
+        :param str msg: The message to be displayed.
         """
         if C.SHOULD_LOG_STACK:
             print(msg)
 
 
 class CallStack:
+    """A call stack.
+
+    A stack data structure that keeps track of a list of activation records. Each activation record represents a
+    subroutine. The stack indicates which subroutine will get control after the current one is finished running.
+    """
 
     def __init__(self) -> None:
         self._records = []
@@ -132,18 +137,43 @@ class CallStack:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def get(self, key) -> Data:
+    def get(self, name: str) -> Data:
+        """Retrieves the value assigned to the name.
+
+        The activation records are checked starting with the last one. Once an activation is found that contains a
+        value assigned to the name, that value is returned.
+
+        :param str name: The name to lookup.
+        :return: The value assigned to the name.
+        :rtype: Data
+        :raises IllegalStateError: If there is no activation record with a value assigned to the name.
+        """
         for ar in reversed(self._records):
-            value = ar.get(key)
+            value = ar.get(name)
             if value is not None:
                 return value
         raise IllegalStateError('Accessing undefined variables should have raised an error during semantic analysis.')
 
     def push(self, ar: ActivationRecord) -> None:
+        """Push an activation record onto the stack.
+
+        :param ar: An activation record.
+        """
         self._records.append(ar)
 
     def pop(self) -> ActivationRecord:
+        """Removes an activation record from the stack.
+
+        :return: An activation record from the top of the stack.
+        :rtype: ActivationRecord
+        """
         return self._records.pop()
 
     def peek(self, levels: int = 1) -> ActivationRecord:
+        """Look at an activation record at the top of the stack without removing it.
+
+        :param int levels: The ith activation record from the top.
+        :return: An activation record counting from the top of the stack.
+        :rtype: ActivationRecord
+        """
         return self._records[-1 * levels]
