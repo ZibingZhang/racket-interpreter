@@ -129,7 +129,7 @@ class List(Data):
 
     :Example:
         >>> List([Integer(68), Boolean(False), Symbol("'sym")])
-        '(68 #f 'sym)
+        (list 68 #f 'sym)
         >>> List([])
         '()
     """
@@ -163,7 +163,7 @@ class List(Data):
         """
         :Example:
             >>> str(List([Integer(68), Boolean(False), Symbol("'sym")]))
-            "'(68 #f 'sym)"
+            "(list 68 #f 'sym)"
             >>> str(List([]))
             "'()"
         """
@@ -177,7 +177,7 @@ class List(Data):
         """
         :Example:
             >>> repr(List([Integer(68), Boolean(False), Symbol("'sym")]))
-            "'(68 #f 'sym)"
+            "(list 68 #f 'sym)"
             >>> repr(List([]))
             "'()"
         """
