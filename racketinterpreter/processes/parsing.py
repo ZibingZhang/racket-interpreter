@@ -67,8 +67,8 @@ class Parser:
         elif token.type is t.TokenType.INTEGER:
             self.eat(t.TokenType.INTEGER)
             return ast.Int(token)
-        elif token.type is t.TokenType.RationalNum:
-            self.eat(t.TokenType.RationalNum)
+        elif token.type is t.TokenType.RATIONAL:
+            self.eat(t.TokenType.RATIONAL)
             return ast.Rat(token)
         elif token.type is t.TokenType.STRING:
             self.eat(t.TokenType.STRING)
@@ -154,6 +154,27 @@ class Parser:
 
         return node
 
+    def list_abrv(self) -> ast.ProcCall:
+        list_abrv_token = self.current_token
+        tokens = list_abrv_token.children
+
+        self.eat(t.TokenType.LIST_ABRV)
+
+        exprs = []
+        # while self.current_token.type is not t.TokenType.RPAREN:
+        #     expr = self.expr()
+        #     exprs.append(expr)
+        exprs.append(ast.Id(t.Token(
+            type=t.TokenType.ID,
+            value='list',
+            line_no=list_abrv_token.line_no,
+            column=list_abrv_token.column
+        )))
+
+        node = ast.ProcCall(list_abrv_token, exprs)
+
+        return node
+
     def expr(self) -> Union[ast.Bool, ast.Cond, ast.Cons, ast.Dec, ast.Empty, ast.Int,
                             ast.Id, ast.ProcCall, ast.Rat, ast.Str, ast.Sym]:
         """
@@ -181,6 +202,8 @@ class Parser:
                 token = self.current_token
                 self.eat(t.TokenType.ID)
                 return ast.Id(token)
+        elif self.current_token.type is t.TokenType.LIST_ABRV:
+            return self.list_abrv()
         else:
             return self.data()
 
@@ -311,8 +334,8 @@ class Parser:
                  | expr
         """
         current_token = self.current_token
-        if current_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER,
-                                  t.TokenType.RationalNum, t.TokenType.STRING, t.TokenType.ID, t.TokenType.SYMBOL]:
+        if current_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.LIST_ABRV,
+                                  t.TokenType.RATIONAL, t.TokenType.STRING, t.TokenType.ID, t.TokenType.SYMBOL]:
             return self.expr()
         elif current_token.type is t.TokenType.LPAREN:
             next_token = self.lexer.peek_next_token()

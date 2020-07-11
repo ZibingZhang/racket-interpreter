@@ -10,7 +10,7 @@ class TokenType(Enum):
     RPAREN = 'RPAREN'
     # data types
     INTEGER = 'INTEGER'
-    RationalNum = 'RationalNum'
+    RATIONAL = 'RATIONAL'
     DECIMAL = 'DECIMAL'
     BOOLEAN = 'BOOLEAN'
     STRING = 'STRING'
@@ -20,6 +20,8 @@ class TokenType(Enum):
     EOF = 'EOF'
     # invalid
     INVALID = 'INVALID'
+    # special
+    LIST_ABRV = 'LIST_ABRV'
 
     def __str__(self) -> str:
         return self.value
@@ -40,6 +42,7 @@ class Token:
         self._value = value
         self._line_no = line_no
         self._column = column
+        self._children = []
 
     @property
     def type(self):
@@ -57,8 +60,13 @@ class Token:
     def column(self):
         return self._column
 
+    @property
+    def children(self):
+        return self._children
+
     def __str__(self) -> str:
-        return f'<Token type:{self.type}  value:{self.value}  position:{self.line_no}:{self.column}>'
+        return f'<Token type:{self.type}  value:{self.value}  position:{self.line_no}:{self.column}' \
+               f'{"" if len(self.children) == 0 else f"  children:{self.children}"}>'
 
     def __repr__(self) -> str:
         return self.__str__()

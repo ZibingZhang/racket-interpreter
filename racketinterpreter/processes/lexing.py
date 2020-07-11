@@ -46,23 +46,22 @@ class Lexer:
         paren_analyzer = self.paren_analyzer
 
         while True:
-            tokens = self._process_next_tokens()
+            token = self._process_next_token()
 
-            if tokens is None:
+            if token is None:
                 token = t.Token(t.TokenType.EOF, None, self.line_no, self.column)
                 self.tokens.append(token)
 
                 paren_analyzer.reached_eof(token)
                 break
 
-            for token in tokens:
-                self.tokens.append(token)
+            self.tokens.append(token)
 
-                if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
-                    paren_analyzer.received_paren(token)
+            if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
+                paren_analyzer.received_paren(token)
 
-    def _process_next_tokens(self, apostrophe_as_quote: bool = False) -> tp.Optional[tp.List[t.Token]]:
-        tokens = None
+    def _process_next_token(self, apostrophe_as_quote: bool = False) -> tp.Optional[t.Token]:
+        token = None
 
         while self.current_char:
             try:
@@ -72,19 +71,19 @@ class Lexer:
 
             if (self.current_char.isdigit() or self.current_char == '.'
                     or (self.current_char == '-' and (self._peek().isdigit() or self._peek() == '.'))):
-                tokens = [self._number()]
+                token = self._number()
                 break
 
             if self.current_char not in self.NON_ID_CHARS:
-                tokens = [self._identifier()]
+                token = self._identifier()
                 break
 
             if self.current_char == '#':
-                tokens = [self._boolean()]
+                token = self._boolean()
                 break
 
             if self.current_char == '"':
-                tokens = [self._string()]
+                token = self._string()
                 break
 
             if self.current_char == "'":
@@ -99,38 +98,38 @@ class Lexer:
                         )
                     )
                 else:
-                    tokens = self._symbol()
+                    token = self._symbol()
 
                 break
 
             if self.current_char in ['(', '{', '[']:
                 token_type = t.TokenType.LPAREN
                 value = self.current_char
-                tokens = [t.Token(
+                token = t.Token(
                     type=token_type,
                     value=value,
                     line_no=self.line_no,
                     column=self.column
-                )]
+                )
                 self._advance()
                 break
 
             if self.current_char in [')', '}', ']']:
                 token_type = t.TokenType.RPAREN
                 value = self.current_char
-                tokens = [t.Token(
+                token = t.Token(
                     type=token_type,
                     value=value,
                     line_no=self.line_no,
                     column=self.column
-                )]
+                )
                 self._advance()
                 break
 
             # TODO: having nested block comments breaks
             raise err.IllegalStateError
 
-        return tokens
+        return token
 
     def _peek(self) -> tp.Optional[str]:
         pos = self.pos + 1
@@ -229,7 +228,7 @@ class Lexer:
         denominator = ''
 
         while (self.current_char is not None and not self.current_char.isspace()
-                and self.current_char not in self.NON_ID_CHARS):
+               and self.current_char not in self.NON_ID_CHARS):
             if self.current_char == '/':
                 is_rational = True
                 numerator = number
@@ -256,7 +255,7 @@ class Lexer:
                 )
             else:
                 return t.Token(
-                    type=t.TokenType.RationalNum,
+                    type=t.TokenType.RATIONAL,
                     value=(numerator, denominator),
                     line_no=line_no,
                     column=column
@@ -321,7 +320,7 @@ class Lexer:
             column=column
         )
 
-    def _symbol(self) -> tp.List[t.Token]:
+    def _symbol(self) -> t.Token:
         """Handles symbols."""
         line_no = self.line_no
         column = self.column
@@ -345,21 +344,50 @@ class Lexer:
         current_char = self.current_char
         if (current_char.isdigit() or current_char == '.'
                 or (self.current_char == '-' and (self._peek().isdigit() or self._peek() == '.'))):
-            return [self._number()]
+            return self._number()
         elif current_char not in self.NON_ID_CHARS:
             token = self._identifier()
-            return [t.Token(
+            return t.Token(
                 type=t.TokenType.SYMBOL,
                 value=f"'{token.value}",
                 line_no=line_no,
                 column=column
-            )]
+            )
         elif current_char == '#':
-            return [self._boolean()]
+            return self._boolean()
         elif current_char == '"':
-            return [self._string()]
+            return self._string()
         elif current_char in ['(', '{', '[']:
-            pass
+            list_abrv = t.Token(
+                type=t.TokenType.LIST_ABRV,
+                value="'",
+                line_no=line_no,
+                column=column
+            )
+
+            paren_analyzer = self.paren_analyzer
+            paren_stack = paren_analyzer.paren_stack
+            init_paren_stack_len = len(paren_stack)
+
+            last_left_paren = left_paren = self._process_next_token(apostrophe_as_quote=True)
+            list_abrv.children.append(left_paren)
+            self.paren_analyzer.received_paren(left_paren)
+
+            while len(paren_stack) > init_paren_stack_len:
+                token = self._process_next_token(apostrophe_as_quote=True)
+
+                if token is None:
+                    self.paren_analyzer.reached_eof(last_left_paren)
+
+                list_abrv.children.append(token)
+
+                if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
+                    paren_analyzer.received_paren(token)
+
+                if token.type is t.TokenType.LPAREN:
+                    last_left_paren = token
+
+            return list_abrv
         elif current_char in [')', '}', ']']:
             raise err.LexerError(
                 error_code=err.ErrorCode.RS_UNEXPECTED,
@@ -432,19 +460,18 @@ class Lexer:
             paren_stack = paren_analyzer.paren_stack
             init_paren_stack_len = len(paren_stack)
 
-            tokens = self._process_next_tokens()
-            self.paren_analyzer.received_paren(tokens[0])
+            token = self._process_next_token()
+            self.paren_analyzer.received_paren(token)
 
             try:
                 while len(paren_stack) > init_paren_stack_len:
-                    tokens = self._process_next_tokens()
+                    token = self._process_next_token()
 
-                    for token in tokens:
-                        if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
-                            self.paren_analyzer.received_paren(token)
-                        elif token.type is t.TokenType.EOF:
-                            self.paren_analyzer.reached_eof(token)
-                            raise err.ReachedEOF
+                    if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
+                        self.paren_analyzer.received_paren(token)
+                    elif token.type is t.TokenType.EOF:
+                        self.paren_analyzer.reached_eof(token)
+                        raise err.ReachedEOF
 
             except err.ReachedEOF as e:
                 pass

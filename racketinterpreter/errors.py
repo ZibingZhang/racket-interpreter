@@ -203,7 +203,7 @@ class Error(Exception):
                     found = "nothing's there"
                 elif expr_token.type is t.TokenType.BOOLEAN:
                     found = 'found a boolean'
-                elif expr_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
+                elif expr_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                     found = 'found a number'
                 elif expr_token.type is t.TokenType.STRING:
                     found = 'found a string'
@@ -254,7 +254,7 @@ class Error(Exception):
 
             if proc_token is None or proc_token.type is t.TokenType.RPAREN:
                 found = "nothing's there"
-            elif proc_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
+            elif proc_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
             elif proc_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
@@ -276,7 +276,7 @@ class Error(Exception):
         elif error_code is ErrorCode.D_P_EXPECTED_A_VARIABLE:
             if token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
+            elif token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
             elif token.type is t.TokenType.STRING:
                 found = 'found a string'
@@ -296,7 +296,7 @@ class Error(Exception):
                 found = "nothing's there"
             elif name_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif name_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
+            elif name_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
             elif name_token.type is t.TokenType.STRING:
                 found = 'found a string'
@@ -336,7 +336,7 @@ class Error(Exception):
         elif error_code is ErrorCode.DS_EXPECTED_A_FIELD:
             if token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
+            elif token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
             elif token.type is t.TokenType.STRING:
                 found = 'found a string'
@@ -356,7 +356,7 @@ class Error(Exception):
                 found = "nothing's there"
             elif found_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif found_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
+            elif found_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
             elif found_token.type is t.TokenType.STRING:
                 found = 'found a string'
@@ -376,7 +376,7 @@ class Error(Exception):
                 found = "nothing's there"
             elif name_token.type is t.TokenType.BOOLEAN:
                 found = 'found a boolean'
-            elif name_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
+            elif name_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                 found = 'found a number'
             elif name_token.type is t.TokenType.STRING:
                 found = 'found a string'
@@ -424,7 +424,7 @@ class Error(Exception):
             else:
                 if proc_token.type is t.TokenType.BOOLEAN:
                     found_type = 'boolean'
-                elif proc_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RationalNum]:
+                elif proc_token.type in [t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.RATIONAL]:
                     found_type = 'number'
                 elif proc_token.type is t.TokenType.STRING:
                     found_type = 'string'
