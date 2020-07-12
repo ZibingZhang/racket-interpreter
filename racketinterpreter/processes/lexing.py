@@ -4,7 +4,11 @@ from racketinterpreter.classes import tokens as t
 from racketinterpreter.processes.syntax import ParenthesesAnalyzer
 
 
+# I have come to the realization that an apostrophe should be treated as a quote in the lexer, and it really should be
+# up to the parser to create a symbol from that or whatever should be created following a quote. This, however, would
+# constitute a ton of changes so I'll leave it for later
 class Lexer:
+
     NON_ID_CHARS = ['"', "'", '`', '(', ')', '[', ']', '{', '}', '|', ';', '#']
 
     def __init__(self, text: str) -> None:
