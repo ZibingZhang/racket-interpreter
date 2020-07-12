@@ -4,7 +4,7 @@ import time
 import typing as tp
 from racketinterpreter import errors as err
 from racketinterpreter.classes import data as d
-from racketinterpreter.predefined.base import BuiltInProc
+from racketinterpreter.predefined._base import BuiltInProc
 
 if tp.TYPE_CHECKING:
     from racketinterpreter.classes import ast

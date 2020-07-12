@@ -1,8 +1,8 @@
 from racketinterpreter.classes import data as d
-from racketinterpreter.predefined.controlflow import (
+from racketinterpreter.predefined._controlflow import (
     If
 )
-from racketinterpreter.predefined.boolean import (
+from racketinterpreter.predefined._boolean import (
     And,
     BooleanHuh,
     BooleanSymEqualHuh,
@@ -11,7 +11,7 @@ from racketinterpreter.predefined.boolean import (
     Or,
     Not
 )
-from racketinterpreter.predefined.list import (
+from racketinterpreter.predefined._list import (
     ConsHuh,
     EmptyHuh,
     First,
@@ -23,7 +23,7 @@ from racketinterpreter.predefined.list import (
     Rest,
     Reverse
 )
-from racketinterpreter.predefined.numeric import (
+from racketinterpreter.predefined._numeric import (
     SymMultiply,
     SymPlus,
     SymMinus,
@@ -63,7 +63,7 @@ from racketinterpreter.predefined.numeric import (
     Sub1,
     ZeroHuh
 )
-from racketinterpreter.predefined.string import (
+from racketinterpreter.predefined._string import (
     StringAlphabeticHuh,
     StringAppend,
     StringContainsHuh,
@@ -78,7 +78,7 @@ from racketinterpreter.predefined.string import (
     StringWhitespaceHuh,
     StringHuh
 )
-from racketinterpreter.predefined.symbol import (
+from racketinterpreter.predefined._symbol import (
     SymbolToString,
     SymbolSymEqualHuh,
     SymbolHuh
