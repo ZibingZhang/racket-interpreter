@@ -203,8 +203,8 @@ class Parser:
 
         return node
 
-    def expr(self) -> Union[ast.Bool, ast.Cond, ast.Cons, ast.Dec, ast.Empty, ast.Int, ast.Name, ast.ProcCall, ast.Rat,
-                            ast.Str, ast.Sym]:
+    def expr(self) -> Union[ast.Bool, ast.Cond, ast.Cons, ast.Dec, ast.Int, ast.Name, ast.ProcCall, ast.Rat, ast.Str,
+                            ast.Sym]:
         """
         expr: data
             | p-expr
@@ -222,14 +222,9 @@ class Parser:
                 node = self.p_expr()
             return node
         elif self.current_token.type is t.TokenType.ID:
-            if self.current_token.value in [t.Keyword.EMPTY.value, t.Keyword.NULL.value]:
-                token = self.current_token
-                self.eat(t.TokenType.ID)
-                return ast.Empty(token)
-            else:
-                token = self.current_token
-                self.eat(t.TokenType.ID)
-                return ast.Name(token)
+            token = self.current_token
+            self.eat(t.TokenType.ID)
+            return ast.Name(token)
         elif self.current_token.type is t.TokenType.LIST_ABRV:
             return self.list_abrv()
         else:

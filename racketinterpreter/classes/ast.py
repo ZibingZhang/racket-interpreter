@@ -167,19 +167,6 @@ class Cons(List):
         return self.__str__()
 
 
-class Empty(List):
-    """An empty list."""
-
-    def __init__(self, token: t.Token) -> None:
-        super().__init__(token)
-
-    def __str__(self) -> str:
-        return f'<Empty>'
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
 class Cond(Expr):
     """A cond statement."""
 

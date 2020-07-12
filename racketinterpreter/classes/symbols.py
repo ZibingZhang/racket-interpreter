@@ -2,7 +2,7 @@ from __future__ import annotations
 from collections import OrderedDict
 import typing as tp
 from racketinterpreter.constants import C
-from racketinterpreter.predefined import BUILT_IN_PROCS
+from racketinterpreter.predefined import BUILT_IN_CONSTANTS, BUILT_IN_PROCS
 
 
 class Symbol:
@@ -30,7 +30,7 @@ class ScopedSymbolTable:
         self.enclosing_scope = enclosing_scope
 
         if scope_level == 0:
-            self.init_builtin_procs()
+            self.init_builtins()
 
     def __str__(self) -> str:
         h1 = 'SCOPE (SCOPED SYMBOL TABLE)'
@@ -56,8 +56,12 @@ class ScopedSymbolTable:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def init_builtin_procs(self) -> None:
-        for proc in BUILT_IN_PROCS.keys():
+    def init_builtins(self) -> None:
+        # TODO: add symbol type for known constants?
+        for const in BUILT_IN_CONSTANTS:
+            self._symbols[const] = AmbiguousSymbol(const)
+
+        for proc in BUILT_IN_PROCS:
             self._symbols[proc] = ProcSymbol(proc)
 
     def define(self, symbol: Symbol) -> None:

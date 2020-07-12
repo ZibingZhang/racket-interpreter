@@ -4,7 +4,7 @@ import typing as tp
 from racketinterpreter.classes import data as d
 from racketinterpreter.constants import C
 from racketinterpreter.errors import IllegalStateError, TailEndRecursion
-from racketinterpreter.predefined import BUILT_IN_PROCS
+from racketinterpreter.predefined import BUILT_IN_CONSTANTS, BUILT_IN_PROCS
 
 if tp.TYPE_CHECKING:
     from racketinterpreter.classes.data import Data
@@ -44,7 +44,7 @@ class ActivationRecord:
         self.interpreter = None
 
         if nesting_level == 0:
-            self.init_builtin_procs()
+            self.init_builtins()
 
     def __setitem__(self, name: str, value: Data) -> None:
         """Define a name within this record.
@@ -110,7 +110,10 @@ class ActivationRecord:
 
             self.interpreter = None
 
-    def init_builtin_procs(self) -> None:
+    def init_builtins(self) -> None:
+        for const in BUILT_IN_CONSTANTS:
+            self[const] = BUILT_IN_CONSTANTS[const]
+
         for proc in BUILT_IN_PROCS:
             self[proc] = d.Procedure(proc)
 

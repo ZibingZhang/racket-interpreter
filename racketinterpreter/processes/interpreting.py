@@ -108,9 +108,6 @@ class Interpreter(ast.ASTVisitor):
 
             return d.List(cons_list)
 
-    def visit_Empty(self, node: ast.Empty) -> d.List:
-        return d.List([])
-
     def visit_Cond(self, node: ast.Cond) -> Data:
         self.semantic_analyzer.visit(node)
 

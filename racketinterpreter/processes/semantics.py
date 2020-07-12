@@ -153,9 +153,6 @@ class SemanticAnalyzer(ast.ASTVisitor):
         node.first = exprs[0]
         node.rest = exprs[1]
 
-    def visit_Empty(self, node: ast.Cons) -> None:
-        pass
-
     def visit_Cond(self, node: ast.Cond) -> None:
         exprs_len = len(node.exprs)
 

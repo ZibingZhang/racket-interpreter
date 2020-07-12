@@ -51,7 +51,7 @@ if __name__ == '__main__':
                 ar = stack.ActivationRecord(
                     name='global',
                     type=stack.ARType.PROGRAM,
-                    nesting_level=1
+                    nesting_level=0
                 )
 
                 with ar(self.interpreter):

@@ -1,3 +1,4 @@
+from racketinterpreter.classes import data as d
 from racketinterpreter.predefined.controlflow import (
     If
 )
@@ -86,7 +87,7 @@ from racketinterpreter.predefined.symbol import (
 )
 
 
-#TODO: member / member? & empty? / null? do the same thing
+# TODO: member / member? & empty? / null? do the same thing
 BUILT_IN_PROCS = {
     # ========== ========== ==========
     #           control flow
@@ -203,4 +204,9 @@ BUILT_IN_PROCS = {
     'symbol->string': SymbolToString(),
     'symbol=?': SymbolSymEqualHuh(),
     'symbol?': SymbolHuh()
+}
+
+BUILT_IN_CONSTANTS = {
+    'empty': d.List([]),
+    'null': d.List([])
 }
