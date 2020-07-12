@@ -85,19 +85,6 @@ class Dec(Expr):
         return self.__str__()
 
 
-class Id(Expr):
-    """An name."""
-
-    def __init__(self, token: t.Token) -> None:
-        super().__init__(token, token.value)
-
-    def __str__(self) -> str:
-        return f'<Id value:{self.value}>'
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
 class Int(Expr):
     """A number."""
 
@@ -106,6 +93,19 @@ class Int(Expr):
 
     def __str__(self) -> str:
         return f'<Int value:{self.value}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class Name(Expr):
+    """A name."""
+
+    def __init__(self, token: t.Token) -> None:
+        super().__init__(token, token.value)
+
+    def __str__(self) -> str:
+        return f'<Name value:{self.value}>'
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -228,8 +228,8 @@ class CondElse(Expr):
         return self.__str__()
 
 
-class IdAssign(AST):
-    """Defining a constant."""
+class NameAssign(AST):
+    """Assigning value to a name."""
 
     def __init__(self, token: t.Token, exprs: tp.List[Expr]) -> None:
         super().__init__(token)
@@ -238,7 +238,7 @@ class IdAssign(AST):
         self.expr = None
 
     def __str__(self) -> str:
-        return f'<IdAssign id:{self.identifier}  expr:{self.expr}>'
+        return f'<NameAssign id:{self.identifier}  expr:{self.expr}>'
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -267,7 +267,7 @@ class FormalParam(AST):
 
 
 class ProcAssign(AST):
-    """Defining a function."""
+    """Defining a procedure."""
 
     def __init__(self, token: t.Token, name_expr: Expr, formal_params: tp.List[FormalParam], exprs: tp.List[Expr]) -> None:
         super().__init__(token)

@@ -109,7 +109,10 @@ class SemanticAnalyzer(ast.ASTVisitor):
     def visit_Dec(self, node: ast.Dec) -> None:
         pass
 
-    def visit_Id(self, node: ast.Id) -> None:
+    def visit_Int(self, node: ast.Int) -> None:
+        pass
+
+    def visit_Name(self, node: ast.Name) -> None:
         var_name = node.value
         var_symbol = self.current_scope.lookup(var_name)
 
@@ -126,9 +129,6 @@ class SemanticAnalyzer(ast.ASTVisitor):
                 token=node.token,
                 name=var_name
             )
-
-    def visit_Int(self, node: ast.Int) -> None:
-        pass
 
     def visit_Rat(self, node: ast.Rat) -> None:
         pass
@@ -220,7 +220,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
         expr = node.expr
         self.visit(expr)
 
-    def visit_IdAssign(self, node: ast.IdAssign) -> None:
+    def visit_NameAssign(self, node: ast.NameAssign) -> None:
         token = node.token
         exprs = node.exprs
         exprs_len = len(exprs)
@@ -240,7 +240,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
                 )
             )
 
-        if exprs_len == 0 or type(exprs[0]) is not ast.Id \
+        if exprs_len == 0 or type(exprs[0]) is not ast.Name \
                 or exprs[0].value in t.KEYWORDS:
             next_token = exprs[0].token if exprs_len > 0 else None
             raise err.SemanticError(
@@ -265,7 +265,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
                 extra_count=extra_count,
                 name=const_name
             )
-        elif type(exprs[1]) is ast.Id and exprs[1].value in t.KEYWORDS:
+        elif type(exprs[1]) is ast.Name and exprs[1].value in t.KEYWORDS:
             keyword = exprs[1].value
             token = exprs[1].token
             if keyword == t.Keyword.COND.value:
@@ -598,8 +598,8 @@ class _Preprocessor(ast.ASTVisitor):
     # Not supported ASTs:
     # - Bool
     # - Dec
-    # - Id
     # - Int
+    # - Name
     # - Rat
     # - Str
     # - Sym
@@ -607,7 +607,7 @@ class _Preprocessor(ast.ASTVisitor):
     # - Cond
     # - CondBranch
     # - CondElse
-    # - IdAssign
+    # - NameAssign
     # - FormalParam
     # - ProcAssign
     # - ProcCall

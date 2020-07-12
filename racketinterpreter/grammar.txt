@@ -26,7 +26,7 @@ expr: data
     | cond
     | list
 
-constant_assignment: LPAREN DEFINE expr* RPAREN
+name_assignment: LPAREN DEFINE expr* RPAREN
 
 procedure_assignment: LPAREN DEFINE LPAREN expr* RPAREN expr* RPAREN
 

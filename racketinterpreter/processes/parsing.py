@@ -165,7 +165,7 @@ class Parser:
 
         for token in tokens:
             if token.type is t.TokenType.LPAREN:
-                exprs = [ast.Id(t.Token(
+                exprs = [ast.Name(t.Token(
                     type=t.TokenType.ID,
                     value='list',
                     line_no=list_abrv_token.line_no,
@@ -203,7 +203,7 @@ class Parser:
 
         return node
 
-    def expr(self) -> Union[ast.Bool, ast.Cond, ast.Cons, ast.Dec, ast.Empty, ast.Int, ast.Id, ast.ProcCall, ast.Rat,
+    def expr(self) -> Union[ast.Bool, ast.Cond, ast.Cons, ast.Dec, ast.Empty, ast.Int, ast.Name, ast.ProcCall, ast.Rat,
                             ast.Str, ast.Sym]:
         """
         expr: data
@@ -229,14 +229,14 @@ class Parser:
             else:
                 token = self.current_token
                 self.eat(t.TokenType.ID)
-                return ast.Id(token)
+                return ast.Name(token)
         elif self.current_token.type is t.TokenType.LIST_ABRV:
             return self.list_abrv()
         else:
             return self.data()
 
-    def constant_assignment(self) -> ast.IdAssign:
-        """constant_assignment: LPAREN DEFINE expr* RPAREN"""
+    def name_assignment(self) -> ast.NameAssign:
+        """name_assignment: LPAREN DEFINE expr* RPAREN"""
         # opening left bracket
         left_paren_token = self.eat(t.TokenType.LPAREN)
 
@@ -250,7 +250,7 @@ class Parser:
         # closing right bracket
         self.eat(t.TokenType.RPAREN)
 
-        return ast.IdAssign(left_paren_token, exprs)
+        return ast.NameAssign(left_paren_token, exprs)
 
     def procedure_assignment(self) -> ast.ProcAssign:
         """procedure_assignment: LPAREN DEFINE LPAREN expr* RPAREN expr* RPAREN"""
@@ -323,9 +323,9 @@ class Parser:
         # return ast.StructAssign(identifier, fields)
         return node
 
-    def assignment_statement(self) -> Union[ast.IdAssign, ast.ProcAssign, ast.StructAssign]:
+    def assignment_statement(self) -> Union[ast.NameAssign, ast.ProcAssign, ast.StructAssign]:
         """
-        assignment_statement: constant_assignment
+        assignment_statement: name_assignment
                             | function_assignment
                             | structure_assignment
         """
@@ -337,7 +337,7 @@ class Parser:
         elif next_next_token.type is t.TokenType.LPAREN:
             return self.procedure_assignment()
         else:
-            return self.constant_assignment()
+            return self.name_assignment()
 
     def check_expect(self) -> ast.CheckExpect:
         # opening left bracket

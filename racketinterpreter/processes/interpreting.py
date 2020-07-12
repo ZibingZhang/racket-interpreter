@@ -46,7 +46,10 @@ class Interpreter(ast.ASTVisitor):
     def visit_Dec(self, node: ast.Dec) -> d.InexactNum:
         return d.InexactNum(node.value)
 
-    def visit_Id(self, node: ast.Id) -> Data:
+    def visit_Int(self, node: ast.Int) -> Number:
+        return d.Integer(node.value)
+
+    def visit_Name(self, node: ast.Name) -> Data:
         self.semantic_analyzer.visit(node)
 
         var_name = node.value
@@ -62,9 +65,6 @@ class Interpreter(ast.ASTVisitor):
             )
 
         return var_value
-
-    def visit_Int(self, node: ast.Int) -> Number:
-        return d.Integer(node.value)
 
     def visit_Rat(self, node: ast.Rat) -> Union[d.Integer, d.RationalNum]:
         numerator = node.value[0]
@@ -145,7 +145,7 @@ class Interpreter(ast.ASTVisitor):
                     token=node.token
                 )
 
-    def visit_IdAssign(self, node: ast.IdAssign) -> None:
+    def visit_NameAssign(self, node: ast.NameAssign) -> None:
         self.semantic_analyzer.visit(node)
 
         var_name = node.identifier
@@ -293,7 +293,7 @@ class Interpreter(ast.ASTVisitor):
 
         for statement in statements:
             statement_type = type(statement)
-            if statement_type in [ast.IdAssign, ast.ProcAssign, ast.StructAssign]:
+            if statement_type in [ast.NameAssign, ast.ProcAssign, ast.StructAssign]:
                 definitions.append(statement)
             elif statement_type is ast.CheckExpect:
                 tests.append(statement)
@@ -367,8 +367,8 @@ class _Preprocessor(ast.ASTVisitor):
     # Not supported ASTs:
     # - Bool
     # - Dec
-    # - Id
     # - Int
+    # - Name
     # - Rat
     # - Str
     # - Sym
@@ -376,7 +376,7 @@ class _Preprocessor(ast.ASTVisitor):
     # - Cond
     # - CondBranch
     # - CondElse
-    # - IdAssign
+    # - NameAssign
     # - FormalParam
     # - ProcAssign
     # - ProcCall
