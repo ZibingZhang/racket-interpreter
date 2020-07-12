@@ -8,7 +8,7 @@ from racketinterpreter.classes import data as d
 if tp.TYPE_CHECKING:
     from racketinterpreter.classes import ast
     from racketinterpreter.classes import tokens as t
-    from racketinterpreter.processes.interpreting import Interpreter
+    from racketinterpreter.processes import Interpreter
 
 
 class BuiltInProc(abc.ABC):
