@@ -261,8 +261,6 @@ class Interpreter(ast.ASTVisitor):
         )
 
         with ar(self):
-            self._define_builtin_procs()
-
             with self.semantic_analyzer(entering='PROGRAM'):
                 definitions, expressions, tests = self._sort_program_statements(node.statements)
 
@@ -301,11 +299,6 @@ class Interpreter(ast.ASTVisitor):
                 expressions.append(statement)
 
         return definitions, expressions, tests
-
-    def _define_builtin_procs(self):
-        ar = self.call_stack.peek()
-        for proc in BUILT_IN_PROCS:
-            ar[proc] = d.Procedure(proc)
 
     def _visit_builtin_ProcCall(self, node: ast.ProcCall) -> Data:
         token = node.token

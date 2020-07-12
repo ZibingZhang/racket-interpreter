@@ -30,11 +30,7 @@ class ScopedSymbolTable:
         self.enclosing_scope = enclosing_scope
 
         if scope_level == 0:
-            self._init_builtin_procs()
-
-    def _init_builtin_procs(self) -> None:
-        for proc in BUILT_IN_PROCS.keys():
-            self._symbols[proc] = ProcSymbol(proc)
+            self.init_builtin_procs()
 
     def __str__(self) -> str:
         h1 = 'SCOPE (SCOPED SYMBOL TABLE)'
@@ -60,9 +56,9 @@ class ScopedSymbolTable:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def log_scope(self, msg: str) -> None:
-        if C.SHOULD_LOG_SCOPE:
-            print(msg)
+    def init_builtin_procs(self) -> None:
+        for proc in BUILT_IN_PROCS.keys():
+            self._symbols[proc] = ProcSymbol(proc)
 
     def define(self, symbol: Symbol) -> None:
         self.log_scope(f'Define: {symbol}')
@@ -85,6 +81,11 @@ class ScopedSymbolTable:
             return self.enclosing_scope.lookup(name)
 
         return symbol
+
+    @staticmethod
+    def log_scope(msg: str) -> None:
+        if C.SHOULD_LOG_SCOPE:
+            print(msg)
 
 
 class AmbiguousSymbol(Symbol):

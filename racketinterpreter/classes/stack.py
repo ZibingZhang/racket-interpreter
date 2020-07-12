@@ -1,8 +1,10 @@
 from __future__ import annotations
 from enum import Enum
 import typing as tp
+from racketinterpreter.classes import data as d
 from racketinterpreter.constants import C
 from racketinterpreter.errors import IllegalStateError, TailEndRecursion
+from racketinterpreter.predefined import BUILT_IN_PROCS
 
 if tp.TYPE_CHECKING:
     from racketinterpreter.classes.data import Data
@@ -12,6 +14,7 @@ if tp.TYPE_CHECKING:
 class ARType(Enum):
     """The type of an activation record."""
 
+    BUILTIN = 'BUILTIN'
     PROGRAM = 'PROGRAM',
     PROCEDURE = 'PROCEDURE'
 
@@ -39,6 +42,9 @@ class ActivationRecord:
         self.members = {}
 
         self.interpreter = None
+
+        if nesting_level == 0:
+            self.init_builtin_procs()
 
     def __setitem__(self, name: str, value: Data) -> None:
         """Define a name within this record.
@@ -103,6 +109,10 @@ class ActivationRecord:
             self.log_stack('')
 
             self.interpreter = None
+
+    def init_builtin_procs(self) -> None:
+        for proc in BUILT_IN_PROCS:
+            self[proc] = d.Procedure(proc)
 
     def get(self, key) -> tp.Optional[Data]:
         return self.members.get(key)

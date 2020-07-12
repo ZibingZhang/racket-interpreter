@@ -56,8 +56,6 @@ if __name__ == '__main__':
 
                 with ar(self.interpreter):
                     with self.interpreter.semantic_analyzer(entering='PROGRAM'):
-                        self.interpreter._define_builtin_procs()
-
                         while True:
                             text = input('> ')
                             if text.isspace():
