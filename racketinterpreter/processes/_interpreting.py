@@ -8,7 +8,7 @@ from racketinterpreter.classes import stack as stack
 from racketinterpreter.classes import tokens as t
 from racketinterpreter.constants import C
 from racketinterpreter.predefined import BUILT_IN_PROCS
-from racketinterpreter.processes.semantics import SemanticAnalyzer
+from racketinterpreter.processes._semantics import SemanticAnalyzer
 
 if TYPE_CHECKING:
     from racketinterpreter.classes import symbols as sym

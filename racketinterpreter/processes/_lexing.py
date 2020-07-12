@@ -1,7 +1,7 @@
 import typing as tp
 from racketinterpreter import errors as err
 from racketinterpreter.classes import tokens as t
-from racketinterpreter.processes.syntax import ParenthesesAnalyzer
+from racketinterpreter.processes._syntax import ParenthesesAnalyzer
 
 
 # I have come to the realization that an apostrophe should be treated as a quote in the lexer, and it really should be
