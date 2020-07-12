@@ -526,10 +526,10 @@ class EvaluateBuiltinProcedureError(TypeError):
 
     def __init__(
             self,
-            expected: d.DataType,
-            given: d.Data,
-            idx: tp.Optional[int] = None,
             error_code: ErrorCode = ErrorCode.INCORRECT_ARGUMENT_TYPE,
+            expected: tp.Optional[d.DataType] = None,
+            given: tp.Optional[d.Data] = None,
+            idx: tp.Optional[int] = None,
             **kwargs
     ) -> None:
         self.expected = expected

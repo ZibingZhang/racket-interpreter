@@ -6,14 +6,13 @@ from racketinterpreter.predefined._base import BuiltInProc
 
 if tp.TYPE_CHECKING:
     from racketinterpreter.classes import ast
-    from racketinterpreter.classes import tokens as t
     from racketinterpreter.processes import Interpreter
 
 
 class ConsHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
         is_list = issubclass(param_type, d.List)
@@ -25,7 +24,7 @@ class ConsHuh(BuiltInProc):
 class EmptyHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
         is_list = issubclass(param_type, d.List)
@@ -37,7 +36,7 @@ class EmptyHuh(BuiltInProc):
 class First(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -49,9 +48,9 @@ class First(BuiltInProc):
 
         if len(param_value) == 0:
             raise err.EvaluateBuiltinProcedureError(
+                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
                 expected=d.ConsList,
                 given=param_value,
-                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
                 min_length=1,
                 max_length=None
             )
@@ -63,7 +62,7 @@ class First(BuiltInProc):
 class Length(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -83,7 +82,7 @@ class List(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.List:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.List:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -97,7 +96,7 @@ class List(BuiltInProc):
 class ListHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
         is_list = issubclass(param_type, d.List)
@@ -112,7 +111,7 @@ class MakeList(BuiltInProc):
     UPPER = 2
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.List:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.List:
         count = param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -134,7 +133,7 @@ class Member(BuiltInProc):
     UPPER = 2
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Boolean:
         item = interpreter.visit(actual_params[0])
 
         list_ = param_value = interpreter.visit(actual_params[1])
@@ -153,7 +152,7 @@ class Member(BuiltInProc):
 class Rest(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.List:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.List:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -165,9 +164,9 @@ class Rest(BuiltInProc):
 
         if len(param_value) == 0:
             raise err.EvaluateBuiltinProcedureError(
+                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
                 expected=d.ConsList,
                 given=param_value,
-                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
                 min_length=1,
                 max_length=None
             )
@@ -179,7 +178,7 @@ class Rest(BuiltInProc):
 class Reverse(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.List:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.List:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -196,7 +195,7 @@ class Reverse(BuiltInProc):
 class Second(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -208,9 +207,9 @@ class Second(BuiltInProc):
 
         if len(param_value) < 2:
             raise err.EvaluateBuiltinProcedureError(
+                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
                 expected=d.ConsList,
                 given=param_value,
-                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
                 min_length=2,
                 max_length=None
             )

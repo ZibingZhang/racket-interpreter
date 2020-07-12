@@ -13,7 +13,7 @@ if tp.TYPE_CHECKING:
 class SymbolToString(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.String:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.String:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
@@ -32,7 +32,7 @@ class SymbolSymEqualHuh(BuiltInProc):
     UPPER = None
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Boolean:
         evaluated_params = []
         for idx, param in enumerate(actual_params):
             param_value = interpreter.visit(param)
@@ -62,7 +62,7 @@ class SymbolSymEqualHuh(BuiltInProc):
 class SymbolHuh(BuiltInProc):
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Boolean:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 

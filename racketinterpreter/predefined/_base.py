@@ -22,14 +22,13 @@ class BuiltInProc(abc.ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
         pass
 
     def interpret(self, interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
         try:
             return self._interpret(
                 interpreter=interpreter,
-                token=token,
                 actual_params=actual_params
             )
         except err.EvaluateBuiltinProcedureError as e:
@@ -66,6 +65,15 @@ class BuiltInProc(abc.ABC):
                     expected=expected,
                     given=given
                 )
+
+            elif error_code == err.ErrorCode.DIVISION_BY_ZERO:
+                raise err.BuiltinProcedureError(
+                    error_code=err.ErrorCode.DIVISION_BY_ZERO,
+                    token=token
+                )
+
+            else:
+                raise e
 
     @staticmethod
     def derive_proc_name(class_name: str) -> str:

@@ -15,7 +15,7 @@ class If(BuiltInProc):
     UPPER = 3
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
         boolean = interpreter.visit(actual_params[0])
 
         if bool(boolean):
