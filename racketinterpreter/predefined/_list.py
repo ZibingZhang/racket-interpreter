@@ -41,10 +41,19 @@ class First(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        if not issubclass(param_type, d.List) or len(param_value) == 0:
+        if not issubclass(param_type, d.List):
             raise err.EvaluateBuiltinProcedureError(
                 expected=d.ConsList,
                 given=param_value
+            )
+
+        if len(param_value) == 0:
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.ConsList,
+                given=param_value,
+                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
+                min_length=1,
+                max_length=None
             )
 
         result = param_value[0]
@@ -148,10 +157,19 @@ class Rest(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        if not issubclass(param_type, d.List) or len(param_value) == 0:
+        if not issubclass(param_type, d.List):
             raise err.EvaluateBuiltinProcedureError(
                 expected=d.ConsList,
                 given=param_value
+            )
+
+        if len(param_value) == 0:
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.ConsList,
+                given=param_value,
+                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
+                min_length=1,
+                max_length=None
             )
 
         result = param_value[1:]
@@ -172,4 +190,30 @@ class Reverse(BuiltInProc):
             )
 
         result = param_value[::-1]
+        return result
+
+
+class Second(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Data:
+        param_value = interpreter.visit(actual_params[0])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.List):
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.ConsList,
+                given=param_value
+            )
+
+        if len(param_value) < 2:
+            raise err.EvaluateBuiltinProcedureError(
+                expected=d.ConsList,
+                given=param_value,
+                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
+                min_length=2,
+                max_length=None
+            )
+
+        result = param_value[1]
         return result

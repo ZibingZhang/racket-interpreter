@@ -21,7 +21,8 @@ from racketinterpreter.predefined._list import (
     MakeList,
     Member,
     Rest,
-    Reverse
+    Reverse,
+    Second
 )
 from racketinterpreter.predefined._numeric import (
     SymMultiply,
@@ -122,7 +123,7 @@ BUILT_IN_PROCS = {
     # 'range': Range(),
     'rest': Rest(),
     'reverse': Reverse(),
-    # 'second': Second(),
+    'second': Second(),
     # 'seventh': Seventh(),
     # 'sixth': Sixth(),
     # 'third': Third()

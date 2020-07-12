@@ -33,23 +33,39 @@ class BuiltInProc(abc.ABC):
                 actual_params=actual_params
             )
         except err.EvaluateBuiltinProcedureError as e:
+            name = self.derive_proc_name(self.__class__.__name__)
+            error_code = e.error_code
+            multiple_args = len(actual_params) > 1
+            idx = e.idx
             expected = e.expected
             given = e.given
-            idx = e.idx
 
-            error_code = err.ErrorCode.INCORRECT_ARGUMENT_TYPE
-            name = self.derive_proc_name(self.__class__.__name__)
-            multiple_args = len(actual_params) > 1
+            if error_code == err.ErrorCode.INCORRECT_LIST_LENGTH:
+                min_length = e.kwargs.get('min_length')
+                max_length = e.kwargs.get('max_length')
 
-            raise err.BuiltinProcedureError(
-                error_code=error_code,
-                token=token,
-                name=name,
-                multiple_args=multiple_args,
-                idx=idx,
-                expected=expected,
-                given=given
-            )
+                raise err.BuiltinProcedureError(
+                    error_code=error_code,
+                    token=token,
+                    name=name,
+                    multiple_args=multiple_args,
+                    idx=idx,
+                    min_length=min_length,
+                    max_length=max_length,
+                    given=given
+                )
+
+            elif error_code == err.ErrorCode.INCORRECT_ARGUMENT_TYPE:
+
+                raise err.BuiltinProcedureError(
+                    error_code=error_code,
+                    token=token,
+                    name=name,
+                    multiple_args=multiple_args,
+                    idx=idx,
+                    expected=expected,
+                    given=given
+                )
 
     @staticmethod
     def derive_proc_name(class_name: str) -> str:

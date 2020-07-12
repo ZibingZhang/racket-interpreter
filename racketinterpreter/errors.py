@@ -18,6 +18,8 @@ class ErrorCode(Enum):
     DIVISION_BY_ZERO = Template('/: division by zero')
     INCORRECT_ARGUMENT_COUNT = Template('$name: $expects, but $found')
     INCORRECT_ARGUMENT_TYPE = Template('$name: $expects, $given')
+    # third: expects a list with 3 or more items; given: '()
+    INCORRECT_LIST_LENGTH = Template('$name: $expects; $given')
     PREVIOUSLY_DEFINED_NAME = Template('$name: this name was defined previously and cannot be re-defined')
     USED_BEFORE_DEFINITION = Template('$name is used here before its definition')
     USING_STRUCTURE_TYPE = Template('$name: structure type; do you mean make-$name')
@@ -45,7 +47,7 @@ class ErrorCode(Enum):
     D_V_EXPECTED_ONE_EXPRESSION = Template("define: expected only one expression after the variable name $name, but $found")
     D_V_MISSING_AN_EXPRESSION = Template("define: expected an expression after the variable name $name, but nothing's there")
 
-    # define-struct: found a field name that is used more than once: a
+    # TODO: define-struct: found a field name that is used more than once: a
     DS_EXPECTED_A_FIELD = Template('define-struct: expected a field name, but $found')
     DS_EXPECTED_FIELD_NAMES = Template('define-struct: expected at least one field name (in parentheses) after the structure name, but $found')
     DS_EXPECTED_OPEN_PARENTHESIS = Template('define-struct: expected an open parenthesis before define-struct, but found none')
@@ -118,7 +120,6 @@ class Error(Exception):
                 # d.Procedure, TODO: procedures will be much more complicated...
                 d.String: 'string',
                 d.Symbol: 'symbol',
-                d.ConsList: 'non-empty list',
                 d.ComplexNum: 'complex number',
                 d.RealNum: 'real',
                 # d.InexactNum, no functions should expect this type
@@ -156,6 +157,23 @@ class Error(Exception):
                 idx = kwargs.get('idx') + 1
 
                 expects += f' as {to_ord(idx)} argument'
+
+            given = f'given {given}'
+
+            error_message = template.safe_substitute(name=name, expects=expects, given=given)
+
+        elif error_code is ErrorCode.INCORRECT_LIST_LENGTH:
+            name = kwargs.get('name')
+            min_length = kwargs.get('min_length')
+            max_length = kwargs.get('max_length')
+            given = kwargs.get('given')
+
+            expects = 'expects '
+
+            if min_length == 1 and max_length is None:
+                expects += 'a non-empty list'
+            elif min_length >= 2 and max_length is None:
+                expects += f'a list with {min_length} or more items'
 
             given = f'given {given}'
 
@@ -506,10 +524,19 @@ class BuiltinProcedureError(Error): ...
 
 class EvaluateBuiltinProcedureError(TypeError):
 
-    def __init__(self, expected: d.DataType, given: d.Data, idx: tp.Optional[int] = None):
+    def __init__(
+            self,
+            expected: d.DataType,
+            given: d.Data,
+            idx: tp.Optional[int] = None,
+            error_code: ErrorCode = ErrorCode.INCORRECT_ARGUMENT_TYPE,
+            **kwargs
+    ) -> None:
         self.expected = expected
         self.given = given
         self.idx = idx
+        self.error_code = error_code
+        self.kwargs = kwargs
 
 
 class IllegalStateError(RuntimeError): ...
