@@ -527,10 +527,9 @@ class Lcm(BuiltInProc):
 
 
 class Log(BuiltInProc):
-    # TODO: should be 1 to 2
 
     @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Number:
+    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.InexactNum:
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 

@@ -7,7 +7,7 @@ from racketinterpreter.predefined import BUILT_IN_CONSTANTS, BUILT_IN_PROCS
 
 class Symbol:
 
-    def __init__(self, name: str, type: tp.Any = None) -> None:
+    def __init__(self, name: str, type: tp.Optional[tp.Any] = None) -> None:
         self.name = name
         self.type = type
         self.scope_level = 0
@@ -57,9 +57,8 @@ class ScopedSymbolTable:
         return self.__str__()
 
     def init_builtins(self) -> None:
-        # TODO: add symbol type for known constants?
         for const in BUILT_IN_CONSTANTS:
-            self._symbols[const] = AmbiguousSymbol(const)
+            self._symbols[const] = BuiltinConstSymbol(const)
 
         for proc in BUILT_IN_PROCS:
             self._symbols[proc] = ProcSymbol(proc)
@@ -100,6 +99,19 @@ class AmbiguousSymbol(Symbol):
 
     def __str__(self) -> str:
         return f'<AmbiguousSymbol name:{self.name}>'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
+class BuiltinConstSymbol(Symbol):
+    """A builtin constant."""
+
+    def __init__(self, name: str) -> None:
+        super().__init__(name, 'BUILTIN_CONST')
+
+    def __str__(self) -> str:
+        return f'<BuiltinConstSymbol name:{self.name}>'
 
     def __repr__(self) -> str:
         return self.__str__()

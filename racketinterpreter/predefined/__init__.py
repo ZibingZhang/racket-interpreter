@@ -20,8 +20,6 @@ from racketinterpreter.predefined.list import (
     ListHuh,
     MakeList,
     Member,
-    MemberHuh,
-    NullHuh,
     Rest,
     Reverse
 )
@@ -87,7 +85,6 @@ from racketinterpreter.predefined.symbol import (
 )
 
 
-# TODO: member / member? & empty? / null? do the same thing
 BUILT_IN_PROCS = {
     # ========== ========== ==========
     #           control flow
@@ -120,8 +117,8 @@ BUILT_IN_PROCS = {
     'list?': ListHuh(),
     'make-list': MakeList(),
     'member': Member(),
-    'member?': MemberHuh(),
-    'null?': NullHuh(),
+    'member?': Member(),
+    'null?': EmptyHuh(),
     # 'range': Range(),
     'rest': Rest(),
     'reverse': Reverse(),

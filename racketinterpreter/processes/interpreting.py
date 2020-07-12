@@ -258,7 +258,7 @@ class Interpreter(ast.ASTVisitor):
         )
 
         with ar(self):
-            with self.semantic_analyzer(entering='PROGRAM'):
+            with self.semantic_analyzer(entering=SemanticAnalyzer.Entering.PROGRAM):
                 definitions, expressions, tests = self._sort_program_statements(node.statements)
 
                 for statement in definitions:
@@ -334,7 +334,7 @@ class Interpreter(ast.ASTVisitor):
         )
 
         with self.semantic_analyzer(
-                entering='PROCEDURE',
+                entering=SemanticAnalyzer.Entering.PROCEDURE,
                 proc_name=proc_name,
                 formal_params=formal_params
         ):

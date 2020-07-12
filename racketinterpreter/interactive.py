@@ -10,6 +10,7 @@ if __name__ == '__main__':
     from racketinterpreter.processes import Interpreter
     from racketinterpreter.processes import Lexer
     from racketinterpreter.processes import Parser
+    from racketinterpreter.processes import SemanticAnalyzer
 
 
     class Interactive:
@@ -35,6 +36,7 @@ if __name__ == '__main__':
 
                 lines = []
                 for statement in statements:
+                    # TODO: maybe abstract out part that does this in interp and use it here since this is breaking...
                     result = self.interpreter.visit(statement)
                     if result is not None:
                         lines.append(result)
@@ -55,7 +57,7 @@ if __name__ == '__main__':
                 )
 
                 with ar(self.interpreter):
-                    with self.interpreter.semantic_analyzer(entering='PROGRAM'):
+                    with self.interpreter.semantic_analyzer(entering=SemanticAnalyzer.Entering.PROGRAM):
                         while True:
                             text = input('> ')
                             if text.isspace():

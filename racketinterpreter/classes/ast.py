@@ -34,10 +34,7 @@ class Expr(AST):
 class List(AST):
     """A list."""
 
-    pass
 
-
-# TODO: this token should not be none
 class StructProc(Expr):
     """A proc related to a struct."""
 
@@ -316,19 +313,13 @@ class StructAssign(AST):
 class StructMake(StructProc):
     """A make-[structure-name] procedure."""
 
-    pass
-
 
 class StructHuh(StructProc):
     """A [structure-name]? procedure."""
 
-    pass
-
 
 class StructGet(StructProc):
     """A [structure-name]-[field] procedure."""
-
-    pass
 
 
 class CheckExpect(AST):

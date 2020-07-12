@@ -12,7 +12,6 @@ class Lexer:
     NON_ID_CHARS = ['"', "'", '`', '(', ')', '[', ']', '{', '}', '|', ';', '#']
 
     def __init__(self, text: str) -> None:
-        # TODO: make these private fields?
         self.text = text
         self._pos = 0
         self._current_char = self.text[self._pos]

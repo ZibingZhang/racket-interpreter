@@ -141,40 +141,6 @@ class Member(BuiltInProc):
         return result
 
 
-class MemberHuh(BuiltInProc):
-
-    LOWER = 2
-    UPPER = 2
-
-    @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
-        item = interpreter.visit(actual_params[0])
-
-        list_ = param_value = interpreter.visit(actual_params[1])
-        param_type = type(param_value)
-
-        if not issubclass(param_type, d.List):
-            raise err.EvaluateBuiltinProcedureError(
-                expected=d.List,
-                given=param_value
-            )
-
-        result = d.Boolean(item in list_)
-        return result
-
-
-class NullHuh(BuiltInProc):
-
-    @staticmethod
-    def _interpret(interpreter: Interpreter, token: t.Token, actual_params: tp.List[ast.AST]) -> d.Boolean:
-        param_value = interpreter.visit(actual_params[0])
-        param_type = type(param_value)
-        is_list = issubclass(param_type, d.List)
-
-        result = d.Boolean(is_list and len(param_value) == 0)
-        return result
-
-
 class Rest(BuiltInProc):
 
     @staticmethod

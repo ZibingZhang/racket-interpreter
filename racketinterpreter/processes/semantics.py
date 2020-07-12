@@ -1,4 +1,5 @@
 from __future__ import annotations
+from enum import Enum
 from typing import TYPE_CHECKING, Tuple, List, Any
 from racketinterpreter import errors as err
 from racketinterpreter.classes import ast
@@ -20,6 +21,11 @@ class SemanticAnalyzer(ast.ASTVisitor):
     # - StructGet
     # - Program
 
+    class Entering(Enum):
+
+        PROGRAM = 'PROGRAM'
+        PROCEDURE = 'PROCEDURE'
+
     def __init__(self, interpreter: Interpreter) -> None:
         self.current_scope = None
         self.preprocessor = _Preprocessor(self)
@@ -27,11 +33,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
         self.call_dict = dict()
 
-    def __call__(self, entering: str, **kwargs) -> SemanticAnalyzer:
-        # TODO: make these an enum value?
-        if entering not in ['PROGRAM', 'PROCEDURE']:
-            raise err.IllegalStateError
-
+    def __call__(self, entering: Entering, **kwargs) -> SemanticAnalyzer:
         self.call_dict.update(entering=entering, **kwargs)
 
         return self
@@ -40,11 +42,11 @@ class SemanticAnalyzer(ast.ASTVisitor):
         call_dict = self.call_dict
         entering = call_dict.get('entering')
 
-        if entering == 'PROGRAM':
+        if entering == self.Entering.PROGRAM:
             scope_name = 'global'
             scope_level = 0
 
-        elif entering == 'PROCEDURE':
+        elif entering == self.Entering.PROCEDURE:
             proc_name = self.call_dict.get('proc_name')
 
             scope_name = proc_name
@@ -62,7 +64,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
         )
         self.current_scope = scope
 
-        if entering == 'PROCEDURE':
+        if entering == self.Entering.PROCEDURE:
             formal_params = self.call_dict.get('formal_params')
             for param in formal_params:
                 self.current_scope.define(param)
@@ -557,8 +559,8 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
         return proc_symbol, actual_params
 
-    # TODO: move to interpreter?
-    def assert_actual_param_len(self, node_token: t.Token, proc_name: str,
+    @staticmethod
+    def assert_actual_param_len(node_token: t.Token, proc_name: str,
                                 formal_params_len: int, actual_params_len: int) -> None:
         received = actual_params_len
         if proc_name in BUILT_IN_PROCS.keys():

@@ -3,6 +3,7 @@ import abc
 import fractions as f
 import functools
 import typing as tp
+from racketinterpreter import errors as err
 
 
 class DataType(type):
@@ -1021,5 +1022,8 @@ class Integer(ExactNum):
 # the natural numbers are defined starting at zero
 class NaturalNum(Integer):
 
-    # TODO: raise an error in init if not nat
-    pass
+    def __init__(self, value: int):
+        if value < 0:
+            raise ValueError(f'Expected a non-negative integer, received {value}.')
+
+        super().__init__(value)
