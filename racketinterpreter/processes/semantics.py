@@ -42,7 +42,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
         if entering == 'PROGRAM':
             scope_name = 'global'
-            scope_level = 1
+            scope_level = 0
 
         elif entering == 'PROCEDURE':
             proc_name = self.call_dict.get('proc_name')
@@ -297,14 +297,15 @@ class SemanticAnalyzer(ast.ASTVisitor):
         var_name = node.identifier
         var_symbol = sym.AmbiguousSymbol(var_name)
 
-        if self.current_scope.lookup(var_name, current_scope_only=True) is not None:
-            if var_name in BUILT_IN_PROCS:
-                error_code = err.ErrorCode.BUILTIN_OR_IMPORTED_NAME
-            else:
-                error_code = err.ErrorCode.PREVIOUSLY_DEFINED_NAME
-
+        if var_name in BUILT_IN_PROCS:
             raise err.SemanticError(
-                error_code=error_code,
+                error_code=err.ErrorCode.BUILTIN_OR_IMPORTED_NAME,
+                token=const_token
+            )
+
+        if self.current_scope.lookup(var_name, current_scope_only=True) is not None:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.PREVIOUSLY_DEFINED_NAME,
                 token=const_token
             )
 
@@ -334,7 +335,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
         proc_name_expr = node.name_expr
         proc_name_token = proc_name_expr.token
         proc_name = proc_name_token.value
-        proc_symbol = self.current_scope.lookup(proc_name, True)
+        proc_symbol = self.current_scope.lookup(proc_name, current_scope_only=True)
 
         self.log_scope('')
         self.log_scope(f'ENTER SCOPE: {proc_name}')
@@ -435,14 +436,15 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
         struct_name = struct_name_token.value
 
-        if self.current_scope.lookup(struct_name, current_scope_only=True) is not None:
-            if struct_name in BUILT_IN_PROCS:
-                error_code = err.ErrorCode.BUILTIN_OR_IMPORTED_NAME
-            else:
-                error_code = err.ErrorCode.PREVIOUSLY_DEFINED_NAME
-
+        if struct_name in BUILT_IN_PROCS:
             raise err.SemanticError(
-                error_code=error_code,
+                error_code=err.ErrorCode.BUILTIN_OR_IMPORTED_NAME,
+                token=struct_name_token
+            )
+
+        if self.current_scope.lookup(struct_name, current_scope_only=True) is not None:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.PREVIOUSLY_DEFINED_NAME,
                 token=struct_name_token
             )
 
@@ -494,14 +496,15 @@ class SemanticAnalyzer(ast.ASTVisitor):
             else:
                 proc_symbol.expr = ast.StructGet(node.token, struct_class)
 
-            if self.current_scope.lookup(proc_name, current_scope_only=True) is not None:
-                if proc_name in BUILT_IN_PROCS:
-                    error_code = err.ErrorCode.BUILTIN_OR_IMPORTED_NAME
-                else:
-                    error_code = err.ErrorCode.PREVIOUSLY_DEFINED_NAME
-
+            if proc_name in BUILT_IN_PROCS:
                 raise err.SemanticError(
-                    error_code=error_code,
+                    error_code=err.ErrorCode.BUILTIN_OR_IMPORTED_NAME,
+                    token=node.token
+                )
+
+            if self.current_scope.lookup(proc_name, current_scope_only=True) is not None:
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.PREVIOUSLY_DEFINED_NAME,
                     token=node.token
                 )
 
@@ -649,14 +652,15 @@ class _Preprocessor(ast.ASTVisitor):
         node.proc_name = proc_name
         node.expr = exprs[0]
 
-        if semantic_analyzer.current_scope.lookup(proc_name, current_scope_only=True) is not None:
-            if proc_name in BUILT_IN_PROCS:
-                error_code = err.ErrorCode.BUILTIN_OR_IMPORTED_NAME
-            else:
-                error_code = err.ErrorCode.PREVIOUSLY_DEFINED_NAME
-
+        if proc_name in BUILT_IN_PROCS:
             raise err.SemanticError(
-                error_code=error_code,
+                error_code=err.ErrorCode.BUILTIN_OR_IMPORTED_NAME,
+                token=proc_name_token
+            )
+
+        if semantic_analyzer.current_scope.lookup(proc_name, current_scope_only=True) is not None:
+            raise err.SemanticError(
+                error_code=err.ErrorCode.PREVIOUSLY_DEFINED_NAME,
                 token=proc_name_token
             )
 
