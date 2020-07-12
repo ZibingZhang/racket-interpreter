@@ -14,14 +14,14 @@ class Lexer:
     def __init__(self, text: str) -> None:
         # TODO: make these private fields?
         self.text = text
-        self.pos = 0
-        self.current_char = self.text[self.pos]
+        self._pos = 0
+        self._current_char = self.text[self._pos]
 
-        self.line_no = 1
-        self.column = 1
+        self._line_no = 1
+        self._column = 1
 
         self.tokens = []
-        self.current_token_idx = -1
+        self._current_token_idx = -1
 
         self.paren_analyzer = ParenthesesAnalyzer()
 
@@ -30,19 +30,18 @@ class Lexer:
 
     def get_next_token(self) -> tp.Optional[t.Token]:
         try:
-            self.current_token_idx += 1
-            token = self.tokens[self.current_token_idx]
+            self._current_token_idx += 1
+            token = self.tokens[self._current_token_idx]
             return token
         except IndexError as e:
             return None
 
     def peek_next_token(self, pos_ahead: int = 1) -> t.Token:
         try:
-            token = self.tokens[self.current_token_idx + pos_ahead]
+            token = self.tokens[self._current_token_idx + pos_ahead]
             return token
         except IndexError as e:
-            # TODO: this might be possible to trigger, look into it
-            raise err.IllegalStateError
+            return self.tokens[-1]
 
     def _process_all_tokens(self) -> None:
         """ Responsible for breaking apart text into tokens."""
@@ -53,7 +52,7 @@ class Lexer:
             token = self._process_next_token()
 
             if token is None:
-                token = t.Token(t.TokenType.EOF, None, self.line_no, self.column)
+                token = t.Token(t.TokenType.EOF, None, self._line_no, self._column)
                 self.tokens.append(token)
 
                 paren_analyzer.reached_eof(token)
@@ -67,38 +66,38 @@ class Lexer:
     def _process_next_token(self, apostrophe_as_quote: bool = False) -> tp.Optional[t.Token]:
         token = None
 
-        while self.current_char:
+        while self._current_char:
             try:
                 self._skip_whitespace_or_comments()
             except err.ReachedEOF as e:
                 break
 
-            if (self.current_char.isdigit() or self.current_char == '.'
-                    or (self.current_char == '-' and (self._peek().isdigit() or self._peek() == '.'))):
+            if (self._current_char.isdigit() or self._current_char == '.'
+                    or (self._current_char == '-' and (self._peek().isdigit() or self._peek() == '.'))):
                 token = self._number()
                 break
 
-            if self.current_char not in self.NON_ID_CHARS:
+            if self._current_char not in self.NON_ID_CHARS:
                 token = self._identifier()
                 break
 
-            if self.current_char == '#':
+            if self._current_char == '#':
                 token = self._boolean()
                 break
 
-            if self.current_char == '"':
+            if self._current_char == '"':
                 token = self._string()
                 break
 
-            if self.current_char == "'":
+            if self._current_char == "'":
                 if apostrophe_as_quote:
                     raise err.LexerError(
                         error_code=err.ErrorCode.FEATURE_NOT_IMPLEMENTED,
                         token=t.Token(
                             type=t.TokenType.INVALID,
                             value="'",
-                            line_no=self.line_no,
-                            column=self.column
+                            line_no=self._line_no,
+                            column=self._column
                         )
                     )
                 else:
@@ -106,37 +105,47 @@ class Lexer:
 
                 break
 
-            if self.current_char in ['(', '{', '[']:
+            if self._current_char in ['(', '{', '[']:
                 token_type = t.TokenType.LPAREN
-                value = self.current_char
+                value = self._current_char
                 token = t.Token(
                     type=token_type,
                     value=value,
-                    line_no=self.line_no,
-                    column=self.column
+                    line_no=self._line_no,
+                    column=self._column
                 )
                 self._advance()
                 break
 
-            if self.current_char in [')', '}', ']']:
+            if self._current_char in [')', '}', ']']:
                 token_type = t.TokenType.RPAREN
-                value = self.current_char
+                value = self._current_char
                 token = t.Token(
                     type=token_type,
                     value=value,
-                    line_no=self.line_no,
-                    column=self.column
+                    line_no=self._line_no,
+                    column=self._column
                 )
                 self._advance()
                 break
 
-            # TODO: having nested block comments breaks
+            if self._current_char == '|':
+                raise err.LexerError(
+                    error_code=err.ErrorCode.FEATURE_NOT_IMPLEMENTED,
+                    token=t.Token(
+                        type=t.TokenType.INVALID,
+                        value="''",
+                        line_no=self._line_no,
+                        column=self._column
+                    )
+                )
+
             raise err.IllegalStateError
 
         return token
 
     def _peek(self) -> tp.Optional[str]:
-        pos = self.pos + 1
+        pos = self._pos + 1
         if pos > len(self.text) - 1:
             return None
         else:
@@ -144,39 +153,39 @@ class Lexer:
 
     def _advance(self) -> None:
         """Advance the 'pos' pointer and set the 'current_char' field."""
-        if self.current_char == '\n':
-            self.line_no += 1
-            self.column = 0
+        if self._current_char == '\n':
+            self._line_no += 1
+            self._column = 0
 
-        self.pos += 1
-        if self.pos > len(self.text) - 1:
-            self.current_char = None
+        self._pos += 1
+        if self._pos > len(self.text) - 1:
+            self._current_char = None
         else:
-            self.current_char = self.text[self.pos]
-            self.column += 1
+            self._current_char = self.text[self._pos]
+            self._column += 1
 
     def _boolean(self) -> t.Token:
-        line_no = self.line_no
-        column = self.column
+        line_no = self._line_no
+        column = self._column
 
-        boolean = self.current_char
+        boolean = self._current_char
         self._advance()
-        while self.current_char is not None and not self.current_char.isspace():
-            current_char = self.current_char
+        while self._current_char is not None and not self._current_char.isspace():
+            current_char = self._current_char
             if current_char in ['"', "'", '`', '#']:
-                boolean += self.current_char
+                boolean += self._current_char
                 break
             elif current_char in ['(', ')', '{', '}', '[', ']']:
                 break
 
-            boolean += self.current_char
+            boolean += self._current_char
             self._advance()
 
             lowered = boolean.lower()
             if lowered not in '#true' and lowered not in '#false':
                 break
 
-        if self.current_char is None or boolean not in ['#T', '#t', '#true', '#F', '#f', '#false']:
+        if self._current_char is None or boolean not in ['#T', '#t', '#true', '#F', '#f', '#false']:
             raise err.LexerError(
                 error_code=err.ErrorCode.RS_BAD_SYNTAX,
                 token=t.Token(
@@ -205,23 +214,23 @@ class Lexer:
 
     def _identifier(self, initial: str = '') -> t.Token:
         """Handles identifiers (including builtin functions)."""
-        line_no = self.line_no
-        column = self.column
+        line_no = self._line_no
+        column = self._column
 
         result = initial
-        while self.current_char is not None and self.current_char not in self.NON_ID_CHARS \
-                and not self.current_char.isspace():
-            result += self.current_char
+        while self._current_char is not None and self._current_char not in self.NON_ID_CHARS \
+                and not self._current_char.isspace():
+            result += self._current_char
             self._advance()
 
         return t.Token(t.TokenType.ID, result, line_no, column)
 
     def _number(self) -> t.Token:
         """Return a number token from a number consumed from the input (or an ID if not a valid number)."""
-        line_no = self.line_no
-        column = self.column
+        line_no = self._line_no
+        column = self._column
 
-        if self.current_char == '-':
+        if self._current_char == '-':
             number = '-'
             self._advance()
         else:
@@ -231,19 +240,19 @@ class Lexer:
         numerator = ''
         denominator = ''
 
-        while (self.current_char is not None and not self.current_char.isspace()
-               and self.current_char not in self.NON_ID_CHARS):
-            if self.current_char == '/':
+        while (self._current_char is not None and not self._current_char.isspace()
+               and self._current_char not in self.NON_ID_CHARS):
+            if self._current_char == '/':
                 is_rational = True
                 numerator = number
-                number += self.current_char
+                number += self._current_char
                 self._advance()
                 continue
 
             if is_rational:
-                denominator += self.current_char
+                denominator += self._current_char
 
-            number += self.current_char
+            number += self._current_char
             self._advance()
 
         if is_rational:
@@ -294,17 +303,17 @@ class Lexer:
 
     def _string(self) -> t.Token:
         """Handles strings."""
-        line_no = self.line_no
-        column = self.column
+        line_no = self._line_no
+        column = self._column
 
         self._advance()
 
         string = ''
-        while self.current_char is not None and self.current_char != '"':
-            string += self.current_char
+        while self._current_char is not None and self._current_char != '"':
+            string += self._current_char
             self._advance()
 
-        if self.current_char is None:
+        if self._current_char is None:
             raise err.LexerError(
                 error_code=err.ErrorCode.RS_EXPECTED_DOUBLE_QUOTE,
                 token=t.Token(
@@ -326,8 +335,8 @@ class Lexer:
 
     def _symbol(self) -> t.Token:
         """Handles symbols."""
-        line_no = self.line_no
-        column = self.column
+        line_no = self._line_no
+        column = self._column
 
         self._advance()
 
@@ -345,9 +354,9 @@ class Lexer:
                 )
             )
 
-        current_char = self.current_char
+        current_char = self._current_char
         if (current_char.isdigit() or current_char == '.'
-                or (self.current_char == '-' and (self._peek().isdigit() or self._peek() == '.'))):
+                or (self._current_char == '-' and (self._peek().isdigit() or self._peek() == '.'))):
             return self._number()
         elif current_char not in self.NON_ID_CHARS:
             token = self._identifier()
@@ -413,40 +422,50 @@ class Lexer:
                     column=column
                 )
             )
+        elif current_char == '|':
+            raise err.LexerError(
+                error_code=err.ErrorCode.FEATURE_NOT_IMPLEMENTED,
+                token=t.Token(
+                    type=t.TokenType.INVALID,
+                    value="''",
+                    line_no=line_no,
+                    column=column
+                )
+            )
         else:
             raise err.IllegalStateError
 
     def _skip_whitespace_or_comments(self):
-        while self.current_char:
-            if self.current_char.isspace():
+        while self._current_char:
+            if self._current_char.isspace():
                 self._skip_whitespace()
                 continue
 
-            if self.current_char == ';':
+            if self._current_char == ';':
                 self._skip_line_comment()
                 continue
 
-            if self.current_char == '#' and self._peek() == ';':
+            if self._current_char == '#' and self._peek() == ';':
                 self._skip_block_comment()
                 continue
 
-            if self.current_char == '#' and self._peek() == '|':
+            if self._current_char == '#' and self._peek() == '|':
                 self._skip_multi_line_comment()
                 continue
 
             break
 
-        if self.current_char is None:
+        if self._current_char is None:
             raise err.ReachedEOF
 
     def _skip_whitespace(self) -> None:
         """Consume whitespace until next non-whitespace character."""
-        while self.current_char is not None and self.current_char.isspace():
+        while self._current_char is not None and self._current_char.isspace():
             self._advance()
 
     def _skip_line_comment(self) -> None:
         """Consume text until the next newline character."""
-        while self.current_char is not None and self.current_char != '\n':
+        while self._current_char is not None and self._current_char != '\n':
             self._advance()
         self._advance()
 
@@ -454,10 +473,10 @@ class Lexer:
         self._advance()
         self._advance()
 
-        if self.current_char.isspace():
+        if self._current_char.isspace():
             self._skip_whitespace()
 
-        if self.current_char != '(':
+        if self._current_char != '(':
             self._process_all_tokens()
         else:
             paren_analyzer = self.paren_analyzer
@@ -484,11 +503,11 @@ class Lexer:
         self._advance()
         self._advance()
 
-        line_no = self.line_no
-        column = self.column
+        line_no = self._line_no
+        column = self._column
 
         while True:
-            if self.current_char == '|':
+            if self._current_char == '|':
                 next_char = self._peek()
                 if next_char == '#':
                     self._advance()
@@ -505,7 +524,7 @@ class Lexer:
                         )
                     )
 
-            elif self.current_char is None:
+            elif self._current_char is None:
                 raise err.LexerError(
                     error_code=err.ErrorCode.RS_EOF_IN_BLOCK_COMMENT,
                     token=t.Token(

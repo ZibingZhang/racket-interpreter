@@ -222,9 +222,6 @@ class SemanticAnalyzer(ast.ASTVisitor):
         exprs = node.exprs
         exprs_len = len(exprs)
 
-        if len(exprs) == 0:
-            raise RuntimeError
-
         if exprs_len != 0 and type(exprs[0]) is ast.Sym:
             # a little bit hacky..., not sure why Racket has this behavior
             raise err.SemanticError(

@@ -71,7 +71,7 @@ class ErrorCode(Enum):
 
 class Error(Exception):
 
-    def __init__(self, error_code, token, **kwargs) -> None:
+    def __init__(self, error_code: ErrorCode, token: t.Token, **kwargs) -> None:
         self.error_code = error_code
         self.token = token
         self.line_no = token.line_no
