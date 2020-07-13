@@ -557,10 +557,6 @@ class Symbol(Data):
 # ========== ========== ========== #
 #        Child Data Classes
 # ========== ========== ========== #
-class ConsList(List):
-    """A constructed (non-empty) list."""
-
-
 class ComplexNum(Number):
     """A complex number.
 

@@ -17,9 +17,8 @@ class ErrorCode(Enum):
     BUILTIN_OR_IMPORTED_NAME = Template('$name: this name was defined in the language or a required library and cannot be re-defined')
     DIVISION_BY_ZERO = Template('/: division by zero')
     INCORRECT_ARGUMENT_COUNT = Template('$name: $expects, but $found')
-    INCORRECT_ARGUMENT_TYPE = Template('$name: $expects, $given')
+    INCORRECT_ARGUMENT_TYPE = Template('$name: $expects$separator $given')
     # third: expects a list with 3 or more items; given: '()
-    INCORRECT_LIST_LENGTH = Template('$name: $expects; $given')
     PREVIOUSLY_DEFINED_NAME = Template('$name: this name was defined previously and cannot be re-defined')
     USED_BEFORE_DEFINITION = Template('$name is used here before its definition')
     USING_STRUCTURE_TYPE = Template('$name: structure type; do you mean make-$name')
@@ -116,6 +115,7 @@ class Error(Exception):
         elif error_code is ErrorCode.INCORRECT_ARGUMENT_TYPE:
             data_type_to_string = {
                 d.Boolean: 'boolean',
+                d.List: 'list',
                 d.Number: 'number',
                 # d.Procedure, TODO: procedures will be much more complicated...
                 d.String: 'string',
@@ -136,48 +136,47 @@ class Error(Exception):
             given = kwargs.get('given')
             multiple_args = kwargs.get('multiple_args', False)
 
-            if expected.__class__ is d.StructDataType:
-                name_of_expected = expected.__name__
+            if expected is d.List:
+                min_length = kwargs.get('min_length')
+                max_length = kwargs.get('max_length')
+
+                expects = 'expects '
+
+                if min_length == 1 and max_length is None:
+                    expects += 'a non-empty list'
+                elif min_length >= 2 and max_length is None:
+                    expects += f'a list with {min_length} or more items'
+
+                separator = ';'
+
             else:
-                name_of_expected = data_type_to_string[expected]
+                if expected.__class__ is d.StructDataType:
+                    name_of_expected = expected.__name__
+                else:
+                    name_of_expected = data_type_to_string[expected]
 
-            if name_of_expected[0] in ['a', 'e', 'i', 'o', 'u']:
-                expects = f'expects an {name_of_expected}'
-            else:
-                expects = f'expects a {name_of_expected}'
+                if name_of_expected[0] in ['a', 'e', 'i', 'o', 'u']:
+                    expects = f'expects an {name_of_expected}'
+                else:
+                    expects = f'expects a {name_of_expected}'
 
-            if multiple_args:
-                def to_ord(n):
-                    return str(n) + {
-                        1: 'st',
-                        2: 'nd',
-                        3: 'rd'
-                    }.get(n if n < 20 else n % 10, 'th')
+                if multiple_args:
+                    def to_ord(n):
+                        return str(n) + {
+                            1: 'st',
+                            2: 'nd',
+                            3: 'rd'
+                        }.get(n if n < 20 else n % 10, 'th')
 
-                idx = kwargs.get('idx') + 1
+                    idx = kwargs.get('idx') + 1
 
-                expects += f' as {to_ord(idx)} argument'
+                    expects += f' as {to_ord(idx)} argument'
+
+                separator = ','
 
             given = f'given {given}'
 
-            error_message = template.safe_substitute(name=name, expects=expects, given=given)
-
-        elif error_code is ErrorCode.INCORRECT_LIST_LENGTH:
-            name = kwargs.get('name')
-            min_length = kwargs.get('min_length')
-            max_length = kwargs.get('max_length')
-            given = kwargs.get('given')
-
-            expects = 'expects '
-
-            if min_length == 1 and max_length is None:
-                expects += 'a non-empty list'
-            elif min_length >= 2 and max_length is None:
-                expects += f'a list with {min_length} or more items'
-
-            given = f'given {given}'
-
-            error_message = template.safe_substitute(name=name, expects=expects, given=given)
+            error_message = template.safe_substitute(name=name, expects=expects, separator=separator, given=given)
 
         elif error_code is ErrorCode.PREVIOUSLY_DEFINED_NAME:
             name = token.value

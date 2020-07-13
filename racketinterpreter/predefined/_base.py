@@ -39,23 +39,12 @@ class BuiltInProc(abc.ABC):
             expected = e.expected
             given = e.given
 
-            if error_code == err.ErrorCode.INCORRECT_LIST_LENGTH:
+            min_length = max_length = None
+            if expected is d.List:
                 min_length = e.kwargs.get('min_length')
                 max_length = e.kwargs.get('max_length')
 
-                raise err.BuiltinProcedureError(
-                    error_code=error_code,
-                    token=token,
-                    name=name,
-                    multiple_args=multiple_args,
-                    idx=idx,
-                    min_length=min_length,
-                    max_length=max_length,
-                    given=given
-                )
-
-            elif error_code == err.ErrorCode.INCORRECT_ARGUMENT_TYPE:
-
+            if error_code == err.ErrorCode.INCORRECT_ARGUMENT_TYPE:
                 raise err.BuiltinProcedureError(
                     error_code=error_code,
                     token=token,
@@ -63,6 +52,8 @@ class BuiltInProc(abc.ABC):
                     multiple_args=multiple_args,
                     idx=idx,
                     expected=expected,
+                    min_length=min_length,
+                    max_length=max_length,
                     given=given
                 )
 

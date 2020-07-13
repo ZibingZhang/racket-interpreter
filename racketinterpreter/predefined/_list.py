@@ -9,6 +9,22 @@ if tp.TYPE_CHECKING:
     from racketinterpreter.processes import Interpreter
 
 
+def _interpret_nth(interpreter: Interpreter, actual_params: tp.List[ast.AST], idx: int) -> d.Data:
+    param_value = interpreter.visit(actual_params[0])
+    param_type = type(param_value)
+
+    if not issubclass(param_type, d.List) or len(param_value) <= idx:
+        raise err.EvaluateBuiltinProcedureError(
+            expected=d.List,
+            given=param_value,
+            min_length=idx+1,
+            max_length=None
+        )
+
+    result = param_value[idx]
+    return result
+
+
 class ConsHuh(BuiltInProc):
 
     @staticmethod
@@ -37,26 +53,7 @@ class First(BuiltInProc):
 
     @staticmethod
     def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
-        param_value = interpreter.visit(actual_params[0])
-        param_type = type(param_value)
-
-        if not issubclass(param_type, d.List):
-            raise err.EvaluateBuiltinProcedureError(
-                expected=d.ConsList,
-                given=param_value
-            )
-
-        if len(param_value) == 0:
-            raise err.EvaluateBuiltinProcedureError(
-                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
-                expected=d.ConsList,
-                given=param_value,
-                min_length=1,
-                max_length=None
-            )
-
-        result = param_value[0]
-        return result
+        return _interpret_nth(interpreter, actual_params, 0)
 
 
 class Length(BuiltInProc):
@@ -156,16 +153,9 @@ class Rest(BuiltInProc):
         param_value = interpreter.visit(actual_params[0])
         param_type = type(param_value)
 
-        if not issubclass(param_type, d.List):
+        if not issubclass(param_type, d.List) or len(param_value) == 0:
             raise err.EvaluateBuiltinProcedureError(
-                expected=d.ConsList,
-                given=param_value
-            )
-
-        if len(param_value) == 0:
-            raise err.EvaluateBuiltinProcedureError(
-                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
-                expected=d.ConsList,
+                expected=d.List,
                 given=param_value,
                 min_length=1,
                 max_length=None
@@ -196,23 +186,4 @@ class Second(BuiltInProc):
 
     @staticmethod
     def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
-        param_value = interpreter.visit(actual_params[0])
-        param_type = type(param_value)
-
-        if not issubclass(param_type, d.List):
-            raise err.EvaluateBuiltinProcedureError(
-                expected=d.ConsList,
-                given=param_value
-            )
-
-        if len(param_value) < 2:
-            raise err.EvaluateBuiltinProcedureError(
-                error_code=err.ErrorCode.INCORRECT_LIST_LENGTH,
-                expected=d.ConsList,
-                given=param_value,
-                min_length=2,
-                max_length=None
-            )
-
-        result = param_value[1]
-        return result
+        return _interpret_nth(interpreter, actual_params, 1)
