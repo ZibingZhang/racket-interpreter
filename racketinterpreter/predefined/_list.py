@@ -37,6 +37,13 @@ class ConsHuh(BuiltInProc):
         return result
 
 
+class Eighth(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
+        return _interpret_nth(interpreter, actual_params, 7)
+
+
 class EmptyHuh(BuiltInProc):
 
     @staticmethod
@@ -49,11 +56,25 @@ class EmptyHuh(BuiltInProc):
         return result
 
 
+class Fifth(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
+        return _interpret_nth(interpreter, actual_params, 4)
+
+
 class First(BuiltInProc):
 
     @staticmethod
     def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
         return _interpret_nth(interpreter, actual_params, 0)
+
+
+class Fourth(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
+        return _interpret_nth(interpreter, actual_params, 3)
 
 
 class Length(BuiltInProc):
@@ -187,3 +208,24 @@ class Second(BuiltInProc):
     @staticmethod
     def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
         return _interpret_nth(interpreter, actual_params, 1)
+
+
+class Seventh(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
+        return _interpret_nth(interpreter, actual_params, 6)
+
+
+class Sixth(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
+        return _interpret_nth(interpreter, actual_params, 5)
+
+
+class Third(BuiltInProc):
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.Data:
+        return _interpret_nth(interpreter, actual_params, 2)

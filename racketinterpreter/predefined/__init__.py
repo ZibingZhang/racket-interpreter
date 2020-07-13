@@ -13,8 +13,11 @@ from racketinterpreter.predefined._boolean import (
 )
 from racketinterpreter.predefined._list import (
     ConsHuh,
+    Eighth,
     EmptyHuh,
     First,
+    Fifth,
+    Fourth,
     Length,
     List,
     ListHuh,
@@ -22,7 +25,10 @@ from racketinterpreter.predefined._list import (
     Member,
     Rest,
     Reverse,
-    Second
+    Second,
+    Seventh,
+    Sixth,
+    Third
 )
 from racketinterpreter.predefined._numeric import (
     SymMultiply,
@@ -106,11 +112,11 @@ BUILT_IN_PROCS = {
     # ========== ========== ==========
     # 'append': Append(),
     'cons?': ConsHuh(),
-    # 'eighth': Eighth(),
+    'eighth': Eighth(),
     'empty?': EmptyHuh(),
-    # 'fifth' : Fifth(),
+    'fifth': Fifth(),
     'first': First(),
-    # 'fourth': Fourth(),
+    'fourth': Fourth(),
     'length': Length(),
     'list': List(),
     # 'list*': ListSymStar(),
@@ -124,9 +130,9 @@ BUILT_IN_PROCS = {
     'rest': Rest(),
     'reverse': Reverse(),
     'second': Second(),
-    # 'seventh': Seventh(),
-    # 'sixth': Sixth(),
-    # 'third': Third()
+    'seventh': Seventh(),
+    'sixth': Sixth(),
+    'third': Third(),
     # ========== ========== ==========
     #             numeric
     # ========== ========== ==========
