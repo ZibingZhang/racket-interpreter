@@ -92,7 +92,7 @@ class Boolean(Data):
             >>> str(Boolean(False))
             '#f'
         """
-        return f'#{"t" if self.value else "f"}'
+        return f'#{"true" if self.value else "false"}'
 
     def __repr__(self) -> str:
         """
