@@ -140,12 +140,15 @@ class Error(Exception):
 
                 expects = 'expects '
 
-                if min_length == 1 and max_length is None:
+                if min_length is None and max_length is None:
+                    expects += 'a list'
+                    separator = ','
+                elif min_length == 1 and max_length is None:
                     expects += 'a non-empty list'
+                    separator = ';'
                 elif min_length >= 2 and max_length is None:
                     expects += f'a list with {min_length} or more items'
-
-                separator = ';'
+                    separator = ';'
 
             else:
                 if expected.__class__ is d.StructDataType:

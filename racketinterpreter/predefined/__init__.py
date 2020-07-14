@@ -12,6 +12,7 @@ from racketinterpreter.predefined._boolean import (
     Not
 )
 from racketinterpreter.predefined._list import (
+    Append,
     Cons,
     ConsHuh,
     Eighth,
@@ -111,7 +112,7 @@ BUILT_IN_PROCS = {
     # ========== ========== ==========
     #               list
     # ========== ========== ==========
-    # 'append': Append(),
+    'append': Append(),
     'cons': Cons(),
     'cons?': ConsHuh(),
     'eighth': Eighth(),

@@ -25,6 +25,36 @@ def _interpret_nth(interpreter: Interpreter, actual_params: tp.List[ast.AST], id
     return result
 
 
+class Append(BuiltInProc):
+
+    LOWER = 0
+    UPPER = None
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.List:
+        evaluated_params = []
+        for idx, param in enumerate(actual_params):
+            param_value = interpreter.visit(param)
+            param_type = type(param_value)
+
+            if not issubclass(param_type, d.List):
+                raise err.EvaluateBuiltinProcedureError(
+                    idx=idx,
+                    expected=d.List,
+                    given=param_value
+                )
+
+            evaluated_params.append(param_value)
+
+        result = d.List([])
+
+        for param in evaluated_params:
+            result.extend(param)
+
+        # TODO: append: last argument must be a list, but received 1
+        return result
+
+
 class Cons(BuiltInProc):
 
     LOWER = 2

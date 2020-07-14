@@ -226,6 +226,9 @@ class List(Data):
         """
         return len(self.value) > 0
 
+    def extend(self, other: List) -> None:
+        self.value.extend(other.value)
+
 
 class Number(Data):
     """A number."""

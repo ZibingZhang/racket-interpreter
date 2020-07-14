@@ -34,7 +34,6 @@ class BuiltInProc(abc.ABC):
         except err.EvaluateBuiltinProcedureError as e:
             error_code = e.error_code
 
-
             if error_code == err.ErrorCode.INCORRECT_ARGUMENT_TYPE:
                 name = self.derive_proc_name(self.__class__.__name__)
                 multiple_args = len(actual_params) > 1
