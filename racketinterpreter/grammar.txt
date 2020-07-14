@@ -10,8 +10,6 @@ p-expr: LPAREN expr* RPAREN
 
 empty: ID
 
-cons: LPAREN CONS expr{0,1} expr* RPAREN
-
 list: cons | empty
 
 cond-else: p-expr

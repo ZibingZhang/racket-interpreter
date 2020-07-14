@@ -147,23 +147,6 @@ class Sym(Expr):
         return self.__str__()
 
 
-class Cons(List):
-    """A non-empty list."""
-
-    def __init__(self, token: t.Token, exprs: tp.List[Expr]) -> None:
-        super().__init__(token)
-        self.exprs = exprs
-
-        self.first = None
-        self.rest = None
-
-    def __str__(self) -> str:
-        return f'<Cons first:{self.first}  rest:{self.rest}>'
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-
 class Cond(Expr):
     """A cond statement."""
 

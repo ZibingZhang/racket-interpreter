@@ -81,33 +81,6 @@ class Interpreter(ast.ASTVisitor):
     def visit_Sym(self, node: ast.Sym) -> d.Symbol:
         return d.Symbol(node.value)
 
-    def visit_Cons(self, node: ast.Cons) -> d.List:
-        self.semantic_analyzer.visit(node)
-
-        current_ar = self.call_stack.peek()
-        ar = stack.ActivationRecord(
-            name='cond',
-            type=stack.ARType.PROCEDURE,
-            nesting_level=current_ar.nesting_level + 1
-        )
-
-        with ar(self):
-            first = self.visit(node.first)
-            rest = self.visit(node.rest)
-
-            if type(rest) is not d.List:
-                raise err.InterpreterError(
-                    error_code=err.ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST,
-                    token=node.token,
-                    arg1=first,
-                    arg2=rest
-                )
-
-            cons_list = [first]
-            cons_list.extend(rest)
-
-            return d.List(cons_list)
-
     def visit_Cond(self, node: ast.Cond) -> Data:
         self.semantic_analyzer.visit(node)
 
@@ -362,7 +335,6 @@ class _Preprocessor(ast.ASTVisitor):
     # - Rat
     # - Str
     # - Sym
-    # - Cons
     # - Cond
     # - CondBranch
     # - CondElse

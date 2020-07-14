@@ -32,19 +32,21 @@ class BuiltInProc(abc.ABC):
                 actual_params=actual_params
             )
         except err.EvaluateBuiltinProcedureError as e:
-            name = self.derive_proc_name(self.__class__.__name__)
             error_code = e.error_code
-            multiple_args = len(actual_params) > 1
-            idx = e.idx
-            expected = e.expected
-            given = e.given
 
-            min_length = max_length = None
-            if expected is d.List:
-                min_length = e.kwargs.get('min_length')
-                max_length = e.kwargs.get('max_length')
 
             if error_code == err.ErrorCode.INCORRECT_ARGUMENT_TYPE:
+                name = self.derive_proc_name(self.__class__.__name__)
+                multiple_args = len(actual_params) > 1
+                idx = e.idx
+                expected = e.expected
+                given = e.given
+
+                min_length = max_length = None
+                if expected is d.List:
+                    min_length = e.kwargs.get('min_length')
+                    max_length = e.kwargs.get('max_length')
+
                 raise err.BuiltinProcedureError(
                     error_code=error_code,
                     token=token,
@@ -59,12 +61,23 @@ class BuiltInProc(abc.ABC):
 
             elif error_code == err.ErrorCode.DIVISION_BY_ZERO:
                 raise err.BuiltinProcedureError(
-                    error_code=err.ErrorCode.DIVISION_BY_ZERO,
+                    error_code=error_code,
                     token=token
                 )
 
+            elif error_code == err.ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST:
+                arg1 = e.kwargs.get('arg1')
+                arg2 = e.kwargs.get('arg2')
+
+                raise err.BuiltinProcedureError(
+                    error_code=error_code,
+                    token=token,
+                    arg1=arg1,
+                    arg2=arg2
+                )
+
             else:
-                raise e
+                raise err.IllegalStateError
 
     @staticmethod
     def derive_proc_name(class_name: str) -> str:

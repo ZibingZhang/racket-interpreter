@@ -25,6 +25,29 @@ def _interpret_nth(interpreter: Interpreter, actual_params: tp.List[ast.AST], id
     return result
 
 
+class Cons(BuiltInProc):
+
+    LOWER = 2
+    UPPER = 2
+
+    @staticmethod
+    def _interpret(interpreter: Interpreter, actual_params: tp.List[ast.AST]) -> d.List:
+        first = interpreter.visit(actual_params[0])
+
+        rest = param_value = interpreter.visit(actual_params[1])
+        param_type = type(param_value)
+
+        if not issubclass(param_type, d.List):
+            raise err.EvaluateBuiltinProcedureError(
+                error_code=err.ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST,
+                arg1=first,
+                arg2=rest
+            )
+
+        result = d.List([first] + list(rest))
+        return result
+
+
 class ConsHuh(BuiltInProc):
 
     @staticmethod

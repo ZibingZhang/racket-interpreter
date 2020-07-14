@@ -18,7 +18,6 @@ class ErrorCode(Enum):
     DIVISION_BY_ZERO = Template('/: division by zero')
     INCORRECT_ARGUMENT_COUNT = Template('$name: $expects, but $found')
     INCORRECT_ARGUMENT_TYPE = Template('$name: $expects$separator $given')
-    # third: expects a list with 3 or more items; given: '()
     PREVIOUSLY_DEFINED_NAME = Template('$name: this name was defined previously and cannot be re-defined')
     USED_BEFORE_DEFINITION = Template('$name is used here before its definition')
     USING_STRUCTURE_TYPE = Template('$name: structure type; do you mean make-$name')
@@ -33,7 +32,6 @@ class ErrorCode(Enum):
     CE_INCORRECT_ARGUMENT_COUNT = Template('check-expect: $expects, but $found')
 
     CL_EXPECTED_SECOND_ARGUMENT_LIST = Template('cons: second argument must be a list, but received $arg1 and $arg2')
-    CL_EXPECTED_TWO_ARGUMENTS = Template('cons: $expects, but $found')
 
     D_DUPLICATE_VARIABLE = Template('define: found a variable that is used more than once: $name')
     D_EXPECTED_A_NAME = Template("define: expected a variable name, or a function name and its variables (in parentheses), but $found")
@@ -244,14 +242,6 @@ class Error(Exception):
 
             expects = f'expects {"only " if received > 2 else ""}2 arguments'
             found = f'but found {"only" if received == 1 else ""} 1'
-
-            error_message = template.safe_substitute(expects=expects, found=found)
-
-        elif error_code is ErrorCode.CL_EXPECTED_TWO_ARGUMENTS:
-            received = kwargs.get('received')
-
-            expects = f'expects {"only " if received > 2 else ""}2 arguments'
-            found = f'found {received}'
 
             error_message = template.safe_substitute(expects=expects, found=found)
 

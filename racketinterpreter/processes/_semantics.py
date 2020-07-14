@@ -141,20 +141,6 @@ class SemanticAnalyzer(ast.ASTVisitor):
     def visit_Sym(self, node: ast.Str) -> None:
         pass
 
-    def visit_Cons(self, node: ast.Cons) -> None:
-        exprs = node.exprs
-        exprs_len = len(exprs)
-
-        if exprs_len != 2:
-            raise err.SemanticError(
-                error_code=err.ErrorCode.CL_EXPECTED_TWO_ARGUMENTS,
-                token=node.token,
-                received=exprs_len
-            )
-
-        node.first = exprs[0]
-        node.rest = exprs[1]
-
     def visit_Cond(self, node: ast.Cond) -> None:
         exprs_len = len(node.exprs)
 
@@ -599,7 +585,6 @@ class _Preprocessor(ast.ASTVisitor):
     # - Rat
     # - Str
     # - Sym
-    # - Cons
     # - Cond
     # - CondBranch
     # - CondElse

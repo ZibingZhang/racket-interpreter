@@ -56,9 +56,9 @@ class Boolean(Data):
 
     :Example:
         >>> Boolean(True)
-        #t
+        #true
         >>> Boolean(False)
-        #f
+        #false
     """
 
     def __init__(self, value: bool) -> None:
@@ -88,9 +88,9 @@ class Boolean(Data):
         """
         :Example:
             >>> str(Boolean(True))
-            '#t'
+            '#true'
             >>> str(Boolean(False))
-            '#f'
+            '#false'
         """
         return f'#{"true" if self.value else "false"}'
 
@@ -98,9 +98,9 @@ class Boolean(Data):
         """
         :Example:
             >>> repr(Boolean(True))
-            '#t'
+            '#true'
             >>> repr(Boolean(False))
-            '#f'
+            '#false'
         """
         return self.__str__()
 
@@ -130,7 +130,7 @@ class List(Data):
 
     :Example:
         >>> List([Integer(68), Boolean(False), Symbol("'sym")])
-        (list 68 #f 'sym)
+        (list 68 #false 'sym)
         >>> List([])
         '()
     """
@@ -164,7 +164,7 @@ class List(Data):
         """
         :Example:
             >>> str(List([Integer(68), Boolean(False), Symbol("'sym")]))
-            "(list 68 #f 'sym)"
+            "(list 68 #false 'sym)"
             >>> str(List([]))
             "'()"
         """
@@ -178,7 +178,7 @@ class List(Data):
         """
         :Example:
             >>> repr(List([Integer(68), Boolean(False), Symbol("'sym")]))
-            "(list 68 #f 'sym)"
+            "(list 68 #false 'sym)"
             >>> repr(List([]))
             "'()"
         """
@@ -198,7 +198,7 @@ class List(Data):
         """
         :Example:
             >>> List([Integer(68), Boolean(False), Symbol("'sym")])[1]
-            #f
+            #false
             >>> List([Integer(68), Boolean(False), Symbol("'sym")])[-1]
             'sym
             >>> List([])[2]

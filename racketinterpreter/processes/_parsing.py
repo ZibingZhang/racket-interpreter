@@ -135,24 +135,24 @@ class Parser:
         node = ast.Cond(token, exprs)
         return node
 
-    def cons(self) -> ast.Cons:
-        """LPAREN CONS expr{0,1} expr* RPAREN"""
-        # opening left bracket
-        left_paren_token = self.eat(t.TokenType.LPAREN)
-
-        self.eat(t.TokenType.ID)
-
-        exprs = []
-        while self.current_token.type is not t.TokenType.RPAREN:
-            expr = self.expr()
-            exprs.append(expr)
-
-        node = ast.Cons(left_paren_token, exprs)
-
-        # closing right bracket
-        self.eat(t.TokenType.RPAREN)
-
-        return node
+    # def cons(self) -> ast.Cons:
+    #     """LPAREN CONS expr{0,1} expr* RPAREN"""
+    #     # opening left bracket
+    #     left_paren_token = self.eat(t.TokenType.LPAREN)
+    #
+    #     self.eat(t.TokenType.ID)
+    #
+    #     exprs = []
+    #     while self.current_token.type is not t.TokenType.RPAREN:
+    #         expr = self.expr()
+    #         exprs.append(expr)
+    #
+    #     node = ast.Cons(left_paren_token, exprs)
+    #
+    #     # closing right bracket
+    #     self.eat(t.TokenType.RPAREN)
+    #
+    #     return node
 
     def list_abrv(self) -> ast.ProcCall:
         # TODO: update grammar
@@ -203,8 +203,7 @@ class Parser:
 
         return node
 
-    def expr(self) -> Union[ast.Bool, ast.Cond, ast.Cons, ast.Dec, ast.Int, ast.Name, ast.ProcCall, ast.Rat, ast.Str,
-                            ast.Sym]:
+    def expr(self) -> Union[ast.Bool, ast.Cond, ast.Dec, ast.Int, ast.Name, ast.ProcCall, ast.Rat, ast.Str, ast.Sym]:
         """
         expr: data
             | p-expr
@@ -216,8 +215,8 @@ class Parser:
             next_token = self.lexer.peek_next_token()
             if next_token.value == t.Keyword.COND.value:
                 node = self.cond()
-            elif next_token.value == t.Keyword.CONS.value:
-                node = self.cons()
+            # elif next_token.value == t.Keyword.CONS.value:
+            #     node = self.cons()
             else:
                 node = self.p_expr()
             return node
