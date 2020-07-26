@@ -1,4 +1,5 @@
 class Constants:
+
     SHOULD_LOG_SCOPE = True
     SHOULD_LOG_STACK = True
 
