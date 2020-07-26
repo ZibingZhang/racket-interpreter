@@ -1,5 +1,5 @@
 import unittest
-from racketinterpreter.classes.data import InexactNum, Integer, RationalNum
+from racketinterpreter.classes.data import Boolean, InexactNum, Integer, RationalNum
 from tests import util
 
 
@@ -29,17 +29,6 @@ class TestNumbers(unittest.TestCase):
             InexactNum(0.0),
             InexactNum(0.0),
             InexactNum(0.01)
-        ]
-        util.interpret_text(self, text, expected)
-
-    def test_builtin_add1(self):
-        text = '''
-            (add1 (- (/ 3 2)))
-            (add1 2)
-        '''
-        expected = [
-            RationalNum(-1, 2),
-            Integer(3)
         ]
         util.interpret_text(self, text, expected)
 
@@ -118,5 +107,167 @@ class TestNumbers(unittest.TestCase):
             Integer(1),
             Integer(1),
             InexactNum(1.0)
+        ]
+        util.interpret_text(self, text, expected)
+
+    def test_builtin_sym_less_than(self):
+        text = '''
+            (< 1)
+            (< 1 1)
+            (< 1 2)
+            (< 2 1)
+            (< 0 .1 1/2 1)
+            (< 1 1/2 .1 0)
+            (< 0 2 1)
+            (< 1 0 2)
+        '''
+        expected = [
+            Boolean(True),
+            Boolean(False),
+            Boolean(True),
+            Boolean(False),
+            Boolean(True),
+            Boolean(False),
+            Boolean(False),
+            Boolean(False)
+        ]
+        util.interpret_text(self, text, expected)
+
+    def test_builtin_sym_less_equal_than(self):
+        text = '''
+            (<= 1)
+            (<= 1 1)
+            (<= 1 2)
+            (<= 2 1)
+            (<= 0 .1 1/2 1)
+            (<= 1 1/2 .1 0)
+            (<= 0 2 1)
+            (<= 1 0 2)
+        '''
+        expected = [
+            Boolean(True),
+            Boolean(True),
+            Boolean(True),
+            Boolean(False),
+            Boolean(True),
+            Boolean(False),
+            Boolean(False),
+            Boolean(False)
+        ]
+        util.interpret_text(self, text, expected)
+
+    def test_builtin_sym_equal(self):
+        text = '''
+            (= 3)
+            (= 0 0. 0.0 .0 0/1 -0 (add1 (sub1 0)))
+        '''
+        expected = [
+            Boolean(True),
+            Boolean(True)
+        ]
+        util.interpret_text(self, text, expected)
+
+    def test_builtin_sym_greater_than(self):
+        text = '''
+            (> 1)
+            (> 1 1)
+            (> 1 2)
+            (> 2 1)
+            (> 0 .1 1/2 1)
+            (> 1 1/2 .1 0)
+            (> 0 2 1)
+            (> 1 0 2)
+        '''
+        expected = [
+            Boolean(True),
+            Boolean(False),
+            Boolean(False),
+            Boolean(True),
+            Boolean(False),
+            Boolean(True),
+            Boolean(False),
+            Boolean(False)
+        ]
+        util.interpret_text(self, text, expected)
+
+    def test_builtin_sym_greater_equal_than(self):
+        text = '''
+            (>= 1)
+            (>= 1 1)
+            (>= 1 2)
+            (>= 2 1)
+            (>= 0 .1 1/2 1)
+            (>= 1 1/2 .1 0)
+            (>= 0 2 1)
+            (>= 1 0 2)
+        '''
+        expected = [
+            Boolean(True),
+            Boolean(True),
+            Boolean(False),
+            Boolean(True),
+            Boolean(False),
+            Boolean(True),
+            Boolean(False),
+            Boolean(False)
+        ]
+        util.interpret_text(self, text, expected)
+
+    def test_builtin_abs(self):
+        text = '''
+            (abs 0)
+            (abs -1)
+            (abs 1)
+        '''
+        expected = [
+            Integer(0),
+            Integer(1),
+            Integer(1)
+        ]
+        util.interpret_text(self, text, expected)
+
+    def test_builtin_add1(self):
+        text = '''
+            (add1 -3/2)
+            (add1 2)
+        '''
+        expected = [
+            RationalNum(-1, 2),
+            Integer(3)
+        ]
+        util.interpret_text(self, text, expected)
+
+    def test_builtin_ceiling(self):
+        text = '''
+            (ceiling 2)
+            (ceiling -3/2)
+            (ceiling 3.001)
+        '''
+        expected = [
+            Integer(2),
+            Integer(-1),
+            Integer(4)
+        ]
+        util.interpret_text(self, text, expected)
+
+    def test_builtin_current_seconds(self):
+        text = '''
+            (< 1595784709 (current-seconds))
+        '''
+        expected = [
+            Boolean(True)
+        ]
+        util.interpret_text(self, text, expected)
+
+    def test_builtin_even_huh(self):
+        text = '''
+            (even? 0)
+            (even? -2)
+            (even? 3)
+        '''
+        expected = [
+            Boolean(True),
+            Boolean(True),
+            Boolean(False)
         ]
         util.interpret_text(self, text, expected)
