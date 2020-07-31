@@ -17,11 +17,10 @@ class TokenType(Enum):
     SYMBOL = 'SYMBOL'
     # misc
     ID = 'ID'
+    QUOTE = 'QUOTE'
     EOF = 'EOF'
     # invalid
     INVALID = 'INVALID'
-    # special
-    LIST_ABRV = 'LIST_ABRV'
 
     def __str__(self) -> str:
         return self.value

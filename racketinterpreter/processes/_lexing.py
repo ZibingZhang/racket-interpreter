@@ -4,9 +4,6 @@ from racketinterpreter.classes import tokens as t
 from racketinterpreter.processes._syntax import ParenthesesAnalyzer
 
 
-# I have come to the realization that an apostrophe should be treated as a quote in the lexer, and it really should be
-# up to the parser to create a symbol from that or whatever should be created following a quote. This, however, would
-# constitute a ton of changes so I'll leave it for later
 class Lexer:
 
     NON_ID_CHARS = ['"', "'", '`', '(', ')', '[', ']', '{', '}', '|', ';', '#']
@@ -62,7 +59,7 @@ class Lexer:
             if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
                 paren_analyzer.received_paren(token)
 
-    def _process_next_token(self, apostrophe_as_quote: bool = False) -> tp.Optional[t.Token]:
+    def _process_next_token(self) -> tp.Optional[t.Token]:
         token = None
 
         while self._current_char:
@@ -89,19 +86,15 @@ class Lexer:
                 break
 
             if self._current_char == "'":
-                if apostrophe_as_quote:
-                    raise err.LexerError(
-                        error_code=err.ErrorCode.FEATURE_NOT_IMPLEMENTED,
-                        token=t.Token(
-                            type=t.TokenType.INVALID,
-                            value="'",
-                            line_no=self._line_no,
-                            column=self._column
-                        )
-                    )
-                else:
-                    token = self._symbol()
-
+                token_type = t.TokenType.QUOTE
+                value = self._current_char
+                token = t.Token(
+                    type=token_type,
+                    value=value,
+                    line_no=self._line_no,
+                    column=self._column
+                )
+                self._advance()
                 break
 
             if self._current_char in ['(', '{', '[']:
@@ -331,108 +324,6 @@ class Lexer:
             line_no=line_no,
             column=column
         )
-
-    def _symbol(self) -> t.Token:
-        """Handles symbols."""
-        line_no = self._line_no
-        column = self._column
-
-        self._advance()
-
-        # skip whitespace / comments before the body of the symbol
-        try:
-            self._skip_whitespace_or_comments()
-        except err.ReachedEOF as e:
-            raise err.LexerError(
-                error_code=err.ErrorCode.RS_SYMBOL_FOUND_EOF,
-                token=t.Token(
-                    type=t.TokenType.INVALID,
-                    value="'",
-                    line_no=line_no,
-                    column=column
-                )
-            )
-
-        current_char = self._current_char
-        if (current_char.isdigit() or current_char == '.'
-                or (self._current_char == '-' and (self._peek().isdigit() or self._peek() == '.'))):
-            return self._number()
-        elif current_char not in self.NON_ID_CHARS:
-            token = self._identifier()
-            return t.Token(
-                type=t.TokenType.SYMBOL,
-                value=f"'{token.value}",
-                line_no=line_no,
-                column=column
-            )
-        elif current_char == '#':
-            return self._boolean()
-        elif current_char == '"':
-            return self._string()
-        elif current_char in ['(', '{', '[']:
-            list_abrv = t.Token(
-                type=t.TokenType.LIST_ABRV,
-                value="'",
-                line_no=line_no,
-                column=column
-            )
-
-            paren_analyzer = self.paren_analyzer
-            paren_stack = paren_analyzer.paren_stack
-            init_paren_stack_len = len(paren_stack)
-
-            last_left_paren = left_paren = self._process_next_token(apostrophe_as_quote=True)
-            list_abrv.children.append(left_paren)
-            self.paren_analyzer.received_paren(left_paren)
-
-            while len(paren_stack) > init_paren_stack_len:
-                token = self._process_next_token(apostrophe_as_quote=True)
-
-                if token is None:
-                    self.paren_analyzer.reached_eof(last_left_paren)
-
-                list_abrv.children.append(token)
-
-                if token.type in [t.TokenType.LPAREN, t.TokenType.RPAREN]:
-                    paren_analyzer.received_paren(token)
-
-                if token.type is t.TokenType.LPAREN:
-                    last_left_paren = token
-
-            return list_abrv
-        elif current_char in [')', '}', ']']:
-            raise err.LexerError(
-                error_code=err.ErrorCode.RS_UNEXPECTED,
-                token=t.Token(
-                    type=t.TokenType.INVALID,
-                    value=f"'{current_char}",
-                    line_no=line_no,
-                    column=column
-                ),
-                value=current_char
-            )
-        elif current_char == "'":
-            raise err.LexerError(
-                error_code=err.ErrorCode.FEATURE_NOT_IMPLEMENTED,
-                token=t.Token(
-                    type=t.TokenType.INVALID,
-                    value="''",
-                    line_no=line_no,
-                    column=column
-                )
-            )
-        elif current_char == '|':
-            raise err.LexerError(
-                error_code=err.ErrorCode.FEATURE_NOT_IMPLEMENTED,
-                token=t.Token(
-                    type=t.TokenType.INVALID,
-                    value="''",
-                    line_no=line_no,
-                    column=column
-                )
-            )
-        else:
-            raise err.IllegalStateError
 
     def _skip_whitespace_or_comments(self):
         while self._current_char:

@@ -14,7 +14,6 @@ class Parser:
         self.lexer = lexer
         # set current token to first taken from lexer
         self.current_token = self.lexer.get_next_token()
-        self.left_paren_stack = []
 
     def parse(self) -> ast.Program:
         node = self.program()
@@ -50,11 +49,15 @@ class Parser:
             current_token = self.current_token
             self.error_unexpected_token(token=current_token)
 
-    def data(self) -> Union[ast.Bool, ast.Dec, ast.Int, ast.Rat, ast.Str, ast.Sym]:
+    def data(self) -> Union[ast.Bool, ast.Dec, ast.Int, ast.ProcCall, ast.Rat, ast.Str, ast.Sym]:
         """
-        data: INTEGER
-            | BOOLEAN
+        data: BOOLEAN
+            | DECIMAL
+            | INTEGER
+            | LIST TODO: change ProcCall to List, enhance List
+            | RATIONAL
             | STRING
+            | SYMBOL
         """
         token = self.current_token
 
@@ -73,9 +76,72 @@ class Parser:
         elif token.type is t.TokenType.STRING:
             self.eat(t.TokenType.STRING)
             return ast.Str(token)
-        elif token.type is t.TokenType.SYMBOL:
-            self.eat(t.TokenType.SYMBOL)
-            return ast.Sym(token)
+        elif token.type is t.TokenType.QUOTE:
+            self.eat(t.TokenType.QUOTE)
+
+            next_token = self.current_token
+
+            if next_token.type is t.TokenType.LPAREN:
+                self.eat(t.TokenType.LPAREN)
+                exprs_stack = []
+
+                open_parens = 1
+                while open_parens > 0:
+                    curr_token = self.current_token
+                    if curr_token.type is t.TokenType.EOF:
+                        raise err.LexerError(
+                            error_code=err.ErrorCode.RS_SYMBOL_FOUND_EOF,
+                            token=t.Token(
+                                type=t.TokenType.INVALID,
+                                value="'",
+                                line_no=curr_token.line_no,
+                                column=curr_token.column
+                            )
+                        )
+
+                    elif curr_token.type is t.TokenType.LPAREN:
+                        exprs = [ast.Name(t.Token(
+                            type=t.TokenType.ID,
+                            value='list',
+                            line_no=curr_token.line_no,
+                            column=curr_token.column
+                        ))]
+                        exprs_stack.append(exprs)
+                        continue
+
+                    elif curr_token.type is t.TokenType.RPAREN:
+                        # TODO: fix this token
+                        expr = ast.ProcCall(None, exprs_stack[-1])
+                        exprs_stack = exprs_stack[:-1]
+                        exprs_stack[-1].append(expr)
+                        continue
+
+                    exprs = exprs_stack[-1]
+                    if token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER,
+                                      t.TokenType.RATIONAL, t.TokenType.STRING]:
+                        exprs.append(self.data())
+                    elif token.type is t.TokenType.ID:
+                        pass
+                    else:
+                        raise err.IllegalStateError
+
+                node = ast.ProcCall(token, exprs_stack[0])
+                return node
+            elif next_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER,
+                                     t.TokenType.RATIONAL, t.TokenType.STRING]:
+                return self.data()
+            elif next_token.type is t.TokenType.ID:
+                self.eat(t.TokenType.ID)
+                name_token = t.Token(
+                    type=t.TokenType.SYMBOL,
+                    value=next_token.value,
+                    line_no=token.line_no,
+                    column=token.column
+                )
+                return ast.Sym(name_token)
+            else:
+                raise err.IllegalStateError
+
         else:
             self.error_unexpected_token(token=token)
 
@@ -135,74 +201,6 @@ class Parser:
         node = ast.Cond(token, exprs)
         return node
 
-    # def cons(self) -> ast.Cons:
-    #     """LPAREN CONS expr{0,1} expr* RPAREN"""
-    #     # opening left bracket
-    #     left_paren_token = self.eat(t.TokenType.LPAREN)
-    #
-    #     self.eat(t.TokenType.ID)
-    #
-    #     exprs = []
-    #     while self.current_token.type is not t.TokenType.RPAREN:
-    #         expr = self.expr()
-    #         exprs.append(expr)
-    #
-    #     node = ast.Cons(left_paren_token, exprs)
-    #
-    #     # closing right bracket
-    #     self.eat(t.TokenType.RPAREN)
-    #
-    #     return node
-
-    def list_abrv(self) -> ast.ProcCall:
-        # TODO: update grammar
-        list_abrv_token = self.current_token
-        tokens = list_abrv_token.children
-
-        self.eat(t.TokenType.LIST_ABRV)
-
-        exprs_stack = []
-
-        for token in tokens:
-            if token.type is t.TokenType.LPAREN:
-                exprs = [ast.Name(t.Token(
-                    type=t.TokenType.ID,
-                    value='list',
-                    line_no=list_abrv_token.line_no,
-                    column=list_abrv_token.column
-                ))]
-                exprs_stack.append(exprs)
-                continue
-            elif token.type is t.TokenType.RPAREN:
-                if len(exprs_stack) > 1:
-                    top = exprs_stack[-1]
-                    expr = ast.ProcCall(list_abrv_token, top)
-
-                    exprs_stack = exprs_stack[:-1]
-                    exprs_stack[-1].append(expr)
-
-                continue
-
-            exprs = exprs_stack[-1]
-            if token.type is t.TokenType.BOOLEAN:
-                exprs.append(ast.Bool(token))
-            elif token.type is t.TokenType.DECIMAL:
-                exprs.append(ast.Dec(token))
-            elif token.type is t.TokenType.INTEGER:
-                exprs.append(ast.Int(token))
-            elif token.type is t.TokenType.RATIONAL:
-                exprs.append(ast.Rat(token))
-            elif token.type is t.TokenType.STRING:
-                exprs.append(ast.Str(token))
-            elif token.type is t.TokenType.SYMBOL:
-                exprs.append(ast.Sym(token))
-            else:
-                self.error_unexpected_token(token=token)
-
-        node = ast.ProcCall(list_abrv_token, exprs_stack[0])
-
-        return node
-
     def expr(self) -> Union[ast.Bool, ast.Cond, ast.Dec, ast.Int, ast.Name, ast.ProcCall, ast.Rat, ast.Str, ast.Sym]:
         """
         expr: data
@@ -224,8 +222,8 @@ class Parser:
             token = self.current_token
             self.eat(t.TokenType.ID)
             return ast.Name(token)
-        elif self.current_token.type is t.TokenType.LIST_ABRV:
-            return self.list_abrv()
+        # elif self.current_token.type is t.TokenType.LIST_ABRV:
+        #     return self.list_abrv()
         else:
             return self.data()
 
@@ -356,7 +354,7 @@ class Parser:
                  | expr
         """
         current_token = self.current_token
-        if current_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.LIST_ABRV,
+        if current_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.QUOTE,
                                   t.TokenType.RATIONAL, t.TokenType.STRING, t.TokenType.ID, t.TokenType.SYMBOL]:
             return self.expr()
         elif current_token.type is t.TokenType.LPAREN:

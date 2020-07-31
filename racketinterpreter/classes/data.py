@@ -3,7 +3,6 @@ import abc
 import fractions as f
 import functools
 import typing as tp
-from racketinterpreter import errors as err
 
 
 class DataType(type):
@@ -129,7 +128,7 @@ class List(Data):
     """A list.
 
     :Example:
-        >>> List([Integer(68), Boolean(False), Symbol("'sym")])
+        >>> List([Integer(68), Boolean(False), Symbol('sym')])
         (list 68 #false 'sym)
         >>> List([])
         '()
@@ -141,9 +140,9 @@ class List(Data):
     def __eq__(self, other: tp.Any) -> bool:
         """
         :Example:
-            >>> List([Integer(68), Symbol("'sym")]) == List([Integer(68), Boolean(False), Symbol("'sym")])
+            >>> List([Integer(68), Symbol('sym')]) == List([Integer(68), Boolean(False), Symbol('sym')])
             False
-            >>> List([Integer(68), Symbol("'sym")]) == List([Integer(68), Symbol("'sym")])
+            >>> List([Integer(68), Symbol('sym')]) == List([Integer(68), Symbol('sym')])
             True
             >>> List([]) == List([])
             True
@@ -153,7 +152,7 @@ class List(Data):
     def __hash__(self) -> int:
         """
         :Example:
-            >>> type(hash(List([Integer(68), Boolean(False), Symbol("'sym")])))
+            >>> type(hash(List([Integer(68), Boolean(False), Symbol('sym')])))
             <class 'int'>
             >>> hash(List([]))
             5740354900026072187
@@ -163,7 +162,7 @@ class List(Data):
     def __str__(self) -> str:
         """
         :Example:
-            >>> str(List([Integer(68), Boolean(False), Symbol("'sym")]))
+            >>> str(List([Integer(68), Boolean(False), Symbol('sym')]))
             "(list 68 #false 'sym)"
             >>> str(List([]))
             "'()"
@@ -177,7 +176,7 @@ class List(Data):
     def __repr__(self) -> str:
         """
         :Example:
-            >>> repr(List([Integer(68), Boolean(False), Symbol("'sym")]))
+            >>> repr(List([Integer(68), Boolean(False), Symbol('sym')]))
             "(list 68 #false 'sym)"
             >>> repr(List([]))
             "'()"
@@ -187,7 +186,7 @@ class List(Data):
     def __len__(self) -> int:
         """
         :Example:
-            >>> len(List([Integer(68), Boolean(False), Symbol("'sym")]))
+            >>> len(List([Integer(68), Boolean(False), Symbol('sym')]))
             3
             >>> len(List([]))
             0
@@ -197,9 +196,9 @@ class List(Data):
     def __getitem__(self, item: tp.Union[int, slice, Integer]) -> Data:
         """
         :Example:
-            >>> List([Integer(68), Boolean(False), Symbol("'sym")])[1]
+            >>> List([Integer(68), Boolean(False), Symbol('sym')])[1]
             #false
-            >>> List([Integer(68), Boolean(False), Symbol("'sym")])[-1]
+            >>> List([Integer(68), Boolean(False), Symbol('sym')])[-1]
             'sym
             >>> List([])[2]
             Traceback (most recent call last):
@@ -219,7 +218,7 @@ class List(Data):
     def __bool__(self) -> bool:
         """
         :Example:
-            >>> bool(List([Integer(68), Boolean(False), Symbol("'sym")]))
+            >>> bool(List([Integer(68), Boolean(False), Symbol('sym')]))
             True
             >>> bool(List([]))
             False
@@ -511,9 +510,9 @@ class Symbol(Data):
     """A symbol.
 
     :Example:
-        >>> Symbol("'anything")
+        >>> Symbol('anything')
         'anything
-        >>> Symbol("'can=be_a-symbo1")
+        >>> Symbol('can=be_a-symbo1')
         'can=be_a-symbo1
     """
 
@@ -525,9 +524,9 @@ class Symbol(Data):
         """A symbol.
 
         :Example:
-            >>> Symbol("'abc") == Symbol("'abc")
+            >>> Symbol('abc') == Symbol('abc')
             True
-            >>> Symbol("'Case Sensitive") == Symbol("'cAsE sEnsITiVe")
+            >>> Symbol('Case Sensitive') == Symbol('cAsE sEnsITiVe')
             False
         """
         return issubclass(type(other), Symbol) and self.value == other.value
@@ -535,7 +534,7 @@ class Symbol(Data):
     def __hash__(self) -> int:
         """
         :Example:
-            >>> type(hash(Symbol("'abc")))
+            >>> type(hash(Symbol('abc')))
             <class 'int'>
         """
         return hash(self.value)
@@ -543,15 +542,15 @@ class Symbol(Data):
     def __str__(self) -> str:
         """
         :Example:
-            >>> str(Symbol("'abc"))
+            >>> str(Symbol('abc'))
             "'abc"
         """
-        return f"{self.value}"
+        return f"'{self.value}"
 
     def __repr__(self) -> str:
         """
         :Example:
-            >>> repr(Symbol("'abc"))
+            >>> repr(Symbol('abc'))
             "'abc"
         """
         return self.__str__()

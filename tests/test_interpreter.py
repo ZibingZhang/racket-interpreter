@@ -1,5 +1,5 @@
 import unittest
-from racketinterpreter.classes.data import Boolean, List, InexactNum, Integer, Procedure, RationalNum, String, Symbol
+from racketinterpreter.classes.data import Boolean, List, InexactNum, Integer, Procedure, String, Symbol
 from tests import util
 
 
@@ -108,8 +108,8 @@ class TestInterpreter(unittest.TestCase):
             '#true
         '''
         expected = [
-            Symbol("'a"),
-            Symbol("'longer-symbol"),
+            Symbol('a'),
+            Symbol('longer-symbol'),
             String('this is a string'),
             Boolean(True)
         ]
