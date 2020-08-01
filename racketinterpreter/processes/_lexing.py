@@ -215,7 +215,7 @@ class Lexer:
             result += self._current_char
             self._advance()
 
-        return t.Token(t.TokenType.ID, result, line_no, column)
+        return t.Token(t.TokenType.NAME, result, line_no, column)
 
     def _number(self) -> t.Token:
         """Return a number token from a number consumed from the input (or an ID if not a valid number)."""
@@ -253,7 +253,7 @@ class Lexer:
                 denominator = int(denominator)
             except ValueError:
                 return t.Token(
-                    type=t.TokenType.ID,
+                    type=t.TokenType.NAME,
                     value=number,
                     line_no=line_no,
                     column=column
@@ -273,7 +273,7 @@ class Lexer:
                     number = float(number)
                 except ValueError:
                     return t.Token(
-                        type=t.TokenType.ID,
+                        type=t.TokenType.NAME,
                         value=number,
                         line_no=line_no,
                         column=column

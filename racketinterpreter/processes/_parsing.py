@@ -101,7 +101,7 @@ class Parser:
 
                     elif curr_token.type is t.TokenType.LPAREN:
                         exprs = [ast.Name(t.Token(
-                            type=t.TokenType.ID,
+                            type=t.TokenType.NAME,
                             value='list',
                             line_no=curr_token.line_no,
                             column=curr_token.column
@@ -120,7 +120,7 @@ class Parser:
                     if token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER,
                                       t.TokenType.RATIONAL, t.TokenType.STRING]:
                         exprs.append(self.data())
-                    elif token.type is t.TokenType.ID:
+                    elif token.type is t.TokenType.NAME:
                         pass
                     else:
                         raise err.IllegalStateError
@@ -130,8 +130,8 @@ class Parser:
             elif next_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER,
                                      t.TokenType.RATIONAL, t.TokenType.STRING]:
                 return self.data()
-            elif next_token.type is t.TokenType.ID:
-                self.eat(t.TokenType.ID)
+            elif next_token.type is t.TokenType.NAME:
+                self.eat(t.TokenType.NAME)
                 name_token = t.Token(
                     type=t.TokenType.SYMBOL,
                     value=next_token.value,
@@ -185,7 +185,7 @@ class Parser:
         # opening left bracket
         self.eat(t.TokenType.LPAREN)
 
-        token = self.eat(t.TokenType.ID)
+        token = self.eat(t.TokenType.NAME)
 
         exprs = []
         while self.current_token.type is not t.TokenType.RPAREN:
@@ -218,9 +218,9 @@ class Parser:
             else:
                 node = self.p_expr()
             return node
-        elif self.current_token.type is t.TokenType.ID:
+        elif self.current_token.type is t.TokenType.NAME:
             token = self.current_token
-            self.eat(t.TokenType.ID)
+            self.eat(t.TokenType.NAME)
             return ast.Name(token)
         # elif self.current_token.type is t.TokenType.LIST_ABRV:
         #     return self.list_abrv()
@@ -232,7 +232,7 @@ class Parser:
         # opening left bracket
         left_paren_token = self.eat(t.TokenType.LPAREN)
 
-        self.eat(t.TokenType.ID)
+        self.eat(t.TokenType.NAME)
 
         exprs = []
         while self.current_token.type is not t.TokenType.RPAREN:
@@ -248,7 +248,7 @@ class Parser:
         """procedure_assignment: LPAREN DEFINE LPAREN expr* RPAREN expr* RPAREN"""
         # opening left bracket
         left_paren_token = self.eat(t.TokenType.LPAREN)
-        self.eat(t.TokenType.ID)
+        self.eat(t.TokenType.NAME)
 
         self.eat(t.TokenType.LPAREN)
 
@@ -278,7 +278,7 @@ class Parser:
         """structure_assignment: LPAREN DEFINE_STRUCT LPAREN expr* RPAREN RPAREN"""
         # opening left bracket
         left_paren_token = self.eat(t.TokenType.LPAREN)
-        self.eat(t.TokenType.ID)
+        self.eat(t.TokenType.NAME)
 
         node = ast.StructAssign(left_paren_token)
 
@@ -335,7 +335,7 @@ class Parser:
         # opening left bracket
         left_paren_token = self.eat(t.TokenType.LPAREN)
 
-        self.eat(t.TokenType.ID)
+        self.eat(t.TokenType.NAME)
 
         exprs = []
         while self.current_token.type is not t.TokenType.RPAREN:
@@ -355,15 +355,15 @@ class Parser:
         """
         current_token = self.current_token
         if current_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER, t.TokenType.QUOTE,
-                                  t.TokenType.RATIONAL, t.TokenType.STRING, t.TokenType.ID, t.TokenType.SYMBOL]:
+                                  t.TokenType.RATIONAL, t.TokenType.STRING, t.TokenType.NAME, t.TokenType.SYMBOL]:
             return self.expr()
         elif current_token.type is t.TokenType.LPAREN:
             next_token = self.lexer.peek_next_token()
-            if next_token.type is t.TokenType.ID \
+            if next_token.type is t.TokenType.NAME \
                     and next_token.value in [t.Keyword.DEFINE.value, t.Keyword.DEFINE_STRUCT.value]:
                 node = self.assignment_statement()
                 return node
-            elif next_token.type is t.TokenType.ID \
+            elif next_token.type is t.TokenType.NAME \
                     and next_token.value == t.Keyword.CHECK_EXPECT.value:
                 node = self.check_expect()
                 return node

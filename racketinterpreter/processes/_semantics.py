@@ -189,7 +189,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
         expr = exprs[1]
 
         predicate_token = predicate.token
-        if predicate_token.type is t.TokenType.ID and predicate_token.value == t.Keyword.ELSE.value:
+        if predicate_token.type is t.TokenType.NAME and predicate_token.value == t.Keyword.ELSE.value:
             raise err.SemanticError(
                 error_code=err.ErrorCode.C_ELSE_NOT_LAST_CLAUSE,
                 token=node.token
@@ -298,7 +298,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
     def visit_FormalParam(self, node: ast.FormalParam) -> None:
         token = node.token
 
-        if token.type is not t.TokenType.ID or token.value in t.KEYWORDS:
+        if token.type is not t.TokenType.NAME or token.value in t.KEYWORDS:
             if node.param_for is ast.FormalParam.ParamFor.PROC_ASSIGN:
                 error_code = err.ErrorCode.D_P_EXPECTED_A_VARIABLE
             elif node.param_for is ast.FormalParam.ParamFor.STRUCT_ASSIGN:
@@ -352,7 +352,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
             op = exprs[0]
             proc_token = op.token
 
-        if proc_token is None or proc_token.type != t.TokenType.ID:
+        if proc_token is None or proc_token.type != t.TokenType.NAME:
             raise err.SemanticError(
                 error_code=err.ErrorCode.FC_EXPECTED_A_FUNCTION,
                 token=node.token,
@@ -408,7 +408,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
         struct_name_token = struct_name_ast.token
 
-        if struct_name_token.type is not t.TokenType.ID \
+        if struct_name_token.type is not t.TokenType.NAME \
                 or struct_name_token.value in t.KEYWORDS:
             raise err.SemanticError(
                 error_code=err.ErrorCode.DS_EXPECTED_STRUCTURE_NAME,
@@ -607,7 +607,7 @@ class _Preprocessor(ast.ASTVisitor):
 
         proc_name_expr = node.name_expr
         proc_name_token = proc_name_expr.token if proc_name_expr else None
-        if proc_name_token is None or proc_name_token.type is not t.TokenType.ID \
+        if proc_name_token is None or proc_name_token.type is not t.TokenType.NAME \
                 or proc_name_token.value in t.KEYWORDS:
             raise err.SemanticError(
                 error_code=err.ErrorCode.D_P_EXPECTED_FUNCTION_NAME,

@@ -16,7 +16,7 @@ class TokenType(Enum):
     STRING = 'STRING'
     SYMBOL = 'SYMBOL'
     # misc
-    ID = 'ID'
+    NAME = 'NAME'
     QUOTE = 'QUOTE'
     EOF = 'EOF'
     # invalid
@@ -35,8 +35,8 @@ class Token:
     :ivar: int column: The column of the tokens first character.
 
     :Example:
-        >>> Token(TokenType.ID, 'define', 5, 37)
-        <Token type:ID  value:define  position:5:37>
+        >>> Token(TokenType.NAME, 'define', 5, 37)
+        <Token type:NAME  value:define  position:5:37>
         >>> Token(TokenType.SYMBOL, "'sym", 3, 69)
         <Token type:SYMBOL  value:'sym  position:3:69>
     """
@@ -77,7 +77,7 @@ class Token:
 
     @staticmethod
     def create_proc(name: str, line_no: int = None, column: int = None) -> Token:
-        return Token(TokenType.ID, name, line_no, column)
+        return Token(TokenType.NAME, name, line_no, column)
 
 
 class Keyword(Enum):

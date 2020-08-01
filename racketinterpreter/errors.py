@@ -225,7 +225,7 @@ class Error(Exception):
                     found = 'found a number'
                 elif expr_token.type is t.TokenType.STRING:
                     found = 'found a string'
-                elif expr_token.type is t.TokenType.ID:
+                elif expr_token.type is t.TokenType.NAME:
                     found = 'found something else'
                 else:
                     raise IllegalStateError
@@ -416,7 +416,7 @@ class Error(Exception):
             proc_token = kwargs.get('proc_token')
             if proc_token is None:
                 found_type = None
-            elif proc_token.type is t.TokenType.ID:
+            elif proc_token.type is t.TokenType.NAME:
                 found_data = kwargs.get('found_data')
                 found_data_type = type(found_data)
                 if issubclass(found_data_type, d.Boolean):
