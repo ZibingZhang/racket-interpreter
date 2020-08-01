@@ -1,16 +1,15 @@
 from __future__ import annotations
 import typing as tp
 import unittest
+from racketinterpreter.errors import ErrorCode as EC
+from racketinterpreter.errors import LexerError
 from racketinterpreter.classes.tokens import TokenType as TT
 from racketinterpreter.processes import Lexer
-
-if tp.TYPE_CHECKING:
-    from racketinterpreter.classes import tokens as t
 
 
 class TestLexer(unittest.TestCase):
 
-    def assert_token_types(self, text: str, token_types: tp.List[t.TokenType]) -> None:
+    def assert_token_types(self, text: str, token_types: tp.List[TT])-> None:
         lexer = Lexer(text)
         lexer.process()
         tokens = []
@@ -28,16 +27,25 @@ class TestLexer(unittest.TestCase):
 
         self.assertEqual(TT.EOF, tokens[-1].type)
 
+    def assert_lexer_error(self, text: str, error_code: EC) -> None:
+        lexer = Lexer(text)
+        try:
+            lexer.process()
+        except LexerError as e:
+            self.assertEqual(error_code, e.error_code)
+
     def test_booleans(self):
         text = '''
             #t #T #true
             #f #F #false
         '''
-        token_types = [
-            TT.BOOLEAN, TT.BOOLEAN, TT.BOOLEAN,
-            TT.BOOLEAN, TT.BOOLEAN, TT.BOOLEAN
-        ]
+        token_types = 6 * [TT.BOOLEAN]
         self.assert_token_types(text, token_types)
+
+    def test_incorrect_booleans(self):
+        self.assert_lexer_error('#a', EC.RS_BAD_SYNTAX)
+        self.assert_lexer_error("'#a", EC.RS_BAD_SYNTAX)
+        self.assert_lexer_error('#True', EC.RS_BAD_SYNTAX)
 
     def test_numbers(self):
         text = '''
@@ -45,9 +53,19 @@ class TestLexer(unittest.TestCase):
             .1 1. -.1 -1. 1.1
             1/1 -1/1
         '''
-        token_types = [
-            TT.INTEGER, TT.INTEGER, TT.INTEGER,
-            TT.DECIMAL, TT.DECIMAL, TT.DECIMAL, TT.DECIMAL, TT.DECIMAL,
-            TT.RATIONAL, TT.RATIONAL
-        ]
+        token_types = 3*[TT.INTEGER] + 5*[TT.DECIMAL] + 2*[TT.RATIONAL]
+        self.assert_token_types(text, token_types)
+
+    def test_names_that_almost_are_numbers(self):
+        text = '''
+            --1 -1.-1 .-1 1/-1
+        '''
+        token_types = 4 * [TT.NAME]
+        self.assert_token_types(text, token_types)
+
+    def test_strings(self):
+        text = '''
+            "Hello World!"
+        '''
+        token_types = 1 * [TT.STRING]
         self.assert_token_types(text, token_types)

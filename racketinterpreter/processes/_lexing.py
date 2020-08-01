@@ -251,6 +251,9 @@ class Lexer:
             try:
                 numerator = int(numerator)
                 denominator = int(denominator)
+
+                if denominator < 0:
+                    raise ValueError
             except ValueError:
                 return t.Token(
                     type=t.TokenType.NAME,
