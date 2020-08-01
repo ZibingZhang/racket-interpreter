@@ -210,8 +210,8 @@ class Lexer:
         column = self._column
 
         result = initial
-        while self._current_char is not None and self._current_char not in self.NON_ID_CHARS \
-                and not self._current_char.isspace():
+        while (self._current_char is not None and self._current_char not in self.NON_ID_CHARS
+                and not self._current_char.isspace()):
             result += self._current_char
             self._advance()
 

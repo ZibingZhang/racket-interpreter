@@ -69,8 +69,8 @@ class Token:
         return self._children
 
     def __str__(self) -> str:
-        return f'<Token type:{self.type}  value:{self.value}  position:{self.line_no}:{self.column}' \
-               f'{"" if len(self.children) == 0 else f"  children:{self.children}"}>'
+        children = "" if len(self.children) == 0 else f"  children:{self.children}"
+        return f'<Token type:{self.type}  value:{self.value}  position:{self.line_no}:{self.column}{children}>'
 
     def __repr__(self) -> str:
         return self.__str__()

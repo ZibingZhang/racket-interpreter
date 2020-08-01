@@ -222,8 +222,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
                 )
             )
 
-        if exprs_len == 0 or type(exprs[0]) is not ast.Name \
-                or exprs[0].value in t.KEYWORDS:
+        if exprs_len == 0 or type(exprs[0]) is not ast.Name or exprs[0].value in t.KEYWORDS:
             next_token = exprs[0].token if exprs_len > 0 else None
             raise err.SemanticError(
                 error_code=err.ErrorCode.D_EXPECTED_A_NAME,
@@ -408,8 +407,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
 
         struct_name_token = struct_name_ast.token
 
-        if struct_name_token.type is not t.TokenType.NAME \
-                or struct_name_token.value in t.KEYWORDS:
+        if struct_name_token.type is not t.TokenType.NAME or struct_name_token.value in t.KEYWORDS:
             raise err.SemanticError(
                 error_code=err.ErrorCode.DS_EXPECTED_STRUCTURE_NAME,
                 token=node.token,
@@ -508,8 +506,7 @@ class SemanticAnalyzer(ast.ASTVisitor):
         node.actual = exprs[0]
         node.expected = exprs[1]
 
-    def get_proc_symbol_and_actual_params(self, node: ast.ProcCall) \
-            -> Tuple[sym.ProcSymbol, List[ast.Expr]]:
+    def get_proc_symbol_and_actual_params(self, node: ast.ProcCall) -> Tuple[sym.ProcSymbol, List[ast.Expr]]:
         proc_name = node.proc_name
         proc_symbol = self.current_scope.lookup(proc_name)
 
@@ -607,8 +604,8 @@ class _Preprocessor(ast.ASTVisitor):
 
         proc_name_expr = node.name_expr
         proc_name_token = proc_name_expr.token if proc_name_expr else None
-        if proc_name_token is None or proc_name_token.type is not t.TokenType.NAME \
-                or proc_name_token.value in t.KEYWORDS:
+        if (proc_name_token is None or proc_name_token.type is not t.TokenType.NAME
+                or proc_name_token.value in t.KEYWORDS):
             raise err.SemanticError(
                 error_code=err.ErrorCode.D_P_EXPECTED_FUNCTION_NAME,
                 token=node.token,

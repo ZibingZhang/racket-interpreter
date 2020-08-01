@@ -359,12 +359,11 @@ class Parser:
             return self.expr()
         elif current_token.type is t.TokenType.LPAREN:
             next_token = self.lexer.peek_next_token()
-            if next_token.type is t.TokenType.NAME \
-                    and next_token.value in [t.Keyword.DEFINE.value, t.Keyword.DEFINE_STRUCT.value]:
+            if (next_token.type is t.TokenType.NAME
+                    and next_token.value in [t.Keyword.DEFINE.value, t.Keyword.DEFINE_STRUCT.value]):
                 node = self.assignment_statement()
                 return node
-            elif next_token.type is t.TokenType.NAME \
-                    and next_token.value == t.Keyword.CHECK_EXPECT.value:
+            elif next_token.type is t.TokenType.NAME and next_token.value == t.Keyword.CHECK_EXPECT.value:
                 node = self.check_expect()
                 return node
             else:
