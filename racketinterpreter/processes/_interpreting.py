@@ -1,9 +1,9 @@
 from __future__ import annotations
 import fractions as f
 from typing import TYPE_CHECKING, List, Tuple, Union
-from racketinterpreter import errors as err
 from racketinterpreter.classes import ast
 from racketinterpreter.classes import data as d
+from racketinterpreter.classes import errors as err
 from racketinterpreter.classes import stack as stack
 from racketinterpreter.classes import tokens as t
 from racketinterpreter.constants import C

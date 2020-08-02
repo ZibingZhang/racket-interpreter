@@ -1,9 +1,9 @@
 from __future__ import annotations
 from enum import Enum
 from typing import TYPE_CHECKING, Tuple, List, Any
-from racketinterpreter import errors as err
 from racketinterpreter.classes import ast
 from racketinterpreter.classes import data as d
+from racketinterpreter.classes import errors as err
 from racketinterpreter.classes import symbols as sym
 from racketinterpreter.classes import tokens as t
 from racketinterpreter.constants import C

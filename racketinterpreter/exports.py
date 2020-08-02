@@ -1,5 +1,5 @@
 import typing as tp
-from racketinterpreter.errors import Error
+from racketinterpreter.classes.errors import Error
 from racketinterpreter.util import Util
 
 

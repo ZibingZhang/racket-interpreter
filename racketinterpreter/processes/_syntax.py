@@ -1,5 +1,5 @@
 from __future__ import annotations
-from racketinterpreter import errors as err
+from racketinterpreter.classes import errors as err
 from racketinterpreter.classes import tokens as t
 
 

@@ -1,8 +1,8 @@
 from __future__ import annotations
 import typing as tp
 import unittest
-from racketinterpreter.errors import ErrorCode as EC
-from racketinterpreter.errors import LexerError
+from racketinterpreter.classes.errors import ErrorCode as EC
+from racketinterpreter.classes.errors import LexerError
 from racketinterpreter.classes.tokens import TokenType as TT
 from racketinterpreter.processes import Lexer
 

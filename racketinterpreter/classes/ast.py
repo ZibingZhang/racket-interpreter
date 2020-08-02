@@ -2,7 +2,7 @@ from __future__ import annotations
 import abc
 from enum import Enum
 import typing as tp
-from racketinterpreter import errors as err
+from racketinterpreter.classes import errors as err
 
 if tp.TYPE_CHECKING:
     import racketinterpreter.classes.data as d

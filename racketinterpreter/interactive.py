@@ -5,7 +5,7 @@ if __name__ == '__main__':
     sys.path.append(os.getcwd())
 
     from racketinterpreter import constants
-    from racketinterpreter import errors as err
+    from racketinterpreter.classes import errors as err
     from racketinterpreter.classes import stack
     from racketinterpreter.processes import Interpreter
     from racketinterpreter.processes import Lexer

@@ -2,12 +2,11 @@ from __future__ import annotations
 from enum import Enum
 import typing as tp
 from racketinterpreter.classes import data as d
+from racketinterpreter.classes import errors as err
 from racketinterpreter.constants import C
-from racketinterpreter.errors import IllegalStateError, TailEndRecursion
 from racketinterpreter.predefined import BUILT_IN_CONSTANTS, BUILT_IN_PROCS
 
 if tp.TYPE_CHECKING:
-    from racketinterpreter.classes.data import Data
     from racketinterpreter.processes import Interpreter
 
 
@@ -46,7 +45,7 @@ class ActivationRecord:
         if nesting_level == 0:
             self.init_builtins()
 
-    def __setitem__(self, name: str, value: Data) -> None:
+    def __setitem__(self, name: str, value: d.Data) -> None:
         """Define a name within this record.
 
         :param str name: The name to be defined.
@@ -55,7 +54,7 @@ class ActivationRecord:
         """
         self.members[name] = value
 
-    def __getitem__(self, name: str) -> Data:
+    def __getitem__(self, name: str) -> d.Data:
         """Retrieve the value assigned to a name within this record.
 
         :param str name: The name whose value to return.
@@ -98,7 +97,7 @@ class ActivationRecord:
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if exc_type is not None and exc_type is not TailEndRecursion:
+        if exc_type is not None and exc_type is not err.TailEndRecursion:
             return
 
         if self.interpreter:
@@ -117,7 +116,7 @@ class ActivationRecord:
         for proc in BUILT_IN_PROCS:
             self[proc] = d.Procedure(proc)
 
-    def get(self, key) -> tp.Optional[Data]:
+    def get(self, key) -> tp.Optional[d.Data]:
         return self.members.get(key)
 
     @staticmethod
@@ -150,7 +149,7 @@ class CallStack:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def get(self, name: str) -> Data:
+    def get(self, name: str) -> d.Data:
         """Retrieves the value assigned to the name.
 
         The activation records are checked starting with the last one. Once an activation is found that contains a
@@ -165,7 +164,9 @@ class CallStack:
             value = ar.get(name)
             if value is not None:
                 return value
-        raise IllegalStateError('Accessing undefined variables should have raised an error during semantic analysis.')
+        raise err.IllegalStateError(
+            'Accessing undefined variables should have raised an error during semantic analysis.'
+        )
 
     def push(self, ar: ActivationRecord) -> None:
         """Push an activation record onto the stack.

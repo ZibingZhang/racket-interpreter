@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Union
-from racketinterpreter import errors as err
 from racketinterpreter.classes import ast
+from racketinterpreter.classes import errors as err
 from racketinterpreter.classes import tokens as t
 
 if TYPE_CHECKING:

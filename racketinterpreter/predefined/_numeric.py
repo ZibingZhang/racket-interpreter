@@ -2,7 +2,7 @@ from __future__ import annotations
 import math
 import time
 import typing as tp
-from racketinterpreter import errors as err
+from racketinterpreter.classes import errors as err
 from racketinterpreter.classes import data as d
 from racketinterpreter.predefined._base import BuiltInProc
 

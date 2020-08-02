@@ -1,6 +1,6 @@
 from __future__ import annotations
 import unittest
-from racketinterpreter.errors import Error, ErrorCode
+from racketinterpreter.classes.errors import Error, ErrorCode
 from racketinterpreter.util import Util
 
 

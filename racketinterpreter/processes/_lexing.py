@@ -1,5 +1,5 @@
 import typing as tp
-from racketinterpreter import errors as err
+from racketinterpreter.classes import errors as err
 from racketinterpreter.classes import tokens as t
 from racketinterpreter.processes._syntax import ParenthesesAnalyzer
 
