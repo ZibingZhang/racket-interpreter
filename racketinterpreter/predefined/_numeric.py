@@ -24,7 +24,7 @@ class SymMultiply(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Number):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Number,
                     given=param_value
@@ -56,7 +56,7 @@ class SymPlus(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Number):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Number,
                     given=param_value
@@ -83,7 +83,7 @@ class SymMinus(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Number):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Number,
                     given=param_value
@@ -113,16 +113,18 @@ class SymDivide(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Number):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Number,
                     given=param_value
                 )
 
-            if idx == 0 and len(actual_params) == 1 and param_value == d.Integer(0):
-                raise err.EvaluateBuiltinProcedureError(
-                    error_code=err.ErrorCode.DIVISION_BY_ZERO
-                )
+            if param_value == d.Integer(0):
+                if idx > 0 or (idx == 0 and len(actual_params) == 1):
+                    raise err.BuiltinProcError(
+                        error_code=err.ErrorCode.DIVISION_BY_ZERO,
+                        token=None
+                    )
 
             evaluated_params.append(param_value)
 
@@ -148,7 +150,7 @@ class SymLessThan(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.RealNum):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.RealNum,
                     given=param_value
@@ -182,7 +184,7 @@ class SymLessEqualThan(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.RealNum):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.RealNum,
                     given=param_value
@@ -216,7 +218,7 @@ class SymEqual(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Number):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Number,
                     given=param_value
@@ -248,7 +250,7 @@ class SymGreaterThan(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.RealNum):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.RealNum,
                     given=param_value
@@ -282,7 +284,7 @@ class SymGreaterEqualThan(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.RealNum):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.RealNum,
                     given=param_value
@@ -312,7 +314,7 @@ class Abs(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.RealNum):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.RealNum,
                 given=param_value
             )
@@ -329,7 +331,7 @@ class Add1(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Number):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Number,
                 given=param_value
             )
@@ -346,7 +348,7 @@ class Ceiling(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.RealNum):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.RealNum,
                 given=param_value
             )
@@ -374,7 +376,7 @@ class EvenHuh(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Integer):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Integer,
                 given=param_value
             )
@@ -391,7 +393,7 @@ class ExactToInexact(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Number):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Number,
                 given=param_value
             )
@@ -408,7 +410,7 @@ class ExactHuh(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Number):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Number,
                 given=param_value
             )
@@ -425,7 +427,7 @@ class Exp(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Number):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Number,
                 given=param_value
             )
@@ -442,7 +444,7 @@ class Floor(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.RealNum):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.RealNum,
                 given=param_value
             )
@@ -464,7 +466,7 @@ class Gcd(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Integer):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Integer,
                     given=param_value
@@ -506,7 +508,7 @@ class Lcm(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Integer):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Integer,
                     given=param_value
@@ -532,7 +534,7 @@ class Log(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Number):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Number,
                 given=param_value
             )
@@ -553,7 +555,7 @@ class Max(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.RealNum):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.RealNum,
                     given=param_value
@@ -582,7 +584,7 @@ class Min(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.RealNum):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.RealNum,
                     given=param_value
@@ -612,7 +614,7 @@ class Modulo(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Integer):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Integer,
                     given=param_value
@@ -636,7 +638,7 @@ class NegativeHuh(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.RealNum):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.RealNum,
                 given=param_value
             )
@@ -653,7 +655,7 @@ class NumberToString(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Number):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Number,
                 given=param_value
             )
@@ -681,7 +683,7 @@ class OddHuh(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Integer):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Integer,
                 given=param_value
             )
@@ -698,7 +700,7 @@ class PositiveHuh(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.RealNum):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.RealNum,
                 given=param_value
             )
@@ -737,7 +739,7 @@ class Round(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.RealNum):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.RealNum,
                 given=param_value
             )
@@ -754,7 +756,7 @@ class Sgn(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.RealNum):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.RealNum,
                 given=param_value
             )
@@ -777,7 +779,7 @@ class Sqr(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Number):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Number,
                 given=param_value
             )
@@ -795,7 +797,7 @@ class Sqrt(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Number):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Number,
                 given=param_value
             )
@@ -817,7 +819,7 @@ class Sub1(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Number):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Number,
                 given=param_value
             )
@@ -834,7 +836,7 @@ class ZeroHuh(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Number):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Number,
                 given=param_value
             )

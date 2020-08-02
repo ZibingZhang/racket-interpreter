@@ -12,7 +12,9 @@ from racketinterpreter.classes import tokens as t
 
 class ErrorCode(Enum):
 
-    FEATURE_NOT_IMPLEMENTED = Template("what you're trying to do is (probably) valid, it's just not supported yet")
+    FEATURE_NOT_IMPLEMENTED = Template("what you're trying to could be valid, if so then it's just not supported yet")
+
+    CUSTOM_ERROR_MESSAGE = None
 
     BUILTIN_OR_IMPORTED_NAME = Template('$name: this name was defined in the language or a required library and cannot be re-defined')
     DIVISION_BY_ZERO = Template('/: division by zero')
@@ -30,8 +32,6 @@ class ErrorCode(Enum):
     C_QUESTION_RESULT_NOT_BOOLEAN = Template('cond: question result is not true or false: $result')
 
     CE_INCORRECT_ARGUMENT_COUNT = Template('check-expect: $expects, but $found')
-
-    CL_EXPECTED_SECOND_ARGUMENT_LIST = Template('cons: second argument must be a list, but received $arg1 and $arg2')
 
     D_DUPLICATE_VARIABLE = Template('define: found a variable that is used more than once: $name')
     D_EXPECTED_A_NAME = Template("define: expected a variable name, or a function name and its variables (in parentheses), but $found")
@@ -82,6 +82,9 @@ class Error(Exception):
 
         if error_code is ErrorCode.FEATURE_NOT_IMPLEMENTED:
             error_message = template.safe_substitute()
+
+        elif error_code is ErrorCode.CUSTOM_ERROR_MESSAGE:
+            error_message = kwargs.get('message')
 
         elif error_code is ErrorCode.BUILTIN_OR_IMPORTED_NAME:
             name = token.value
@@ -149,6 +152,8 @@ class Error(Exception):
                 elif min_length >= 2 and max_length is None:
                     expects += f'a list with {min_length} or more items'
                     separator = ';'
+                else:
+                    raise IllegalStateError
 
             else:
                 if expected.__class__ is d.StructDataType:
@@ -247,12 +252,6 @@ class Error(Exception):
             found = f'but found {"only" if received == 1 else ""} 1'
 
             error_message = template.safe_substitute(expects=expects, found=found)
-
-        elif error_code is ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST:
-            arg1 = kwargs.get('arg1')
-            arg2 = kwargs.get('arg2')
-
-            error_message = template.safe_substitute(arg1=str(arg1), arg2=str(arg2))
 
         elif error_code is ErrorCode.D_DUPLICATE_VARIABLE:
             name = kwargs.get('name')
@@ -496,7 +495,7 @@ class Error(Exception):
         self.message += error_message
 
 
-class PreLexerError(Error):
+class ParenError(Error):
     ...
 
 
@@ -516,15 +515,22 @@ class InterpreterError(Error):
     ...
 
 
-class BuiltinProcedureError(Error):
-    ...
+class BuiltinProcError(Error):
+
+    def __init__(self, token: tp.Optional[t.Token], **kwargs):
+        if token is None:
+            self.kwargs = kwargs
+        else:
+            super().__init__(token=token, **kwargs)
+
+    def set_token(self, token: t.Token) -> None:
+        super().__init__(token=token, **self.kwargs)
 
 
-class EvaluateBuiltinProcedureError(TypeError):
+class ArgumentTypeError(BuiltinProcError):
 
     def __init__(
             self,
-            error_code: ErrorCode = ErrorCode.INCORRECT_ARGUMENT_TYPE,
             expected: tp.Optional[d.DataType] = None,
             given: tp.Optional[d.Data] = None,
             idx: tp.Optional[int] = None,
@@ -533,8 +539,13 @@ class EvaluateBuiltinProcedureError(TypeError):
         self.expected = expected
         self.given = given
         self.idx = idx
-        self.error_code = error_code
         self.kwargs = kwargs
+
+
+class CustomBuiltinProcError(BuiltinProcError):
+
+    def __init__(self, message: str):
+        self.message = message
 
 
 class IllegalStateError(RuntimeError):

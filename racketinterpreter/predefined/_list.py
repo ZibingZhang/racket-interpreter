@@ -14,7 +14,7 @@ def _interpret_nth(interpreter: Interpreter, actual_params: tp.List[ast.AST], id
     param_type = type(param_value)
 
     if not issubclass(param_type, d.List) or len(param_value) <= idx:
-        raise err.EvaluateBuiltinProcedureError(
+        raise err.ArgumentTypeError(
             expected=d.List,
             given=param_value,
             min_length=idx+1,
@@ -38,7 +38,7 @@ class Append(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.List):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.List,
                     given=param_value
@@ -68,10 +68,9 @@ class Cons(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.List):
-            raise err.EvaluateBuiltinProcedureError(
-                error_code=err.ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST,
-                arg1=first,
-                arg2=rest
+            message = f'cons: second argument must be a list, but received {str(first)} and {str(rest)}'
+            raise err.CustomBuiltinProcError(
+                message=message
             )
 
         result = d.List([first] + list(rest))
@@ -138,7 +137,7 @@ class Length(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.List):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.List,
                 given=param_value
             )
@@ -187,7 +186,7 @@ class MakeList(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Integer) or param_value < d.Integer(0):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.NaturalNum,
                 given=param_value
             )
@@ -211,7 +210,7 @@ class Member(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.List):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.List,
                 given=param_value
             )
@@ -228,7 +227,7 @@ class Rest(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.List) or len(param_value) == 0:
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.List,
                 given=param_value,
                 min_length=1,
@@ -247,7 +246,7 @@ class Reverse(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.List):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.List,
                 given=param_value
             )

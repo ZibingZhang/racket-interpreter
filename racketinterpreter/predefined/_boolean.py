@@ -24,7 +24,7 @@ class And(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Boolean):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Boolean,
                     given=param_value
@@ -45,7 +45,7 @@ class BooleanToString(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Boolean):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Boolean,
                 given=param_value
             )
@@ -66,7 +66,7 @@ class BooleanSymEqualHuh(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Boolean):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Boolean,
                     given=param_value
@@ -116,7 +116,7 @@ class Not(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Boolean):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Boolean,
                 given=param_value
             )
@@ -139,7 +139,7 @@ class Or(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Boolean):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Boolean,
                     given=param_value

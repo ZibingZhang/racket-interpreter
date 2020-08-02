@@ -254,6 +254,7 @@ class Lexer:
 
                 if denominator < 0:
                     raise ValueError
+
             except ValueError:
                 return t.Token(
                     type=t.TokenType.NAME,
@@ -262,12 +263,20 @@ class Lexer:
                     column=column
                 )
             else:
-                return t.Token(
+                token = t.Token(
                     type=t.TokenType.RATIONAL,
                     value=(numerator, denominator),
                     line_no=line_no,
                     column=column
                 )
+
+                if denominator == 0:
+                    raise err.LexerError(
+                        error_code=err.ErrorCode.DIVISION_BY_ZERO,
+                        token=token
+                    )
+
+                return token
         else:
             try:
                 number = int(number)

@@ -18,7 +18,7 @@ class StringAlphabeticHuh(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.String):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.String,
                 given=param_value
             )
@@ -43,7 +43,7 @@ class StringAppend(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.String):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.String,
                     given=param_value
@@ -72,7 +72,7 @@ class StringContainsHuh(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.String):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.String,
                     given=param_value
@@ -95,7 +95,7 @@ class StringCopy(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.String):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.String,
                 given=param_value
             )
@@ -111,7 +111,7 @@ class StringDowncase(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.String):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.String,
                 given=param_value
             )
@@ -130,7 +130,7 @@ class StringIth(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.String):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.String,
                 given=param_value
             )
@@ -139,7 +139,7 @@ class StringIth(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Integer) and index >= 0:
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.NaturalNum,
                 given=param_value
             )
@@ -157,7 +157,7 @@ class StringLength(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.String):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.String,
                 given=param_value
             )
@@ -173,7 +173,7 @@ class StringLowerCaseHuh(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.String):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.String,
                 given=param_value
             )
@@ -189,7 +189,7 @@ class StringNumericHuh(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.String):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.String,
                 given=param_value
             )
@@ -205,7 +205,7 @@ class StringUpcase(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.String):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.String,
                 given=param_value
             )
@@ -221,7 +221,7 @@ class StringUpperCaseHuh(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.String):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.String,
                 given=param_value
             )
@@ -237,7 +237,7 @@ class StringWhitespaceHuh(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.String):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.String,
                 given=param_value
             )

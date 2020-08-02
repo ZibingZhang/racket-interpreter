@@ -24,13 +24,6 @@ class TestErrors(unittest.TestCase):
         text = '(define-struct boolean [])'
         self.expect_error(text, ErrorCode.BUILTIN_OR_IMPORTED_NAME)
 
-    def test_general_division_by_zero(self):
-        text = '(/ 0)'
-        self.expect_error(text, ErrorCode.DIVISION_BY_ZERO)
-
-        text = '(/ (add1 (sub1 (- 4/2 (/ 9 4.5)))))'
-        self.expect_error(text, ErrorCode.DIVISION_BY_ZERO)
-
     def test_general_incorrect_argument_count(self):
         text = '(/ )'
         self.expect_error(text, ErrorCode.INCORRECT_ARGUMENT_COUNT)
@@ -118,16 +111,6 @@ class TestErrors(unittest.TestCase):
 
         text = '(define-struct s []) (define x (make-s)) (cond [x 1])'
         self.expect_error(text, ErrorCode.C_QUESTION_RESULT_NOT_BOOLEAN)
-
-    def test_cons_list_expected_second_argument_list(self):
-        text = '(cons 1 2)'
-        self.expect_error(text, ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST)
-
-        text = "(cons 1 'a)"
-        self.expect_error(text, ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST)
-
-        text = "(cons 1 (cons 2 (cons 3 4)))"
-        self.expect_error(text, ErrorCode.CL_EXPECTED_SECOND_ARGUMENT_LIST)
 
     def test_define_duplicate_variable(self):
         text = '(define (x a a) a)'

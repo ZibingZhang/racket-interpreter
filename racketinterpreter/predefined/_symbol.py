@@ -18,7 +18,7 @@ class SymbolToString(BuiltInProc):
         param_type = type(param_value)
 
         if not issubclass(param_type, d.Symbol):
-            raise err.EvaluateBuiltinProcedureError(
+            raise err.ArgumentTypeError(
                 expected=d.Boolean,
                 given=param_value
             )
@@ -39,7 +39,7 @@ class SymbolSymEqualHuh(BuiltInProc):
             param_type = type(param_value)
 
             if not issubclass(param_type, d.Symbol):
-                raise err.EvaluateBuiltinProcedureError(
+                raise err.ArgumentTypeError(
                     idx=idx,
                     expected=d.Symbol,
                     given=param_value
