@@ -446,6 +446,14 @@ class SemanticAnalyzer(ast.ASTVisitor):
             self.visit(field_ast)
             field_token = field_ast.token
             field_name = field_token.value
+
+            if field_name in field_names:
+                raise err.SemanticError(
+                    error_code=err.ErrorCode.DS_DUPLICATE_FIELD_NAME,
+                    token=node.token,
+                    field_name=field_name
+                )
+
             field_names.append(field_name)
 
         node.field_names = field_names
@@ -488,7 +496,8 @@ class SemanticAnalyzer(ast.ASTVisitor):
             if self.current_scope.lookup(proc_name, current_scope_only=True) is not None:
                 raise err.SemanticError(
                     error_code=err.ErrorCode.PREVIOUSLY_DEFINED_NAME,
-                    token=node.token
+                    token=node.token,
+                    name=proc_name
                 )
 
             self.current_scope.define(proc_symbol)

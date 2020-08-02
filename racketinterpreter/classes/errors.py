@@ -44,7 +44,7 @@ class ErrorCode(Enum):
     D_V_EXPECTED_ONE_EXPRESSION = Template("define: expected only one expression after the variable name $name, but $found")
     D_V_MISSING_AN_EXPRESSION = Template("define: expected an expression after the variable name $name, but nothing's there")
 
-    # TODO: define-struct: found a field name that is used more than once: a
+    DS_DUPLICATE_FIELD_NAME = Template('define-struct: found a field name that is used more than once: $field_name')
     DS_EXPECTED_A_FIELD = Template('define-struct: expected a field name, but $found')
     DS_EXPECTED_FIELD_NAMES = Template('define-struct: expected at least one field name (in parentheses) after the structure name, but $found')
     DS_EXPECTED_OPEN_PARENTHESIS = Template('define-struct: expected an open parenthesis before define-struct, but found none')
@@ -185,7 +185,7 @@ class Error(Exception):
             error_message = template.safe_substitute(name=name, expects=expects, separator=separator, given=given)
 
         elif error_code is ErrorCode.PREVIOUSLY_DEFINED_NAME:
-            name = token.value
+            name = kwargs.get('name') or token.value
 
             error_message = template.safe_substitute(name=name)
 
@@ -341,6 +341,11 @@ class Error(Exception):
             name = kwargs.get('name')
 
             error_message = template.safe_substitute(name=name)
+
+        elif error_code is ErrorCode.DS_DUPLICATE_FIELD_NAME:
+            field_name = kwargs.get('field_name')
+
+            error_message = template.safe_substitute(field_name=field_name)
 
         elif error_code is ErrorCode.DS_EXPECTED_A_FIELD:
             if token.type is t.TokenType.BOOLEAN:
