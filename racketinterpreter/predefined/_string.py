@@ -138,13 +138,18 @@ class StringIth(BuiltInProc):
         index = param_value = interpreter.visit(actual_params[1])
         param_type = type(param_value)
 
-        if not issubclass(param_type, d.Integer) and index >= 0:
-            raise err.ArgumentTypeError(
-                expected=d.NaturalNum,
-                given=param_value
+        if not issubclass(param_type, d.Integer) or index < d.Integer(0):
+            message = f'string-ith: expected a natural number for the second argument, but received {index}'
+            raise err.CustomBuiltinProcError(
+                message=message
             )
 
-        # TODO: string-ith: expected an exact integer in [0, 4) (i.e., less than the length of the given string) for the second argument, but received 10
+        if index >= d.Integer(len(string)):
+            message = f'string-ith: expected an exact integer [0, {len(string)}) '
+            message += f'(i.e., less than the length of the given string) for the second argument, but received {index}'
+            raise err.CustomBuiltinProcError(
+                message=message
+            )
 
         return string[index]
 

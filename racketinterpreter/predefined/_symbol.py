@@ -6,7 +6,6 @@ from racketinterpreter.predefined._base import BuiltInProc
 
 if tp.TYPE_CHECKING:
     from racketinterpreter.classes import ast
-    from racketinterpreter.classes import tokens as t
     from racketinterpreter.processes import Interpreter
 
 
