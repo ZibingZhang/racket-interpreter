@@ -25,14 +25,14 @@ class Expr(AST):
         self._value = value
 
     @property
-    def value(self):
+    def value(self) -> tp.Any:
         if self._value is None:
             raise err.IllegalStateError('The value of the expression has not been interpreted yet.')
         return self._value
 
 
-class List(AST):
-    """A list."""
+class Primitive(Expr):
+    """A primitive data type."""
 
 
 class StructProc(Expr):
@@ -56,7 +56,7 @@ class ASTVisitor(abc.ABC):
         )
 
 
-class Bool(Expr):
+class Bool(Primitive):
     """A boolean."""
 
     def __init__(self, token: t.Token) -> None:
@@ -69,7 +69,7 @@ class Bool(Expr):
         return self.__str__()
 
 
-class Dec(Expr):
+class Dec(Primitive):
     """A decimal number."""
 
     def __init__(self, token: t.Token) -> None:
@@ -82,7 +82,7 @@ class Dec(Expr):
         return self.__str__()
 
 
-class Int(Expr):
+class Int(Primitive):
     """A number."""
 
     def __init__(self, token: t.Token) -> None:
@@ -95,7 +95,17 @@ class Int(Expr):
         return self.__str__()
 
 
-class Name(Expr):
+class List(Primitive):
+    """A list.
+
+    Only used for list abbreviations.
+    """
+
+    def __init__(self, token: t.Token, value: tp.List[Primitive]) -> None:
+        super().__init__(token, value)
+
+
+class Name(Primitive):
     """A name."""
 
     def __init__(self, token: t.Token) -> None:
@@ -108,7 +118,7 @@ class Name(Expr):
         return self.__str__()
 
 
-class Rat(Expr):
+class Rat(Primitive):
     """A rational number."""
 
     def __init__(self, token: t.Token) -> None:
@@ -121,7 +131,7 @@ class Rat(Expr):
         return self.__str__()
 
 
-class Str(Expr):
+class Str(Primitive):
     """A string."""
 
     def __init__(self, token: t.Token) -> None:
@@ -134,7 +144,7 @@ class Str(Expr):
         return self.__str__()
 
 
-class Sym(Expr):
+class Sym(Primitive):
     """A symbol."""
 
     def __init__(self, token: t.Token) -> None:
@@ -236,7 +246,13 @@ class FormalParam(AST):
 class ProcAssign(AST):
     """Defining a procedure."""
 
-    def __init__(self, token: t.Token, name_expr: Expr, formal_params: tp.List[FormalParam], exprs: tp.List[Expr]) -> None:
+    def __init__(
+            self,
+            token: t.Token,
+            name_expr: Expr,
+            formal_params: tp.List[FormalParam],
+            exprs: tp.List[Expr]
+    ) -> None:
         super().__init__(token)
 
         self.name_expr = name_expr

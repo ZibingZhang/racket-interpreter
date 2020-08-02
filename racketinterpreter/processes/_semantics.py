@@ -114,6 +114,9 @@ class SemanticAnalyzer(ast.ASTVisitor):
     def visit_Int(self, node: ast.Int) -> None:
         pass
 
+    def visit_List(self, node: ast.List) -> None:
+        pass
+
     def visit_Name(self, node: ast.Name) -> None:
         var_name = node.value
         var_symbol = self.current_scope.lookup(var_name)
@@ -578,6 +581,7 @@ class _Preprocessor(ast.ASTVisitor):
     # - Bool
     # - Dec
     # - Int
+    # - List
     # - Name
     # - Rat
     # - Str

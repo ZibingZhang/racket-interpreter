@@ -12,7 +12,6 @@ from racketinterpreter.processes._semantics import SemanticAnalyzer
 
 if TYPE_CHECKING:
     from racketinterpreter.classes import symbols as sym
-    from racketinterpreter.classes.data import Data, Number
 
 
 class Interpreter(ast.ASTVisitor):
@@ -30,7 +29,7 @@ class Interpreter(ast.ASTVisitor):
         self.preprocessor = _Preprocessor(self)
         self.semantic_analyzer = SemanticAnalyzer(self)
 
-    def interpret(self, tree: ast.Program) -> Tuple[List[Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
+    def interpret(self, tree: ast.Program) -> Tuple[List[d.Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
         return self.visit(tree)
 
     def preprocess(self, node: ast.AST) -> None:
@@ -46,10 +45,13 @@ class Interpreter(ast.ASTVisitor):
     def visit_Dec(self, node: ast.Dec) -> d.InexactNum:
         return d.InexactNum(node.value)
 
-    def visit_Int(self, node: ast.Int) -> Number:
+    def visit_Int(self, node: ast.Int) -> d.Integer:
         return d.Integer(node.value)
 
-    def visit_Name(self, node: ast.Name) -> Data:
+    def visit_List(self, node: ast.List) -> d.List:
+        return d.List(list(map(self.visit, node.value)))
+
+    def visit_Name(self, node: ast.Name) -> d.Data:
         self.semantic_analyzer.visit(node)
 
         var_name = node.value
@@ -81,7 +83,7 @@ class Interpreter(ast.ASTVisitor):
     def visit_Sym(self, node: ast.Sym) -> d.Symbol:
         return d.Symbol(node.value)
 
-    def visit_Cond(self, node: ast.Cond) -> Data:
+    def visit_Cond(self, node: ast.Cond) -> d.Data:
         self.semantic_analyzer.visit(node)
 
         current_ar = self.call_stack.peek()
@@ -133,7 +135,7 @@ class Interpreter(ast.ASTVisitor):
         ar = self.call_stack.peek()
         ar[proc_name] = proc_value
 
-    def visit_ProcCall(self, node: ast.ProcCall) -> Data:
+    def visit_ProcCall(self, node: ast.ProcCall) -> d.Data:
         self.semantic_analyzer.visit(node)
 
         proc_symbol, actual_params = self.semantic_analyzer.get_proc_symbol_and_actual_params(node)
@@ -223,7 +225,7 @@ class Interpreter(ast.ASTVisitor):
 
         return passed, token, actual, expected
 
-    def visit_Program(self, node: ast.Program) -> Tuple[List[Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
+    def visit_Program(self, node: ast.Program) -> Tuple[List[d.Data], List[Tuple[bool, t.Token, d.Data, d.Data]]]:
         ar = stack.ActivationRecord(
             name='global',
             type=stack.ARType.PROGRAM,
@@ -270,7 +272,7 @@ class Interpreter(ast.ASTVisitor):
 
         return definitions, expressions, tests
 
-    def _visit_builtin_ProcCall(self, node: ast.ProcCall) -> Data:
+    def _visit_builtin_ProcCall(self, node: ast.ProcCall) -> d.Data:
         token = node.token
         proc_token = node.proc_token
         proc_name = proc_token.value
@@ -287,7 +289,7 @@ class Interpreter(ast.ASTVisitor):
             return BUILT_IN_PROCS[proc_name].interpret(self, token, actual_params)
 
     def _visit_user_defined_ProcCall(self, proc_name: str, expr: ast.Expr,
-                                     formal_params: List[sym.AmbiguousSymbol], actual_params: List[ast.Expr]) -> Data:
+                                     formal_params: List[sym.AmbiguousSymbol], actual_params: List[ast.Expr]) -> d.Data:
         current_ar = self.call_stack.peek()
 
         if current_ar.name in ['if', 'cond']:
@@ -331,6 +333,7 @@ class _Preprocessor(ast.ASTVisitor):
     # - Bool
     # - Dec
     # - Int
+    # - List
     # - Name
     # - Rat
     # - Str

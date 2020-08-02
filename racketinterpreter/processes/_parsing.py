@@ -49,12 +49,12 @@ class Parser:
             current_token = self.current_token
             self.error_unexpected_token(token=current_token)
 
-    def data(self) -> Union[ast.Bool, ast.Dec, ast.Int, ast.ProcCall, ast.Rat, ast.Str, ast.Sym]:
+    def data(self) -> Union[ast.Bool, ast.Dec, ast.Int, ast.List, ast.Rat, ast.Str, ast.Sym]:
         """
         data: BOOLEAN
             | DECIMAL
             | INTEGER
-            | LIST TODO: change ProcCall to List, enhance List
+            | LIST
             | RATIONAL
             | STRING
             | SYMBOL
@@ -83,12 +83,8 @@ class Parser:
 
             if next_token.type is t.TokenType.LPAREN:
                 self.eat(t.TokenType.LPAREN)
-                exprs_stack = [[ast.Name(t.Token(
-                    type=t.TokenType.NAME,
-                    value='list',
-                    line_no=token.line_no,
-                    column=token.column
-                ))]]
+
+                prims_stack = [[]]
 
                 open_parens = 1
                 while open_parens > 0:
@@ -108,13 +104,8 @@ class Parser:
                         open_parens += 1
                         self.eat(t.TokenType.LPAREN)
 
-                        exprs = [ast.Name(t.Token(
-                            type=t.TokenType.NAME,
-                            value='list',
-                            line_no=curr_token.line_no,
-                            column=curr_token.column
-                        ))]
-                        exprs_stack.append(exprs)
+                        prims = []
+                        prims_stack.append(prims)
 
                         continue
 
@@ -124,16 +115,16 @@ class Parser:
 
                         # TODO: fix this token
                         if open_parens > 0:
-                            expr = ast.ProcCall(None, exprs_stack[-1])
-                            exprs_stack = exprs_stack[:-1]
-                            exprs_stack[-1].append(expr)
+                            expr = ast.ProcCall(None, prims_stack[-1])
+                            prims_stack = prims_stack[:-1]
+                            prims_stack[-1].append(expr)
 
                         continue
 
-                    exprs = exprs_stack[-1]
+                    prims = prims_stack[-1]
                     if curr_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER,
                                            t.TokenType.RATIONAL, t.TokenType.STRING]:
-                        exprs.append(self.data())
+                        prims.append(self.data())
                     elif curr_token.type is t.TokenType.NAME:
                         self.eat(t.TokenType.NAME)
                         name_token = t.Token(
@@ -142,11 +133,11 @@ class Parser:
                             line_no=curr_token.line_no,
                             column=curr_token.column
                         )
-                        exprs.append(ast.Sym(name_token))
+                        prims.append(ast.Sym(name_token))
                     else:
                         raise err.IllegalStateError
 
-                node = ast.ProcCall(token, exprs_stack[0])
+                node = ast.List(token, prims_stack[0])
                 return node
             elif next_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER,
                                      t.TokenType.RATIONAL, t.TokenType.STRING]:
