@@ -113,9 +113,8 @@ class Parser:
                         open_parens -= 1
                         self.eat(t.TokenType.RPAREN)
 
-                        # TODO: fix this token
                         if open_parens > 0:
-                            expr = ast.ProcCall(None, prims_stack[-1])
+                            expr = ast.List(token, prims_stack[-1])
                             prims_stack = prims_stack[:-1]
                             prims_stack[-1].append(expr)
 
