@@ -83,7 +83,12 @@ class Parser:
 
             if next_token.type is t.TokenType.LPAREN:
                 self.eat(t.TokenType.LPAREN)
-                exprs_stack = []
+                exprs_stack = [[ast.Name(t.Token(
+                    type=t.TokenType.NAME,
+                    value='list',
+                    line_no=token.line_no,
+                    column=token.column
+                ))]]
 
                 open_parens = 1
                 while open_parens > 0:
@@ -100,6 +105,9 @@ class Parser:
                         )
 
                     elif curr_token.type is t.TokenType.LPAREN:
+                        open_parens += 1
+                        self.eat(t.TokenType.LPAREN)
+
                         exprs = [ast.Name(t.Token(
                             type=t.TokenType.NAME,
                             value='list',
@@ -107,21 +115,34 @@ class Parser:
                             column=curr_token.column
                         ))]
                         exprs_stack.append(exprs)
+
                         continue
 
                     elif curr_token.type is t.TokenType.RPAREN:
+                        open_parens -= 1
+                        self.eat(t.TokenType.RPAREN)
+
                         # TODO: fix this token
-                        expr = ast.ProcCall(None, exprs_stack[-1])
-                        exprs_stack = exprs_stack[:-1]
-                        exprs_stack[-1].append(expr)
+                        if open_parens > 0:
+                            expr = ast.ProcCall(None, exprs_stack[-1])
+                            exprs_stack = exprs_stack[:-1]
+                            exprs_stack[-1].append(expr)
+
                         continue
 
                     exprs = exprs_stack[-1]
-                    if token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER,
-                                      t.TokenType.RATIONAL, t.TokenType.STRING]:
+                    if curr_token.type in [t.TokenType.BOOLEAN, t.TokenType.DECIMAL, t.TokenType.INTEGER,
+                                           t.TokenType.RATIONAL, t.TokenType.STRING]:
                         exprs.append(self.data())
-                    elif token.type is t.TokenType.NAME:
-                        pass
+                    elif curr_token.type is t.TokenType.NAME:
+                        self.eat(t.TokenType.NAME)
+                        name_token = t.Token(
+                            type=t.TokenType.SYMBOL,
+                            value=curr_token.value,
+                            line_no=curr_token.line_no,
+                            column=curr_token.column
+                        )
+                        exprs.append(ast.Sym(name_token))
                     else:
                         raise err.IllegalStateError
 

@@ -51,7 +51,6 @@ class Append(BuiltInProc):
         for param in evaluated_params:
             result.extend(param)
 
-        # TODO: append: last argument must be a list, but received 1
         return result
 
 
